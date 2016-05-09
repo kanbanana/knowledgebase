@@ -1,0 +1,1 @@
+This directory is used for any kind of documentation including minutes of meetings.
