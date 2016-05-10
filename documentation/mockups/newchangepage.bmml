@@ -29,94 +29,6 @@
         <text>NTT%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="69" controlTypeID="__group__" x="88" y="149" w="830" h="557" measuredW="830" measuredH="557" zOrder="6" locked="false" isInGroup="-1">
-      <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="830" h="557" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="69"/>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="20" y="55" w="45" h="-1" measuredW="39" measuredH="21" zOrder="4" locked="false" isInGroup="69">
-          <controlProperties>
-            <bold>true</bold>
-            <text>Name%3A</text>
-          </controlProperties>
-        </control>
-        <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="685" y="80" w="32" h="-1" measuredW="32" measuredH="21" zOrder="6" locked="false" isInGroup="69">
-          <controlProperties>
-            <bold>true</bold>
-            <text>Files%3A</text>
-          </controlProperties>
-        </control>
-        <control controlID="16" controlTypeID="com.balsamiq.mockups::Button" x="757" y="14" w="58" h="41" measuredW="52" measuredH="27" zOrder="7" locked="false" isInGroup="69">
-          <controlProperties>
-            <href>saved%26bm%3Bsaved.bmml%26bm%3Bsaved.bmml%26bm%3Bsaved.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22845%2C163%2C903%2C204%22%20href%3D%22saved.bmml%22%20alt%3D%22saved%22%20id%3D%2216%22/%3E</map>
-            <text>Save</text>
-          </controlProperties>
-        </control>
-        <control controlID="17" controlTypeID="com.balsamiq.mockups::Button" x="681" y="14" w="70" h="41" measuredW="64" measuredH="27" zOrder="8" locked="false" isInGroup="69">
-          <controlProperties>
-            <href>start%26bm%3Bstart.bmml%26bm%3Bstart.bmml%26bm%3Bstart.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22769%2C163%2C839%2C204%22%20href%3D%22start.bmml%22%20alt%3D%22start%22%20id%3D%2217%22/%3E</map>
-            <text>Cancel</text>
-          </controlProperties>
-        </control>
-        <control controlID="20" controlTypeID="com.balsamiq.mockups::Image" x="23" y="71" w="654" h="60" measuredW="914" measuredH="88" zOrder="2" locked="false" isInGroup="69">
-          <controlProperties>
-            <filter>true</filter>
-            <src>./assets/editortoolbar.jpg</src>
-            <text/>
-          </controlProperties>
-        </control>
-        <control controlID="22" controlTypeID="com.balsamiq.mockups::Canvas" x="683" y="101" w="132" h="441" measuredW="100" measuredH="70" zOrder="5" locked="false" isInGroup="69"/>
-        <control controlID="23" controlTypeID="com.balsamiq.mockups::Label" x="706" y="298" w="-1" h="-1" measuredW="87" measuredH="21" zOrder="9" locked="false" isInGroup="69">
-          <controlProperties>
-            <color>10066329</color>
-            <text>Drop%20to%20upload</text>
-          </controlProperties>
-        </control>
-        <control controlID="25" controlTypeID="com.balsamiq.mockups::Icon" x="565" y="104" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="10" locked="false" isInGroup="69">
-          <controlProperties>
-            <icon>PaperClipIcon%7Csmall</icon>
-          </controlProperties>
-        </control>
-        <control controlID="26" controlTypeID="com.balsamiq.mockups::TextInput" x="65" y="52" w="275" h="-1" measuredW="79" measuredH="26" zOrder="11" locked="false" isInGroup="69">
-          <controlProperties>
-            <text/>
-          </controlProperties>
-        </control>
-        <control controlID="27" controlTypeID="com.balsamiq.mockups::Label" x="355" y="55" w="45" h="-1" measuredW="37" measuredH="21" zOrder="12" locked="false" isInGroup="69">
-          <controlProperties>
-            <bold>true</bold>
-            <text>Email%3A</text>
-          </controlProperties>
-        </control>
-        <control controlID="28" controlTypeID="com.balsamiq.mockups::TextInput" x="400" y="52" w="271" h="-1" measuredW="79" measuredH="26" zOrder="13" locked="false" isInGroup="69">
-          <controlProperties>
-            <text/>
-          </controlProperties>
-        </control>
-        <control controlID="29" controlTypeID="com.balsamiq.mockups::Label" x="20" y="20" w="37" h="-1" measuredW="32" measuredH="21" zOrder="14" locked="false" isInGroup="69">
-          <controlProperties>
-            <bold>true</bold>
-            <text>Titel%3A</text>
-          </controlProperties>
-        </control>
-        <control controlID="30" controlTypeID="com.balsamiq.mockups::TextInput" x="66" y="17" w="605" h="-1" measuredW="79" measuredH="26" zOrder="15" locked="false" isInGroup="69">
-          <controlProperties>
-            <text/>
-          </controlProperties>
-        </control>
-        <control controlID="32" controlTypeID="com.balsamiq.mockups::Canvas" x="8" y="41" w="663" h="64" measuredW="100" measuredH="70" zOrder="3" locked="false" isInGroup="69">
-          <controlProperties>
-            <borderColor>16777215</borderColor>
-          </controlProperties>
-        </control>
-        <control controlID="33" controlTypeID="com.balsamiq.mockups::TextArea" x="22" y="133" w="655" h="409" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="69">
-          <controlProperties>
-            <text/>
-            <verticalScrollbar>true</verticalScrollbar>
-          </controlProperties>
-        </control>
-      </groupChildrenDescriptors>
-    </control>
     <control controlID="72" controlTypeID="__group__" x="88" y="94" w="671" h="26" measuredW="671" measuredH="26" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties/>
       <groupChildrenDescriptors>
@@ -149,6 +61,76 @@
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22497%2C462%2C585%2C489%22%20href%3D%22new.bmml%22%20alt%3D%22new%22%20id%3D%2278%22/%3E</map>
         <text>Stay</text>
       </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="__group__" x="88" y="149" w="830" h="557" measuredW="830" measuredH="557" zOrder="6" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="830" h="557" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="79"/>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="685" y="80" w="32" h="-1" measuredW="32" measuredH="21" zOrder="5" locked="false" isInGroup="79">
+          <controlProperties>
+            <bold>true</bold>
+            <text>Files%3A</text>
+          </controlProperties>
+        </control>
+        <control controlID="16" controlTypeID="com.balsamiq.mockups::Button" x="757" y="14" w="58" h="41" measuredW="52" measuredH="27" zOrder="6" locked="false" isInGroup="79">
+          <controlProperties>
+            <href>saved%26bm%3Bsaved.bmml%26bm%3Bsaved.bmml%26bm%3Bsaved.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22845%2C163%2C903%2C204%22%20href%3D%22saved.bmml%22%20alt%3D%22saved%22%20id%3D%2216%22/%3E</map>
+            <text>Save</text>
+          </controlProperties>
+        </control>
+        <control controlID="17" controlTypeID="com.balsamiq.mockups::Button" x="681" y="14" w="70" h="41" measuredW="64" measuredH="27" zOrder="7" locked="false" isInGroup="79">
+          <controlProperties>
+            <href>newchangepage%26bm%3Bnewchangepage.bmml%26bm%3Bnewchangepage.bmml%26bm%3Bnewchangepage.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22769%2C163%2C839%2C204%22%20href%3D%22newchangepage.bmml%22%20alt%3D%22newchangepage%22%20id%3D%2217%22/%3E</map>
+            <text>Cancel</text>
+          </controlProperties>
+        </control>
+        <control controlID="20" controlTypeID="com.balsamiq.mockups::Image" x="23" y="71" w="647" h="60" measuredW="914" measuredH="88" zOrder="2" locked="false" isInGroup="79">
+          <controlProperties>
+            <filter>true</filter>
+            <src>./assets/editortoolbar.jpg</src>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="22" controlTypeID="com.balsamiq.mockups::Canvas" x="683" y="101" w="132" h="441" measuredW="100" measuredH="70" zOrder="4" locked="false" isInGroup="79"/>
+        <control controlID="23" controlTypeID="com.balsamiq.mockups::Label" x="706" y="298" w="-1" h="-1" measuredW="87" measuredH="21" zOrder="8" locked="false" isInGroup="79">
+          <controlProperties>
+            <color>10066329</color>
+            <text>Drop%20to%20upload</text>
+          </controlProperties>
+        </control>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::Icon" x="565" y="104" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="9" locked="false" isInGroup="79">
+          <controlProperties>
+            <icon>PaperClipIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::TextInput" x="22" y="52" w="318" h="-1" measuredW="49" measuredH="27" zOrder="10" locked="false" isInGroup="79">
+          <controlProperties>
+            <text>Name</text>
+          </controlProperties>
+        </control>
+        <control controlID="28" controlTypeID="com.balsamiq.mockups::TextInput" x="340" y="52" w="331" h="-1" measuredW="46" measuredH="27" zOrder="11" locked="false" isInGroup="79">
+          <controlProperties>
+            <text>Email</text>
+          </controlProperties>
+        </control>
+        <control controlID="30" controlTypeID="com.balsamiq.mockups::TextInput" x="22" y="17" w="649" h="-1" measuredW="40" measuredH="27" zOrder="12" locked="false" isInGroup="79">
+          <controlProperties>
+            <text>Title</text>
+          </controlProperties>
+        </control>
+        <control controlID="32" controlTypeID="com.balsamiq.mockups::Canvas" x="8" y="41" w="662" h="64" measuredW="100" measuredH="70" zOrder="3" locked="false" isInGroup="79">
+          <controlProperties>
+            <borderColor>16777215</borderColor>
+          </controlProperties>
+        </control>
+        <control controlID="33" controlTypeID="com.balsamiq.mockups::TextArea" x="22" y="133" w="655" h="409" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="79">
+          <controlProperties>
+            <text/>
+            <verticalScrollbar>true</verticalScrollbar>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
     </control>
   </controls>
 </mockup>
