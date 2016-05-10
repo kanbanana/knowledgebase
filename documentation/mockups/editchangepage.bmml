@@ -12,15 +12,15 @@
     </control>
     <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="774" y="85" w="78" h="41" measuredW="63" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
-        <href>editchangepage%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22774%2C85%2C852%2C126%22%20href%3D%22editchangepage.bmml%22%20alt%3D%22editchangepage%22%20id%3D%224%22/%3E</map>
+        <href>search%26bm%3Bsearch.bmml%26bm%3Bsearch.bmml%26bm%3Bsearch.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22774%2C85%2C852%2C126%22%20href%3D%22search.bmml%22%20alt%3D%22search%22%20id%3D%224%22/%3E</map>
         <text>Search</text>
       </controlProperties>
     </control>
     <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="860" y="85" w="58" h="41" measuredW="48" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
-        <href>editchangepage%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22860%2C85%2C918%2C126%22%20href%3D%22editchangepage.bmml%22%20alt%3D%22editchangepage%22%20id%3D%225%22/%3E</map>
+        <href>new%26bm%3Bnew.bmml%26bm%3Bnew.bmml%26bm%3Bnew.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22860%2C85%2C918%2C126%22%20href%3D%22new.bmml%22%20alt%3D%22new%22%20id%3D%225%22/%3E</map>
         <text>New</text>
       </controlProperties>
     </control>
@@ -88,8 +88,8 @@
         </control>
         <control controlID="17" controlTypeID="com.balsamiq.mockups::Button" x="681" y="14" w="70" h="41" measuredW="64" measuredH="27" zOrder="14" locked="false" isInGroup="69">
           <controlProperties>
-            <href>editchangepage%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml%26bm%3Beditchangepage.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22769%2C163%2C839%2C204%22%20href%3D%22editchangepage.bmml%22%20alt%3D%22editchangepage%22%20id%3D%2217%22/%3E</map>
+            <href>detail%26bm%3Bdetail.bmml%26bm%3Bdetail.bmml%26bm%3Bdetail.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22769%2C163%2C839%2C204%22%20href%3D%22detail.bmml%22%20alt%3D%22detail%22%20id%3D%2217%22/%3E</map>
             <text>Cancel</text>
           </controlProperties>
         </control>
@@ -176,6 +176,28 @@
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="72" w="949" h="663" measuredW="320" measuredH="240" zOrder="7" locked="false" isInGroup="-1"/>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Canvas" x="329" y="364" w="290" h="146" measuredW="100" measuredH="70" zOrder="8" locked="false" isInGroup="-1"/>
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::TextArea" x="350" y="375" w="243" h="56" measuredW="200" measuredH="140" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderColor>16777215</borderColor>
+        <text>You%20are%20about%20to%20leave%20this%20page%2C%20but%20moght%20have%20some%20unsaved%20changes.%0AAre%20you%20sure%20to%20leave%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="362" y="461" w="93" h="27" measuredW="58" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>start%26bm%3Bstart.bmml%26bm%3Bstart.bmml%26bm%3Bstart.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22362%2C461%2C455%2C488%22%20href%3D%22start.bmml%22%20alt%3D%22start%22%20id%3D%2276%22/%3E</map>
+        <text>Leave</text>
+      </controlProperties>
+    </control>
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::Button" x="497" y="462" w="88" h="27" measuredW="50" measuredH="27" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>edit%26bm%3Bedit.bmml%26bm%3Bedit.bmml%26bm%3Bedit.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22497%2C462%2C585%2C489%22%20href%3D%22edit.bmml%22%20alt%3D%22edit%22%20id%3D%2277%22/%3E</map>
+        <text>Stay</text>
+      </controlProperties>
     </control>
   </controls>
 </mockup>

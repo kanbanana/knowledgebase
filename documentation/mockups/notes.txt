@@ -1,0 +1,8 @@
+View "New":
+- cancel sends you back to the page where you came from
+- leave sends you back to the page where you came from
+
+View "Edit":
+- cancel sends you back to the page where you came from
+- cancel checks if you have changed something and if you did you get ask before you leave the page
+- leave sends you back to the page where you came from

@@ -104,7 +104,7 @@
         <control controlID="20" controlTypeID="com.balsamiq.mockups::Image" x="23" y="73" w="648" h="62" measuredW="914" measuredH="88" zOrder="1" locked="false" isInGroup="69">
           <controlProperties>
             <filter>true</filter>
-            <src>../Neue%2520Bitmap.jpg</src>
+            <src>./assets/editortoolbar.jpg</src>
             <text/>
           </controlProperties>
         </control>
@@ -120,9 +120,9 @@
             <icon>PaperClipIcon%7Csmall</icon>
           </controlProperties>
         </control>
-        <control controlID="26" controlTypeID="com.balsamiq.mockups::TextInput" x="65" y="52" w="275" h="-1" measuredW="39" measuredH="27" zOrder="18" locked="false" isInGroup="69">
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::TextInput" x="65" y="52" w="275" h="-1" measuredW="79" measuredH="26" zOrder="18" locked="false" isInGroup="69">
           <controlProperties>
-            <text>Max</text>
+            <text/>
           </controlProperties>
         </control>
         <control controlID="27" controlTypeID="com.balsamiq.mockups::Label" x="355" y="55" w="45" h="-1" measuredW="37" measuredH="21" zOrder="19" locked="false" isInGroup="69">
@@ -131,9 +131,9 @@
             <text>Email%3A</text>
           </controlProperties>
         </control>
-        <control controlID="28" controlTypeID="com.balsamiq.mockups::TextInput" x="400" y="52" w="271" h="-1" measuredW="134" measuredH="27" zOrder="20" locked="false" isInGroup="69">
+        <control controlID="28" controlTypeID="com.balsamiq.mockups::TextInput" x="400" y="52" w="271" h="-1" measuredW="79" measuredH="26" zOrder="20" locked="false" isInGroup="69">
           <controlProperties>
-            <text>Max@kanbanana.de</text>
+            <text/>
           </controlProperties>
         </control>
         <control controlID="29" controlTypeID="com.balsamiq.mockups::Label" x="20" y="20" w="37" h="-1" measuredW="32" measuredH="21" zOrder="21" locked="false" isInGroup="69">
@@ -142,9 +142,9 @@
             <text>Titel%3A</text>
           </controlProperties>
         </control>
-        <control controlID="30" controlTypeID="com.balsamiq.mockups::TextInput" x="66" y="17" w="605" h="-1" measuredW="78" measuredH="27" zOrder="22" locked="false" isInGroup="69">
+        <control controlID="30" controlTypeID="com.balsamiq.mockups::TextInput" x="66" y="17" w="605" h="-1" measuredW="79" measuredH="26" zOrder="22" locked="false" isInGroup="69">
           <controlProperties>
-            <text>Databases</text>
+            <text/>
           </controlProperties>
         </control>
         <control controlID="32" controlTypeID="com.balsamiq.mockups::Canvas" x="8" y="41" w="663" h="70" measuredW="100" measuredH="70" zOrder="2" locked="false" isInGroup="69">
@@ -165,11 +165,11 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="73" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="70" w="948" h="668" measuredW="320" measuredH="240" zOrder="7" locked="false" isInGroup="-1"/>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="77" w="948" h="668" measuredW="320" measuredH="240" zOrder="7" locked="false" isInGroup="-1"/>
     <control controlID="74" controlTypeID="com.balsamiq.mockups::Canvas" x="285" y="267" w="381" h="195" measuredW="100" measuredH="70" zOrder="8" locked="false" isInGroup="-1"/>
-    <control controlID="75" controlTypeID="com.balsamiq.mockups::Label" x="429" y="354" w="-1" h="-1" measuredW="91" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::Label" x="356" y="354" w="-1" h="-1" measuredW="283" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Saved%20changes</text>
+        <text>Author%20and%20email%20is%20empty%28do%20you%20wanna%20save%3F%29</text>
       </controlProperties>
     </control>
   </controls>

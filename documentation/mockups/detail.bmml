@@ -21,6 +21,8 @@
     </control>
     <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="860" y="85" w="58" h="41" measuredW="48" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
+        <href>new%26bm%3Bnew.bmml%26bm%3Bnew.bmml%26bm%3Bnew.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22860%2C85%2C918%2C126%22%20href%3D%22new.bmml%22%20alt%3D%22new%22%20id%3D%225%22/%3E</map>
         <text>New</text>
       </controlProperties>
     </control>
@@ -125,11 +127,15 @@
         </control>
         <control controlID="16" controlTypeID="com.balsamiq.mockups::Button" x="757" y="14" w="58" h="41" measuredW="46" measuredH="27" zOrder="15" locked="false" isInGroup="69">
           <controlProperties>
+            <href>edit%26bm%3Bedit.bmml%26bm%3Bedit.bmml%26bm%3Bedit.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22845%2C163%2C903%2C204%22%20href%3D%22edit.bmml%22%20alt%3D%22edit%22%20id%3D%2216%22/%3E</map>
             <text>Edit</text>
           </controlProperties>
         </control>
         <control controlID="17" controlTypeID="com.balsamiq.mockups::Button" x="687" y="14" w="58" h="41" measuredW="51" measuredH="27" zOrder="16" locked="false" isInGroup="69">
           <controlProperties>
+            <href>alert%26bm%3Balert.bmml%26bm%3Balert.bmml%26bm%3Balert.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22775%2C163%2C833%2C204%22%20href%3D%22alert.bmml%22%20alt%3D%22alert%22%20id%3D%2217%22/%3E</map>
             <text>Alert</text>
           </controlProperties>
         </control>

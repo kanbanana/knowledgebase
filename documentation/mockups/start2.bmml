@@ -19,6 +19,8 @@
     </control>
     <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="860" y="85" w="58" h="41" measuredW="48" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
+        <href>new%26bm%3Bnew.bmml%26bm%3Bnew.bmml%26bm%3Bnew.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22860%2C85%2C918%2C126%22%20href%3D%22new.bmml%22%20alt%3D%22new%22%20id%3D%225%22/%3E</map>
         <text>New</text>
       </controlProperties>
     </control>
@@ -123,6 +125,8 @@
         <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="20" y="9" w="-1" h="-1" measuredW="429" measuredH="26" zOrder="1" locked="false" isInGroup="69">
           <controlProperties>
             <bold>true</bold>
+            <href>detail%26bm%3Bdetail.bmml%26bm%3Bdetail.bmml%26bm%3Bdetail.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22108%2C180%2C537%2C206%22%20href%3D%22detail.bmml%22%20alt%3D%22detail%22%20id%3D%221%22/%3E</map>
             <size>18</size>
             <text>%DCberschrift%3A%20Dieser%20Artikel%20wurde%20zuletzt%20besucht.</text>
             <underline>true</underline>
