@@ -1,0 +1,29 @@
+---
+- name: Install mongoDB
+  become: yes
+  docker:
+    name: mongo
+    image: mongo
+    # state only performs a pull if container has changed
+    pull: always
+    state: reloaded
+    # restart policy restats the docker deamon if its broken
+    restart_policy: always
+    ports:
+    -   "27017:27017"
+    
+- name: Install nginx
+  become: yes
+  docker:
+    name: nginx
+    image: nginx
+    # state only performs a pull if container has changed
+    pull: always
+    state: stopped
+    # restart policy restats the docker deamon if its broken
+    restart_policy: always
+    
+# use single task, because ansible cannot pass through commandline parameters
+- name: Start nginx
+  become: yes
+  shell: docker run --name nginx -v /vagrant/development:/usr/share/nginx/html:ro -d -p 8080:80 nginx
