@@ -11,6 +11,8 @@ apt-get -y install ansible
 apt-get -y install docker-engine
 apt-get -y install python-pip
 pip install docker-py 
+groupadd docker
+usermod -aG docker vagrant
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -31,6 +33,8 @@ Vagrant.configure(2) do |config|
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 27017, host: 27017
   config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 9090, host: 9090
+  config.vm.network "forwarded_port", guest: 8888, host: 8888
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -82,12 +86,12 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: $install_ansible
 	# Patch for https://github.com/mitchellh/vagrant/issues/6793
 	config.vm.provision "shell" do |s|
-	s.inline = '[[ ! -f $1 ]] || grep -F -q "$2" $1 || sed -i "/__main__/a \\    $2" $1'
-    s.args = ['/usr/bin/ansible-galaxy', "if sys.argv == ['/usr/bin/ansible-galaxy', '--help']: sys.argv.insert(1, 'info')"]
-  end
-  # Execute playbook
-  config.vm.provision "ansible_local" do |ansible|
-	ansible.playbook = "provision/site.yml"		
-	ansible.install = true
+		s.inline = '[[ ! -f $1 ]] || grep -F -q "$2" $1 || sed -i "/__main__/a \\    $2" $1'
+		s.args = ['/usr/bin/ansible-galaxy', "if sys.argv == ['/usr/bin/ansible-galaxy', '--help']: sys.argv.insert(1, 'info')"]
+	end
+	# Execute playbook
+	config.vm.provision "ansible_local" do |ansible|
+		ansible.playbook = "provision/site.yml"		
+		ansible.install = true
   end
 end

@@ -1,4 +1,8 @@
 ---
+- name: Stop all running containers
+  become: yes
+  shell: for container_id in $(docker ps -a -q);do docker stop $container_id;done
+  
 - name: Install mongoDB
   become: yes
   docker:
@@ -23,7 +27,26 @@
     # restart policy restats the docker deamon if its broken
     restart_policy: always
     
-# use single task, because ansible cannot pass through commandline parameters
-- name: Start nginx
+  # use single task, because ansible cannot pass through commandline parameters
+- name: Run nginx container
   become: yes
-  shell: docker run --name nginx -v /vagrant/development:/usr/share/nginx/html:ro -d -p 8080:80 nginx
+  shell: docker run --restart=always --name nginx -v /vagrant/development:/usr/share/nginx/html:ro -d -p 8080:80 nginx
+  
+- name: Build OSS container
+  become: yes
+  shell: docker build -t ossserver -f /vagrant/provision/roles/staging/files/oss/Dockerfile .
+  
+- name: Run default OSS container
+  become: yes
+  #shell: docker run -d -p 9090:9090 ossserver
+  shell: docker run -d -v /vagrant/provision/roles/staging/volume:/srv -p 9090:9090 ossserver
+  
+#- name: Build Nodeserver container
+#  become: yes
+#  shell: docker build -t nodeserver -f /vagrant/provision/roles/staging/files/node/Dockerfile .
+  
+#- name: Run Nodeserver container
+#  become: yes
+#  #shell: docker run -d -p 9090:9090 ossserver
+#  shell: docker run --restart=always -d -p 8888:8888 -v /vagrant/development/server:/usr/src/app nodeserver
+    
