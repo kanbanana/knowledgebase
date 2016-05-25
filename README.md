@@ -1,6 +1,10 @@
 # knowledgebase
 
-## Setup Dev VM
+
+# Development
+This repository uses git flow branching model! Information can be found at https://danielkummer.github.io/git-flow-cheatsheet/
+
+## Setup Development VM
 1. Download and install vagrant https://www.vagrantup.com/downloads.html
 2. Open cmd and navigate to project root directory
 3. Run "vagrant up --provision"
