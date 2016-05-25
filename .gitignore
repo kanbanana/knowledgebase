@@ -239,3 +239,8 @@ $RECYCLE.BIN/
 .vagrant/
 **/*.retry
 **/opensearchserver/**
+
+
+## Project-specific files
+development/server/uploads/*
+!development/server/uploads/

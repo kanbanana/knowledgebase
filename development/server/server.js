@@ -1,10 +1,28 @@
 var express = require('express');
+var path = require('path');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var guid = require('node-uuid');
+var fs = require("fs");
+var Busboy = require('busboy');
+
+var routes = require('./routes/index');
+
 var app = express();
 
+// Define Middleware
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
+
+// Define Routes
+app.use('/', routes);
+
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+    res.sendFile(__dirname + "/views/index.html");
 });
 
-app.listen(8888, function () {
-  console.log('Example app listening on port 8888!');
-});
+
+module.exports = app;
