@@ -1,0 +1,27 @@
+{
+  "name": "knowledgebase",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~4.13.4"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kanbanana/knowledgebase.git"
+  },
+  "keywords": [
+    "knowledgebase"
+  ],
+  "author": "kanbanana",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/kanbanana/knowledgebase/issues"
+  }
+}
