@@ -3,7 +3,7 @@
   become: yes
   shell: for container_id in $(docker ps -a -q);do docker stop $container_id;done
   
-- name: Install mongoDB
+- name: Run mongoDB container
   become: yes
   docker:
     name: mongo
@@ -11,26 +11,15 @@
     # state only performs a pull if container has changed
     pull: always
     state: reloaded
-    # restart policy restats the docker deamon if its broken
+    # restart policy restarts the docker daemon if its broken
     restart_policy: always
     ports:
     -   "27017:27017"
-    
-- name: Install nginx
-  become: yes
-  docker:
-    name: nginx
-    image: nginx
-    # state only performs a pull if container has changed
-    pull: always
-    state: stopped
-    # restart policy restats the docker deamon if its broken
-    restart_policy: always
-    
+
   # use single task, because ansible cannot pass through commandline parameters
 - name: Run nginx container
   become: yes
-  shell: docker run --restart=always --name nginx -v /vagrant/development:/usr/share/nginx/html:ro -d -p 8080:80 nginx
+  shell: docker run --restart=always -v /vagrant/development:/usr/share/nginx/html:ro -d -p 8080:80 nginx
   
 - name: Build OSS container
   become: yes
@@ -47,6 +36,5 @@
   
 #- name: Run Nodeserver container
 #  become: yes
-#  #shell: docker run -d -p 9090:9090 ossserver
 #  shell: docker run --restart=always -d -p 8888:8888 -v /vagrant/development/server:/usr/src/app nodeserver
     
