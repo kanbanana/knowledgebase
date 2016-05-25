@@ -6,8 +6,8 @@
 3. Run "vagrant up --provision"
 
 ### Installed Services
-- ssh (Port: 2222) Zugriff über "vagrant ssh"
+- ssh (Port: 2222 - "vagrant ssh")
 - mongodb (Port: 27017)
-- nginx (Port:8080 Directory: /development)
-- opensearchserver (Port:9090 Directory:provision/roles/staging/volume/opensearchserver)
+- nginx (Port:8080 Directory: development)
+- opensearchserver (Port:9090 Directory: provision/roles/staging/volume/opensearchserver)
 
