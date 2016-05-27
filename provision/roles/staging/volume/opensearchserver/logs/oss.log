@@ -1,0 +1,18 @@
+08:51:18,993 INFO: root - OSS IS STARTING 
+08:51:20,330 INFO: org.quartz.core.SchedulerSignalerImpl - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+08:51:20,341 INFO: org.quartz.core.QuartzScheduler - Quartz Scheduler v.2.1.7 created.
+08:51:20,374 INFO: org.quartz.simpl.RAMJobStore - RAMJobStore initialized.
+08:51:20,389 INFO: org.quartz.core.QuartzScheduler - Scheduler meta-data: Quartz Scheduler (v2.1.7) 'SimpleQuartzScheduler' with instanceId 'SIMPLE_NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 20 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+08:51:20,391 INFO: org.quartz.impl.DirectSchedulerFactory - Quartz scheduler 'SimpleQuartzScheduler
+08:51:20,392 INFO: org.quartz.impl.DirectSchedulerFactory - Quartz scheduler version: 2.1.7
+08:51:20,400 INFO: org.quartz.core.QuartzScheduler - Scheduler SimpleQuartzScheduler_$_SIMPLE_NON_CLUSTERED started.
+08:51:20,425 INFO: root - OSS starts loading index(es)
+08:51:20,461 INFO: root - OSS ends loading index(es)
+08:51:26,550 INFO: org.apache.cxf.endpoint.ServerImpl - Setting the server's publish address to be /rest
