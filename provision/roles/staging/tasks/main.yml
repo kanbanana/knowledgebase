@@ -37,3 +37,11 @@
 - name: Run Nodeserver container
   become: yes
   shell: docker run --restart=always -d -p 8888:8888 -v /vagrant/development/server:/usr/src/app nodeserver
+
+- name: Build Nodeserver container
+  become: yes
+  shell: docker build -t continuoustest -f /vagrant/provision/roles/staging/files/continuoustest/Dockerfile .
+
+- name: Run Nodeserver container
+  become: yes
+  shell: docker run --restart=always -d -p 8889:8889 -v /vagrant/development/server:/usr/src/app continuoustest
