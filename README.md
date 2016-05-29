@@ -14,4 +14,6 @@ This repository uses git flow branching model! Information can be found at https
 - mongodb (Port: 27017)
 - nginx (Port:8080 Directory: development)
 - opensearchserver (Port:9090 Directory: provision/roles/staging/volume/opensearchserver)
-
+### Test
+- run "npm install -g gulp"
+- run gulp inside the development/server/ folder
