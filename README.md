@@ -4,6 +4,8 @@
 # Development
 This repository uses git flow branching model! Information can be found at https://danielkummer.github.io/git-flow-cheatsheet/
 
+Jenkins CI build is triggered on every push event. Build results (including testsreports) can be found at https://danielweidle.de/jenkins/job/knowledgebase-develop/
+
 ## Setup Development VM
 1. Donwload and install VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 2. Download and install vagrant https://www.vagrantup.com/downloads.html
@@ -15,6 +17,7 @@ This repository uses git flow branching model! Information can be found at https
 - mongodb (Port: 27017)
 - nginx (Port:8080 Directory: development)
 - opensearchserver (Port:9090 Directory: provision/roles/staging/volume/opensearchserver)
+
 ### Test
 - run "npm install -g gulp"
 - run gulp inside the development/server/ folder
