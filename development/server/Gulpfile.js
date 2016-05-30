@@ -21,7 +21,7 @@ gulp.task('pre-test', function () {
 
 gulp.task('jenkins-test', ['pre-test'], function() {
     return gulp.src(['**/*.spec.js', '!node_modules/**', '!coverage/**'])
-       .pipe(mocha())
+       .pipe(mocha({reporter: 'tap'}))
 	   .pipe(istanbul.writeReports());
 });
 
