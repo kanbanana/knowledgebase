@@ -3,18 +3,9 @@
   become: yes
   shell: for container_id in $(docker ps -a -q);do docker stop $container_id;done
 
-- name: Run mongoDB container
+- name: Run mongodb container
   become: yes
-  docker:
-    name: mongo
-    image: mongo
-    # state only performs a pull if container has changed
-    pull: always
-    state: reloaded
-    # restart policy restarts the docker daemon if its broken
-    restart_policy: always
-    ports:
-    -   "27017:27017"
+  shell: docker run --restart=always -p 27017:27017 -d mongo  
 
   # use single task, because ansible cannot pass through commandline parameters
 - name: Run nginx container
