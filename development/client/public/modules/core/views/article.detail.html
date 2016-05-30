@@ -1,0 +1,106 @@
+<section class="full-height">
+    <div class="container" id="knowl-content-container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>{{article.title}}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-hide="isEditing">
+                    <div class="col-sm-3">
+                        <span><b>Author:</b> <a href="#">{{article.author}}</a></span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><b>Last changed by:</b> <a href="#">{{article.changedBy}}</a></span>
+                    </div>
+                    <div class="col-sm-5">
+                        <span><b>Last changed:</b> <a href="#">{{article.lastChanged}}</a></span>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="titelInput">Title:</label>
+                                <input type="email" class="form-control" id="titelInput" placeholder="Title" ng-model="article.title">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-6">
+                        <form>
+                            <div class="form-group">
+                                <label for="changedbyInput">Your Name:</label>
+                                <input type="email" class="form-control" id="changedbyInput" placeholder="Your name" ng-model="changedBy">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6">
+                        <form>
+                            <div class="form-group">
+                                <label for="changedbyEmailInput">Your E-mail Adress:</label>
+                                <input type="email" class="form-control" id="changedbyEmailInput" placeholder="Your Email" ng-model="changedByMail">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" ng-hide="isEditing">
+                    <div class="col-sm-12">
+                        <p class="article-detail-text">
+                            <div ng-bind-html="sanatizedArticleText"></div>
+                        </p>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-sm-12">
+                        <form method="post">
+                            <textarea ui-tinymce="tinymceOptions" ng-model="article.text"></textarea>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="row article-detail-buttons-wrapper">
+                    <div class="col-lg-6">
+                        <button type="button" ng-hide="isEditing" class="btn btn-default btn-block">Alert</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <button type="button" ng-hide="isEditing" class="btn btn-default btn-block" ng-click="startEditing()">Edit</button>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block" ng-click="saveArticle()">Save</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Files:</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row" ng-show="isEditing">
+                                    <div class="col-lg-12">
+                                        <button type="upload"  class="btn btn-default btn-block">Upload</button>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <ul class="list-group">
+                                            <li ng-repeat="file in article.files" class="list-group-item">
+                                                <span class="badge">{{file.type}}</span>
+                                                {{file.name}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

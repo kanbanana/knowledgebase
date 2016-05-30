@@ -1,0 +1,37 @@
+/*phi = 1.61803398875
+line-height(phi) = font-size * phi
+line-width = line-height(phi)^2
+*/
+
+@mixin vertical-align {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+}
+
+.center-h {
+    margin: auto;
+}
+
+.center-v{
+    @include vertical-align;
+}
+
+.full-height {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.section-title-divider {
+    width: 5%;
+    height: 0.1em;
+    margin: -2em auto 2em auto;
+}
