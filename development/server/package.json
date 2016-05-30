@@ -30,7 +30,7 @@
     "knowledgebase"
   ],
   "author": "kanbanana",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kanbanana/knowledgebase/issues"
   }
