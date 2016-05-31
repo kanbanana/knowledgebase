@@ -1,3 +1,34 @@
+To setup the project after pulling it from git, execute the following steps.
+    Step 0)
+        Open command line tool (cmd, bash, etc.)
+    Step 1)
+        Install package managers
+        npm:	https://nodejs.org/en/download/
+        (Restart your command line tool)
+        bower:	npm install -g bower
+    Step 2)
+        Install scaffolding tool
+        yeoman:	npm install -g yo
+    Step 3)
+        Install testing suite
+        karma:	npm install -g karma-cli
+    Step 4)
+        Navigate to the project's root directory
+    Step 5)
+        Install build tool
+        gulp:	npm install -g gulp
+                npm install gulp
+    Step 6)
+        Download project dependencies
+                npm install
+                bower install
+    Step 7)
+        Build the project and start the development server
+                gulp
+From now on you can rebuild and start the project by calling "gulp" in the project's root directory.
+
+##### DEPRECATED #####
+
 # Leptir - the seed for professional AngularJS apps
 
 Leptir means in croatian language Butterfly.
