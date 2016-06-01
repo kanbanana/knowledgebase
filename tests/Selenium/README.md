@@ -2,12 +2,11 @@
 
 # Selenium Tests
 
-This branch provides several selenium Testcases.
-Currently none of the test cases will actually pass
+This branch provides several selenium test cases.
 
 ## Requirements
 1. Maven
-2. Eclipse Test NG Pluging
+2. Eclipse TestNG Plugin
 
 ## Setup Eclipse Test project
 
