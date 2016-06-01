@@ -1,0 +1,78 @@
+#%RAML 1.0
+title: knowledgebase
+version: v0.1
+types:
+  Article: !include schemas/article.raml
+/article:
+  get:
+    queryParameters:
+      q:
+        description: The search parameter
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Article
+            example: !include examples/getArticles.json
+      400:
+        description: Send when there the parameter q contains bad data
+      404:
+        description: Send when there are no search results
+      500:
+        description: Send when other services are unavailable
+  post:
+    body:
+      application/json:
+        type: Article
+        description: The article that needs to be created
+    responses:
+      200:
+        body:
+          application/json:
+            type: Article
+            example: !include examples/getArticle.json
+            description: Returns the exact article as the one send, but corrects the id
+      400:
+        description: Send when the body contains bad data
+      500:
+        description: Send when other services are unavailable
+  /{articleId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Article
+              example: !include examples/getArticle.json
+        404:
+          description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
+    put:
+      body:
+        application/json:
+          type: Article
+      responses:
+        200:
+          body:
+            application/json:
+              type: Article
+              example: !include examples/getArticle.json
+        400:
+          description: Send when the body contains bad data
+        404:
+          description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
+    delete:
+      body:
+        application/json:
+          type: Article
+      responses:
+        200:
+          description: Send when the article got deleted
+        404:
+          description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
