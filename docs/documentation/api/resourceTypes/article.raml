@@ -1,0 +1,12 @@
+#%RAML 1.0 ObjectTypeDeclaration
+type: object
+properties:
+  id: number
+  author: !include author.raml
+  lastChangedBy: !include author.raml
+  lastChanged: date-only
+  title: string
+  text: string
+  files:
+    type: array
+    items: !include file.raml

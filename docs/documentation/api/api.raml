@@ -1,0 +1,65 @@
+#%RAML 1.0
+title: knowledgebase
+version: v0.1
+types:
+  Article: !include resourceTypes/article.raml
+/article:
+  get:
+    queryParameters:
+      q:
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Article
+            example: !include examples/getArticles.json
+      400:
+        description: Send when there the parameter q contains bad data
+      404:
+        description: Send when there are no search results
+  post:
+    body:
+      application/json:
+        type: Article
+    responses:
+      200:
+        body:
+          application/json:
+            type: Article
+            example: !include examples/getArticle.json
+      400:
+        description: Send when the body contains bad data
+  /{articleId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Article
+              example: !include examples/getArticle.json
+        404:
+          description: Send when there is no article with this articleid
+    put:
+      body:
+        application/json:
+          type: Article
+      responses:
+        200:
+          body:
+            application/json:
+              type: Article
+              example: !include examples/getArticle.json
+        404:
+          description: Send when there is no article with this articleid
+        400:
+          description: Send when the body contains bad data
+    delete:
+      body:
+        application/json:
+          type: Article
+      responses:
+        200:
+          description: Send when the article got deleted
+        404:
+          description: Send when there is no article with this articleid
