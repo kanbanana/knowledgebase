@@ -1,0 +1,120 @@
+#%RAML 1.0
+title: knowledgebase version: v0.1 types:
+  File:
+    type: object
+    properties:
+      type: string
+      name: string
+      url: string
+  Author:
+    type: object
+    properties:
+      name: string
+      email: string
+  Article:
+    type: object
+    properties:
+      id: number
+      author:
+        type: Author
+        required: true
+      lastChangedBy: Author
+      lastChanged: date-only
+      title:
+        type: string
+        required: true
+      text:
+        type: string
+        required: true
+      files:
+        type: array
+        items: File /article:
+  get:
+    queryParameters:
+      q:
+        description: receive all articles that contain q
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Article
+            example: |
+              [
+                {
+                  "id": 1,
+                  "author":
+                  {
+                    "name": "Max Mustermann",
+                    "email": "max@mustermann.com"
+                  },
+                  "lastChangedBy":
+                  {
+                    "name": "Martin Mustermann",
+                    "email": "martin@mustermann.com"
+                  },
+                  "lastChanged": "2016-05-15",
+                  "title": "Knowledge",
+                  "text": "This is some <b>important</b> Knowledge",
+                  "files":
+                  [
+                    {
+                      "type": "pdf",
+                      "name": "some knowledge",
+                      "url": "/this/is/some knowledge.pdf"
+                    }
+                  ]
+                }
+              ]
+      404:
+        body:
+          application/json:
+            type: object
+            example: {}
+  post:
+    body:
+      application/json:
+        type: Article
+    responses:
+      200:
+        body:
+          application/json:
+            type: Article
+  /{articleId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Article
+              example: |
+                {
+                  "id": 1,
+                  "author":
+                  {
+                    "name": "Max Mustermann",
+                    "email": "max@mustermann.com"
+                  },
+                  "lastChangedBy":
+                  {
+                    "name": "Martin Mustermann",
+                    "email": "martin@mustermann.com"
+                  },
+                  "lastChanged": "2016-05-15",
+                  "title": "Knowledge",
+                  "text": "This is some <b>important</b> Knowledge",
+                  "files":
+                  [
+                    {
+                      "type": "pdf",
+                      "name": "some knowledge",
+                      "url": "/this/is/some knowledge.pdf"
+                    }
+                  ]
+                }
+        404:
+          body:
+            application/json:
+              type: object
+              example: {}
+    put:
