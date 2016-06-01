@@ -19,6 +19,8 @@ types:
         description: Send when there the parameter q contains bad data
       404:
         description: Send when there are no search results
+      500:
+        description: Send when other services are unavailable
   post:
     body:
       application/json:
@@ -33,6 +35,8 @@ types:
             description: Returns the exact article as the one send, but corrects the id
       400:
         description: Send when the body contains bad data
+      500:
+        description: Send when other services are unavailable
   /{articleId}:
     get:
       responses:
@@ -43,6 +47,8 @@ types:
               example: !include examples/getArticle.json
         404:
           description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
     put:
       body:
         application/json:
@@ -53,10 +59,12 @@ types:
             application/json:
               type: Article
               example: !include examples/getArticle.json
-        404:
-          description: Send when there is no article with this articleid
         400:
           description: Send when the body contains bad data
+        404:
+          description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
     delete:
       body:
         application/json:
@@ -66,3 +74,5 @@ types:
           description: Send when the article got deleted
         404:
           description: Send when there is no article with this articleid
+        500:
+          description: Send when other services are unavailable
