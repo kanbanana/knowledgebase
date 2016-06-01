@@ -12,23 +12,12 @@
 
         <div class="collapse navbar-collapse" id="knowl-navbar">
             <div class="input-group knowl-navbar-input">
-                <input type="text" class="form-control" aria-label="...">
+                <input type="text" class="form-control" ng-model="searchText">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default">Search</button>
-                    <button type="button" class="btn btn-default">New article</button>
+                    <button type="button" class="btn btn-primary">Search</button>
+                    <button type="button" class="btn btn-primary" ng-click="newArticle(searchText)">New article</button>
                 </div>
             </div>
-
-<!--
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-            </form>
-            <form class="navbar-form navbar-right" role="search">
-
-            </form>
--->
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>

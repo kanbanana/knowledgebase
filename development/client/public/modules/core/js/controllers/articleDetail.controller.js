@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService','$sce', function($scope, $stateParams, ArticleService, $sce){
-    $scope.article = ArticleService.getArticle($stateParams.articleId);
-
+angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService','$sce','$location', function($scope, $stateParams, ArticleService, $sce, $location){
+    $scope.article = angular.fromJson(ArticleService.getArticle($stateParams.articleId));
+    $scope.isSaving = false;
 
     tinymce.PluginManager.add("bdesk_photo", function(editor, f) {
         editor.addCommand("bdesk_photo", function() {
@@ -74,6 +74,36 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         });
     });
 
+    tinymce.PluginManager.add("reference_manager", function(editor, f) {
+        editor.addCommand("reference_manager", function() {
+            editor.windowManager.open({
+                title: "Insert file reference",
+                width: 450,
+                height: 80,
+                html: '<ul class="list-group"> <li ng-repeat="file in article.files" class="list-group-item"> <span class="badge">{{article}}</span>{{file.name}}</li></ul>',
+                buttons: [{
+                    text: "Ok",
+                    subtype: "primary",
+                    onclick: function() {
+
+                    }
+                }, {
+                    text: "Cancel",
+                    onclick: function() {
+                        (this).parent().parent().close();
+                    }
+                }]
+            });
+        });
+
+        editor.addButton("reference_manager", {
+            icon: "anchor",
+            context: "insert",
+            title: "Insert file reference",
+            cmd: "reference_manager"
+        });
+    });
+
     $scope.tinymceOptions = {
         selector: 'textarea',
         height: 500,
@@ -83,19 +113,10 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             'searchreplace wordcount visualblocks visualchars code fullscreen',
             'insertdatetime media nonbreaking save table contextmenu directionality',
             'emoticons template paste textcolor colorpicker textpattern imagetools',
-            'bdesk_photo'
+            'bdesk_photo', 'reference_manager'
         ],
-        toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-        toolbar2: 'print preview media | forecolor backcolor emoticons',
-        image_advtab: true,
-        templates: [
-            { title: 'Test template 1', content: 'Test 1' },
-            { title: 'Test template 2', content: 'Test 2' }
-        ],
-        content_css: [
-            '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-            '//www.tinymce.com/css/codepen.min.css'
-        ]
+        menubar: false,
+        toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link bdesk_photo reference_manager'
     };
 
     $scope.isEditing = false;
@@ -104,11 +125,32 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text)
     },true)
 
+
+
+    $scope.toggleEditing = function() {
+        if($scope.isEditing === true) {
+            $scope.isEditing = false;
+        } else {
+            $scope.isEditing = true;
+        }
+    }
+
     $scope.startEditing = function() {
-        $scope.isEditing = true;
+        $location.path('article/'+ $scope.article.id).search('e', 'true');
     }
 
     $scope.saveArticle = function() {
-        $scope.isEditing = false;
+        $scope.isSaving = true;
+        $location.path('article/'+ $scope.article.id).search('e', 'false');
+    }
+
+    $scope.$on('$locationChangeStart', function(event) {
+        if($scope.isEditing === true && $scope.isSaving === false) {
+            event.preventDefault();
+        }
+    });
+
+    if ($stateParams.e == 'true') {
+        $scope.toggleEditing();
     }
 }]);

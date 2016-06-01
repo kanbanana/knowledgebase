@@ -11,10 +11,10 @@
                 </div>
                 <div class="row" ng-hide="isEditing">
                     <div class="col-sm-3">
-                        <span><b>Author:</b> <a href="#">{{article.author}}</a></span>
+                        <span><b>Author:</b> <a href="mailto:{{article.author.email}}">{{article.author.name}}</a></span>
                     </div>
                     <div class="col-sm-4">
-                        <span><b>Last changed by:</b> <a href="#">{{article.changedBy}}</a></span>
+                        <span><b>Last changed by:</b> <a href="mailto:{{article.changedBy.email}}">{{article.changedBy.name}}</a></span>
                     </div>
                     <div class="col-sm-5">
                         <span><b>Last changed:</b> <a href="#">{{article.lastChanged}}</a></span>
@@ -25,7 +25,7 @@
                         <form>
                             <div class="form-group">
                                 <label for="titelInput">Title:</label>
-                                <input type="email" class="form-control" id="titelInput" placeholder="Title" ng-model="article.title">
+                                <input type="text" class="form-control" id="titelInput" placeholder="Title" ng-model="article.title">
                             </div>
                         </form>
                     </div>
@@ -66,7 +66,7 @@
             <div class="col-lg-3">
                 <div class="row article-detail-buttons-wrapper">
                     <div class="col-lg-6">
-                        <button type="button" ng-hide="isEditing" class="btn btn-default btn-block">Alert</button>
+                        <button type="button" ng-hide="isEditing" ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</button>
                     </div>
                     <div class="col-lg-6">
                         <button type="button" ng-hide="isEditing" class="btn btn-default btn-block" ng-click="startEditing()">Edit</button>

@@ -35,7 +35,7 @@ angular.module('core')
             .state("articleDetail",
             {
                 parent: "root",
-                url: "/article/:articleId",
+                url: "/article/:articleId?e",
                 views: {
                     "": {
                         controller: "ArticleDetailCtrl",
