@@ -7,6 +7,7 @@ types:
   get:
     queryParameters:
       q:
+        description: The search parameter
     responses:
       200:
         body:
@@ -22,12 +23,14 @@ types:
     body:
       application/json:
         type: Article
+        description: The article that needs to be created
     responses:
       200:
         body:
           application/json:
             type: Article
             example: !include examples/getArticle.json
+            description: Returns the exact article as the one send, but corrects the id
       400:
         description: Send when the body contains bad data
   /{articleId}:
