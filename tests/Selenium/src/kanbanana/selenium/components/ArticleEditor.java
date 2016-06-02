@@ -105,5 +105,10 @@ public class ArticleEditor {
 		element = getUnsavedStayButton(driver);
 		element.click();
 	}
+	
+	public void uploadFile(String pathToFile)
+	{
+		//Logic 
+	}
 
 }

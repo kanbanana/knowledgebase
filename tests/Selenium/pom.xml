@@ -23,5 +23,11 @@
 				<version>6.9.8</version>
 				<scope>test</scope>
 			</dependency>
+			<!-- http://mvnrepository.com/artifact/com.relevantcodes/extentreports -->
+			<dependency>
+				<groupId>com.relevantcodes</groupId>
+				<artifactId>extentreports</artifactId>
+				<version>2.41.0</version>
+			</dependency>
         </dependencies>
 </project>
