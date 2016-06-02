@@ -5,6 +5,7 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     del = require('del'),
     sass = require('gulp-sass'),
+    sassUnicode = require('gulp-sass-unicode'),
     autoPrefixer = require('gulp-autoprefixer'),
     runSequence = require('run-sequence'),
     ftp = require( 'vinyl-ftp' ),
@@ -57,6 +58,7 @@ gulp.task('styles', function () {
                 console.log(e);
             }
         }))
+        .pipe(sassUnicode())
         // Optionally add autoPrefixer
         .pipe(autoPrefixer("last 2 versions", "> 1%", "ie 8"))
         // These last two should look familiar now :)
