@@ -160,6 +160,21 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     });
 };
 
+fileSystemConnector.readArticleContent = function(articleId) {
+    articleId += '';
+    return new Promise (function(resolve, reject) {
+        getPermFolderForArticle(articleId, function (err, permFolder) {
+            var contentFilePath = path.join(permFolder, config.articleContentFileName);
+            fs.readFile(contentFilePath, function (err, contentBuffer) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(contentBuffer.toString());
+            });
+        });
+    });
+}
+
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
 

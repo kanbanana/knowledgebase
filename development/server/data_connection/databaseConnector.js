@@ -16,16 +16,17 @@ databaseConnector.createArticle = function () {
     });
 };
 
-databaseConnector.addDocumentToArticle = function(article, storageInfo, cb) {
-    article.documents.push(storageInfo);
-    article.save(function(){
-        console.log(arguments)
-    })
-    /*Article.findByIdAndUpdate(article._id,
-        {safe: true, upsert: true, new : true} ,
-        { $push: {"documents": storageInfo}}, function(){
-        console.log(arguments)
-    })*/
+databaseConnector.addDocumentToArticle = function(article, storageInfo) {
+    return new Promise(function (resolve, reject) {
+        article.documents.push(storageInfo);
+        article.save(function (err) {
+            if(err) {
+                return reject(err);
+            }
+
+            resolve(storageInfo);
+        });
+    });
 };
 
 databaseConnector.saveArticle = function (article, title, authorName, authorMail) {

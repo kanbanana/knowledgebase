@@ -9,15 +9,21 @@ articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
 
-articleService.saveArticle = function (article, title, content, authorName, authorMail) {
+articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
+        var authorName = "";
+        var authorMail = "";
+        if (author) {
+            authorName = author.name || "";
+            authorMail = author.email || "";
+        }
+
         fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(
             function () {
                 databaseConnector.saveArticle(article, title, authorName, authorMail).then(resolve, reject);
             }
             , reject);
     });
-
 };
 
 articleService.findArticleById = function (id) {
@@ -27,7 +33,7 @@ articleService.findArticleById = function (id) {
 articleService.saveDocument = function (article, document) {
     return new Promise(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
-            databaseConnector.addDocumentToArticle(article, storageInfo).than(resolve, reject);
+            databaseConnector.addDocumentToArticle(article, storageInfo).then(resolve, reject);
         }, reject);
     });
 };
@@ -49,6 +55,10 @@ articleService.saveDocuments = function (article, documents) {
     });
 };
 
+
+articleService.getArticleContent = function (articleId) {
+    return fileSystemConnector.readArticleContent(articleId);
+};
 (function () {
     setInterval(function () {
         databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {

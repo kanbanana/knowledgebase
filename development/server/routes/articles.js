@@ -18,9 +18,8 @@ function middlewareRetrieveArticle(req, res, next) {
 }
 
 function onDocumentUploadHandler(req, res) {
-    console.log(req.article._id);
     articleService.saveDocuments(req.article, req.files).then(function(storageInfoList) {
-        res.send('OK');
+        res.send(storageInfoList);
     }, function(error) {
         res.send(500, error);
     })
@@ -35,8 +34,13 @@ function onArticleCreateHandler(req, res) {
 }
 
 function onArticleSaveHandler(req, res) {
-    articleService.saveArticle(req.article, req.body.title, req.body.content, req.body.name, req.body.email).then(function(article) {
-        res.send(article);
+    articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
+        articleService.getArticleContent(article._id).then(function(articleContent) {
+            var responseArticle = articleSchemaToResponseArticle(article);
+            responseArticle.text = articleContent;
+            res.send(responseArticle);
+        });
+
     }, function(error) {
         res.status(500).send(error);
     });
@@ -45,11 +49,23 @@ function onArticleSaveHandler(req, res) {
 
 router.all('/:articleId*', middlewareRetrieveArticle);
 
-router.post('/:articleId', onArticleSaveHandler);
+router.put('/:articleId', onArticleSaveHandler);
 
-router.put('/:articleId/documents', upload.array('documentToUpload'), onDocumentUploadHandler);
+router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
 
-router.put('/', onArticleCreateHandler);
+router.post('/', onArticleCreateHandler);
 
+function articleSchemaToResponseArticle(articleSchema) {
+    var responseArticle = articleSchema.toJSON();
+    responseArticle.id = responseArticle._id;
+    delete responseArticle._id;
+    delete responseArticle.__v;
+
+    responseArticle.documents.forEach(function(document) {
+        delete document._id;
+    });
+
+    return responseArticle;
+}
 
 module.exports = router;
