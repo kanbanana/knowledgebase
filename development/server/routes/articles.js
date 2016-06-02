@@ -4,59 +4,52 @@ var fs = require("fs");
 var Busboy = require('busboy');
 var guid = require('node-uuid');
 var path = require('path');
+var multer = require('multer');
+var upload = multer({dest: path.join( __projectDir, 'uploadsTemp/')});
+var articleService = require('../services/articleService');
 
-const uploadDirectory = path.join(__dirname, '../uploads') + '\\';
-const whitelistWithDocumentMimeTypes = [
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-    'text/plain'
-];
-
-router.post('/:articleId/documents', function (req, res) {
-
-    var busboy = new Busboy({headers: req.headers});
-    busboy.on('file', function (fieldname, file, originalFilename, encoding, mimetype) {
-
-        // TODO: send error, when file type is invalid
-        // if(!whitelistWithDocumentMimeTypes.indexOf(mimetype) > -1) {
-        //     res.status(422).send('Invalid file type. Supported file types are: ' + whitelistWithDocumentMimeTypes.toString());
-        //     // req.pipe(busboy);
-        //     return;
-        // }
-
-        var fileExtensionOfTemporaryFile = path.extname(originalFilename);
-        var temporaryFilenameWithoutExtension = guid.v4();
-        var temporaryFilename = temporaryFilenameWithoutExtension + fileExtensionOfTemporaryFile;
-        var targetDirectory = getTemporaryFolderForArticle(req.params.articleId);
-        var targetFilePath = path.join(targetDirectory, temporaryFilename);
-
-        var fileOutputStream = fs.createWriteStream(targetFilePath);
-
-        file.on('data', function (data) {
-            fileOutputStream.write(data);
-        });
-        file.on('end', function () {
-            fileOutputStream.end();
-            res.sendStatus(200)
-        });
+function middlewareRetrieveArticle(req, res, next) {
+    articleService.findArticleById(req.params.articleId).then(function(article) {
+        req.article = article;
+        next();
+    }, function(err){
+        res.send(500, error);
     });
-    req.pipe(busboy);
-});
-
-function getTemporaryFolderForArticle(articleId) {
-
-    var targetDirectory = path.join(uploadDirectory, articleId);
-    try {
-        fs.statSync(targetDirectory);
-    }
-    catch(e) {
-        if(e.code === 'ENOENT') {
-            // this exception is thrown, when the folder doesn't exist
-            fs.mkdir(targetDirectory);
-        }
-    }
-
-    return targetDirectory;
 }
+
+function onDocumentUploadHandler(req, res) {
+    console.log(req.article._id);
+    articleService.saveDocuments(req.article, req.files).then(function(storageInfoList) {
+        res.send('OK');
+    }, function(error) {
+        res.send(500, error);
+    })
+}
+
+function onArticleCreateHandler(req, res) {
+    articleService.createArticle().then(function(article) {
+        res.send(article._id);
+    }, function(error) {
+        res.send(500, error);
+    });
+}
+
+function onArticleSaveHandler(req, res) {
+    articleService.saveArticle(req.article, req.body.title, req.body.content, req.body.name, req.body.email).then(function(article) {
+        res.send(article);
+    }, function(error) {
+        res.status(500).send(error);
+    });
+}
+
+
+router.all('/:articleId*', middlewareRetrieveArticle);
+
+router.post('/:articleId', onArticleSaveHandler);
+
+router.put('/:articleId/documents', upload.array('documentToUpload'), onDocumentUploadHandler);
+
+router.put('/', onArticleCreateHandler);
+
 
 module.exports = router;

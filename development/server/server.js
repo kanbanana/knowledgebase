@@ -1,12 +1,17 @@
+GLOBAL.__projectDir = __dirname;
+
 var express = require('express');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var articles = require('./routes/articles');
+var config = require('./config/config');
 
 var app = express();
+mongoose.connect(config.dbConnectionString);
 
 // Define Middleware
 app.use(logger('dev'));
