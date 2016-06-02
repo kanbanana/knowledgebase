@@ -1,33 +1,44 @@
 To setup the project after pulling it from git, execute the following steps.
-    Step 0)
-        Open command line tool (cmd, bash, etc.)
-    Step 1)
-        Install package managers
-        npm:	https://nodejs.org/en/download/
-        (Restart your command line tool)
-        bower:	npm install -g bower
-    Step 2)
-        Install scaffolding tool
-        yeoman:	npm install -g yo
-    Step 3)
-        Install testing suite
-        karma:	npm install -g karma-cli
-    Step 4)
-        Navigate to the project's root directory
-    Step 5)
-        Install build tool
-        gulp:	npm install -g gulp
-                npm install gulp
-    Step 6)
-        Download project dependencies
-                npm install
-                bower install
-    Step 7)
-        Build the project and start the development server
-                gulp
-From now on you can rebuild and start the project by calling "gulp" in the project's root directory.
 
-##### DEPRECATED #####
+##### Step 0)
+Open command line tool (cmd, bash, etc.)
+##### Step 1)
+Install package managers
+* npm:	https://nodejs.org/en/download/
+(Restart your command line tool)
+* bower:	```npm install -g bower```
+##### Step 2)
+Install scaffolding tool yeoman
+
+```npm install -g yo```
+##### Step 3)
+Install testing suite karma
+
+```npm install -g karma-cli```
+
+##### Step 4)
+Navigate to the project's root directory
+##### Step 5)
+Install build tool gulp
+
+```npm install -g gulp```
+
+```npm install gulp```
+##### Step 6)
+Download project dependencies
+
+```npm install```
+
+```bower install```
+
+##### Step 7)
+Build the project and start the development server
+
+```gulp```
+
+From now on you can rebuild and start the project by calling ```gulp``` in the project's root directory.
+
+# `DEPRECATED`
 
 # Leptir - the seed for professional AngularJS apps
 
@@ -269,68 +280,3 @@ now, you have different ways how you want to translate your text in your html's.
 ```
 
 Be aware, that coreHeadline must be in the locale files, otherwise just coreHeadline will be shown instead of the text you want to have in.
-
-
-
-## Yeoman Generator
-
-I created for this seed also a yeoman-generator. Please take a look at: https://github.com/damirkusar/leptir-generator
-
-
-## Feedback & Improvements
-
-If you miss something or you think i should change or add some feature, please let me know.
-
-
-
-## Donation
-
-If you like this seed and you think it is worht to donate something, please feel free to do that via the following link:
-
-[Donate via Paypal][donate]
-
-
-
-## Contact
-
-For more information & contact form please check out http://kusar.ch or http://damirkusar.ch
-
-
-
-## License
-The MIT License (MIT)
-
-Copyright (c) 2015 Damir Kusar: damir@kusar.ch
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-
-
-
-[git]: http://git-scm.com/
-[bower]: http://bower.io
-[npm]: https://www.npmjs.org/
-[node]: http://nodejs.org
-[protractor]: https://github.com/angular/protractor
-[jasmine]: http://jasmine.github.io
-[karma]: http://karma-runner.github.io
-[donate]: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=damir%40kusar%2ech&lc=US&item_name=Damir%20Kusar&currency_code=USD&bn=PP-DonationsBF%3abtn_donate_LG%2egif%3aNonHosted
-[kusar]: http://kusar.ch/
-[damirkusar]: http://damirkusar.ch/
