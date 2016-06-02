@@ -1,4 +1,6 @@
 var Article = require('./models').Article;
+var config = require('../config/config');
+var path = require('path');
 
 var databaseConnector = module.exports = {};
 
@@ -40,6 +42,10 @@ databaseConnector.saveArticle = function (article, title, authorName, authorMail
         article.lastChangedBy.name = authorName;
         article.lastChangedBy.email = authorMail;
         article.isTemporary = false;
+
+        article.documents.forEach(function(document) {
+            document.path = path.join(config.fileLinkPrefix, config.uploadDirPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
+        });
 
         article.save(function (error) {
             if (error) {

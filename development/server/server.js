@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var routes = require('./routes/index');
 var articles = require('./routes/articles');
 var config = require('./config/config');
 
@@ -20,7 +19,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // Define Routes
-app.use('/', routes);
 app.use('/articles', articles);
 
 // This is a route that sends the index.html, which contains UI for testing

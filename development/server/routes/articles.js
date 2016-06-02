@@ -1,12 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var fs = require("fs");
-var Busboy = require('busboy');
-var guid = require('node-uuid');
 var path = require('path');
-var multer = require('multer');
-var upload = multer({dest: path.join( __projectDir, 'uploadsTemp/')});
+var upload = require('multer')({dest: path.join( __projectDir, 'uploadsTemp/')});
 var articleService = require('../services/articleService');
+var config = require('../config/config')
 
 function middlewareRetrieveArticle(req, res, next) {
     articleService.findArticleById(req.params.articleId).then(function(article) {
@@ -33,6 +30,32 @@ function onArticleCreateHandler(req, res) {
     });
 }
 
+function middlewareCeckTitte(req, res, next) {
+    if(req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+        return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
+    }
+
+    next();
+}
+
+function middlewareCeckAutherName(req, res, next) {
+    if(req.body.author && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+        return res.status(400).send('Invalid author name length (max. ' + config.postBodyValidationValues.maxArticleAuthorNameLength + ' characters).');
+    }
+
+    next();
+}
+
+function middlewareCeckAutherMail(req, res, next) {
+    if(req.body.author && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
+        return res.status(400).send('Invalid author email address length (max. ' + config.postBodyValidationValues.maxArticleAuthorEmailLength + ' characters).');
+    }
+
+    next()
+}
+
 function onArticleSaveHandler(req, res) {
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
         articleService.getArticleContent(article._id).then(function(articleContent) {
@@ -49,7 +72,7 @@ function onArticleSaveHandler(req, res) {
 
 router.all('/:articleId*', middlewareRetrieveArticle);
 
-router.put('/:articleId', onArticleSaveHandler);
+router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitte, onArticleSaveHandler);
 
 router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
 

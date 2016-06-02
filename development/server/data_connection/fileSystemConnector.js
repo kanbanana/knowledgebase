@@ -125,7 +125,7 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     return new Promise(function (resolve, reject) {
         var targetFilePathPromise;
 
-        var saveDocumentHandler = function (err, targetDirectory) {
+        var saveDocumentHandler = function (err, targetDirectory, fileLinkPrefix) {
             if (err) {
                 return reject(err);
             }
@@ -143,7 +143,7 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
                     var fileName = path.basename(targetFilePath, fileExt);
                     resolve({
                         filetype: fileExt.replace('.', ''),
-                        path: path.join(config.uploadDirPerm, articleId, fileName + fileExt).replace(/[\\]/g, '/'),
+                        path: path.join(fileLinkPrefix, fileName + fileExt).replace(/[\\]/g, '/'),
                         name: fileName
                     });
                 });
@@ -223,21 +223,23 @@ function getFilenameLike(pathToFile, cb) {
 }
 
 function getPermFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadPathPerm, cb);
+    getFolderForArticle(articleId, config.uploadDirPerm, cb);
 }
 
 function getTempFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadPathTmp, cb);
+    getFolderForArticle(articleId, config.uploadDirTmp, cb);
 }
 
 function getOldFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadPathOld, cb);
+    getFolderForArticle(articleId, config.uploadDirOld, cb);
 }
 
-function getFolderForArticle(articleId, uploadPath, cb) {
+function getFolderForArticle(articleId, uploadDir, cb) {
+    var uploadPath = path.join(__projectDir, uploadDir) + '/';
     var targetFilePath = path.join(uploadPath, articleId);
+    var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
-        cb(err, targetFilePath)
+        cb(err, targetFilePath, targetFileLink);
     });
 }
 
