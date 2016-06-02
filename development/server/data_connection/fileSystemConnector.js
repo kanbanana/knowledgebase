@@ -143,7 +143,7 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
                     var fileName = path.basename(targetFilePath, fileExt);
                     resolve({
                         filetype: fileExt.replace('.', ''),
-                        path: path.join(config.uploadDirPerm, articleId, fileName + fileExt),
+                        path: path.join(config.uploadDirPerm, articleId, fileName + fileExt).replace(/[\\]/g, '/'),
                         name: fileName
                     });
                 });
