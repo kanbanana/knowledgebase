@@ -17,6 +17,7 @@ This branch provides several selenium test cases.
 ## Update an existing project
 
 Whenever a new dependency is added to the pom file it is necessary to do the following steps.
+
 1. Open Eclipse and remove the project. Do not delete the Files from your harddrive! Just remove the project.
 2. mvn dependency:resolve
 3. mvn eclipse:eclipse
