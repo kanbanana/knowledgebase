@@ -11,7 +11,7 @@ module.exports = extend(
     {
         port: 3000,
 
-        dbConnectionString: 'mongodb://localhost:27017/knowledgebase',
+        dbConnectionString: process.env.MONGODB || 'mongodb://' + (process.env.DATABASE_ADDR || 'localhost') + ':' + (process.env.DATABASE_PORT || '27017') + '/knowledgebase',
 
         fileLinkPrefix: "/server/",
         uploadDirPerm: 'uploads/articles',
