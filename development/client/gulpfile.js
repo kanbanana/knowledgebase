@@ -36,10 +36,10 @@ var paths = {
     styles: ['./public/*.scss', './public/modules/**/*.scss'],
     img: ['./public/modules/**/img/*'],
     resources: ['./public/modules/**/resources/*'],
-    bower: ['./public/bower_components/**/*', './public/bower_components/**/*.css', './public/bower_components/bootstrap/**/*.min.css'],
+    bower: ['./public/bower_components/**/*', './public/bower_components/**/*.css', './public/bower_components/bootstrap/**/*.min.css', './public/bower_components/font-awesome/fonts/*.*'],
     destination_public: './dist/',
     destination_modules: './dist/modules/',
-    destination_bower: ['./dist/bower_components/', './dist/bower_components/bootstrap/']
+    destination_bower: ['./dist/bower_components/', './dist/bower_components/bootstrap/', './dist/bower_components/font-awesome/fonts/']
 };
 
 // Clean task
@@ -132,6 +132,11 @@ gulp.task('bower-bootstrap', function () {
     gulp.src(paths.bower[2]).pipe(gulp.dest(paths.destination_bower[1]));
 });
 
+// font-awesome
+gulp.task('font-awesome', function() {
+    gulp.src(paths.bower[3]).pipe(gulp.dest(paths.destination_bower[2]));
+});
+
 gulp.task('watch', ['lint'], function () {
     // Start webserver
     server.listen(serverPort);
@@ -169,7 +174,7 @@ gulp.task('dev', ['build']);
 gulp.task('build', function () {
     runSequence(
         'clean',
-        ['views', 'styles', 'img', 'resources', 'lint', 'javascript'],
+        ['views', 'styles', 'img', 'resources', 'font-awesome', 'lint', 'javascript'],
         'browserify',
         'bower-css'
     );
