@@ -242,5 +242,6 @@ $RECYCLE.BIN/
 
 
 ## Project-specific files
-development/server/uploads/*
-!development/server/uploads/
+development/server/uploads/
+development/server/uploadsTemp/
+development/server/config/params.json

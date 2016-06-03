@@ -1,62 +1,94 @@
 var express = require('express');
 var router = express.Router();
-var fs = require("fs");
-var Busboy = require('busboy');
-var guid = require('node-uuid');
 var path = require('path');
+var upload = require('multer')({dest: path.join( __projectDir, 'uploadsTemp/')});
+var articleService = require('../services/articleService');
+var config = require('../config/config')
 
-const uploadDirectory = path.join(__dirname, '../uploads') + '\\';
-const whitelistWithDocumentMimeTypes = [
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-    'text/plain'
-];
-
-router.post('/:articleId/documents', function (req, res) {
-
-    var busboy = new Busboy({headers: req.headers});
-    busboy.on('file', function (fieldname, file, originalFilename, encoding, mimetype) {
-
-        // TODO: send error, when file type is invalid
-        // if(!whitelistWithDocumentMimeTypes.indexOf(mimetype) > -1) {
-        //     res.status(422).send('Invalid file type. Supported file types are: ' + whitelistWithDocumentMimeTypes.toString());
-        //     // req.pipe(busboy);
-        //     return;
-        // }
-
-        var fileExtensionOfTemporaryFile = path.extname(originalFilename);
-        var temporaryFilenameWithoutExtension = guid.v4();
-        var temporaryFilename = temporaryFilenameWithoutExtension + fileExtensionOfTemporaryFile;
-        var targetDirectory = getTemporaryFolderForArticle(req.params.articleId);
-        var targetFilePath = path.join(targetDirectory, temporaryFilename);
-
-        var fileOutputStream = fs.createWriteStream(targetFilePath);
-
-        file.on('data', function (data) {
-            fileOutputStream.write(data);
-        });
-        file.on('end', function () {
-            fileOutputStream.end();
-            res.sendStatus(200)
-        });
+function middlewareRetrieveArticle(req, res, next) {
+    articleService.findArticleById(req.params.articleId).then(function(article) {
+        req.article = article;
+        next();
+    }, function(err){
+        res.send(500, error);
     });
-    req.pipe(busboy);
-});
+}
 
-function getTemporaryFolderForArticle(articleId) {
+function onDocumentUploadHandler(req, res) {
+    articleService.saveDocuments(req.article, req.files).then(function(storageInfoList) {
+        res.send(storageInfoList);
+    }, function(error) {
+        res.send(500, error);
+    })
+}
 
-    var targetDirectory = path.join(uploadDirectory, articleId);
-    try {
-        fs.statSync(targetDirectory);
+function onArticleCreateHandler(req, res) {
+    articleService.createArticle().then(function(article) {
+        res.send(article._id);
+    }, function(error) {
+        res.send(500, error);
+    });
+}
+
+function middlewareCeckTitte(req, res, next) {
+    if(req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+        return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
-    catch(e) {
-        if(e.code === 'ENOENT') {
-            // this exception is thrown, when the folder doesn't exist
-            fs.mkdir(targetDirectory);
-        }
+
+    next();
+}
+
+function middlewareCeckAutherName(req, res, next) {
+    if(req.body.author && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+        return res.status(400).send('Invalid author name length (max. ' + config.postBodyValidationValues.maxArticleAuthorNameLength + ' characters).');
     }
 
-    return targetDirectory;
+    next();
+}
+
+function middlewareCeckAutherMail(req, res, next) {
+    if(req.body.author && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
+        return res.status(400).send('Invalid author email address length (max. ' + config.postBodyValidationValues.maxArticleAuthorEmailLength + ' characters).');
+    }
+
+    next()
+}
+
+function onArticleSaveHandler(req, res) {
+    articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
+        articleService.getArticleContent(article._id).then(function(articleContent) {
+            var responseArticle = articleSchemaToResponseArticle(article);
+            responseArticle.text = articleContent;
+            res.send(responseArticle);
+        });
+
+    }, function(error) {
+        res.status(500).send(error);
+    });
+}
+
+
+router.all('/:articleId*', middlewareRetrieveArticle);
+
+router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitte, onArticleSaveHandler);
+
+router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
+
+router.post('/', onArticleCreateHandler);
+
+function articleSchemaToResponseArticle(articleSchema) {
+    var responseArticle = articleSchema.toJSON();
+    responseArticle.id = responseArticle._id;
+    delete responseArticle._id;
+    delete responseArticle.__v;
+
+    responseArticle.documents.forEach(function(document) {
+        delete document._id;
+    });
+
+    return responseArticle;
 }
 
 module.exports = router;
