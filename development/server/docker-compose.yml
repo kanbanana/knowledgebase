@@ -5,17 +5,16 @@ services:
       context: .
     ports:
     - "8888:3000"
+    environment:
+    - DATABASE_ADDR=mongo
     links:
     - mongo
+    - ossserver
   mongo:
     image: mongo
-    ports:
-    - "27017:27017"
   nginx:
     image: nginx
     ports:
-    - "8881:80"
-  osserver:
+    - "8887:80"
+  ossserver:
     image: ossserver
-    ports:
-    - "9090:9090"
