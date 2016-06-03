@@ -1,44 +1,72 @@
+# README
+
 To setup the project after pulling it from git, execute the following steps.
 
-##### Step 0)
+## Step 0)
+
 Open command line tool (cmd, bash, etc.)
-##### Step 1)
+
+## Step 1)
+
 Install package managers
-* npm:	https://nodejs.org/en/download/
-(Restart your command line tool)
-* bower:	```npm install -g bower```
-##### Step 2)
+
+* npm:	https://nodejs.org/en/download/ (Restart your command line tool)
+  * if npm is already installed: ` npm install -g npm `
+* bower: ` npm install -g bower `
+
+## Step 2)
+
 Install scaffolding tool yeoman
 
-```npm install -g yo```
-##### Step 3)
+` npm install -g yo `
+
+## Step 3)
+
 Install testing suite karma
 
-```npm install -g karma-cli```
+` npm install -g karma-cli `
 
-##### Step 4)
+## Step 4)
+
 Navigate to the project's root directory
-##### Step 5)
+
+## Step 5)
+
 Install build tool gulp
 
-```npm install -g gulp```
+` npm install -g gulp `
 
-```npm install gulp```
-##### Step 6)
+` npm install gulp `
+
+## Step 6)
 Download project dependencies
 
-```npm install```
+` npm install `
 
-```bower install```
+` bower install `
 
-##### Step 7)
+## Step 7)
+
+Explicitly download angular-ui-tinymce (WIP - to be resolved in future)
+
+` npm install angular-ui-tinymce `
+
+## Step 8)
 Build the project and start the development server
 
-```gulp```
+` gulp `
 
-From now on you can rebuild and start the project by calling ```gulp``` in the project's root directory.
+From now on you can rebuild and start the project by calling ` gulp ` in the project's root directory.
 
-# `DEPRECATED`
+<br>
+
+<br>
+
+<br>
+
+<font color='red'><b>
+# DEPRECATED </b></font>
+
 
 # Leptir - the seed for professional AngularJS apps
 
