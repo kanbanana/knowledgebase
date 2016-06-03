@@ -1,0 +1,21 @@
+version: '2'
+services:
+  nodeserver:
+    build:
+      context: .
+    ports:
+    - "8888:3000"
+    links:
+    - mongo
+  mongo:
+    image: mongo
+    ports:
+    - "27017:27017"
+  nginx:
+    image: nginx
+    ports:
+    - "8881:80"
+  osserver:
+    image: ossserver
+    ports:
+    - "9090:9090"
