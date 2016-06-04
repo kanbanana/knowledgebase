@@ -1,7 +1,7 @@
 var async = require('async');
-var fileSystemConnector = require('../data_connection/fileSystemConnector');
-var databaseConnector = require('../data_connection/databaseConnector');
-var config = require('../config/config');
+var fileSystemConnector = require(__dirname + '/../data_connection/fileSystemConnector');
+var databaseConnector = require(__dirname + '/../data_connection/databaseConnector');
+var config = require(__dirname + '/../config/config');
 
 var articleService = module.exports = {};
 

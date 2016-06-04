@@ -4,14 +4,14 @@ var extend = require('extend');
 
 var params = {};
 if (fs.existsSync(path.join(__dirname, 'params.json'))) {
-    params = require('./params.json');
+    params = require(__dirname + '/params.json');
 }
 
 module.exports = extend(
     {
         port: 3000,
 
-        dbConnectionString: 'mongodb://localhost:27017/knowledgebase',
+        dbConnectionString: process.env.MONGODB || 'mongodb://' + (process.env.DATABASE_ADDR || 'localhost') + ':' + (process.env.DATABASE_PORT || '27017') + '/knowledgebase',
 
         fileLinkPrefix: "/server/",
         uploadDirPerm: 'uploads/articles',

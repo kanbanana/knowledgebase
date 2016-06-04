@@ -1,6 +1,6 @@
-require('../server');
-var model = require('../data_connection/databaseConnector');
-var artService = require('../services/articleService');
+require(__dirname + '/../server');
+var model = require(__dirname + '/data_connection/databaseConnector');
+var artService = require(__dirname + '/services/articleService');
 var process = require('process');
 var fs = require('fs-extra');
 

@@ -1,9 +1,10 @@
 var express = require('express');
-var router = express.Router();
 var path = require('path');
 var upload = require('multer')({dest: path.join( __projectDir, 'uploadsTemp/')});
-var articleService = require('../services/articleService');
-var config = require('../config/config')
+var articleService = require(__dirname + '/../services/articleService');
+var config = require(__dirname + '/../config/config')
+
+var router = express.Router();
 
 function middlewareRetrieveArticle(req, res, next) {
     articleService.findArticleById(req.params.articleId).then(function(article) {
