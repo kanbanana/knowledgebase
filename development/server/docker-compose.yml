@@ -4,10 +4,13 @@ services:
     build:
       context: .
     environment:
-    - DATABASE_ADDR=mongo
+      - DATABASE_ADDR=mongo
     links:
-    - mongo
-    - ossserver
+      - mongo
+      - ossserver
+    depends_on:
+      - mongo
+      - ossserver
   mongo:
     image: mongo
   nginx:
