@@ -1,0 +1,8 @@
+version: '2'
+services:
+  nodeserver:
+    ports:
+    - "8888:3000"
+  nginx:
+    ports:
+    - "8887:80"
