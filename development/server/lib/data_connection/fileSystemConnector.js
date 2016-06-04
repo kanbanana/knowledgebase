@@ -1,8 +1,7 @@
 var path = require('path');
 var fs = require('fs-extra');
-var config = require('../config/config');
 var async = require('async');
-
+var config = require(__dirname + '/../config/config');
 
 const whitelistWithDocumentMimeTypes = [
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

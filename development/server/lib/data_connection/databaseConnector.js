@@ -1,5 +1,5 @@
-var Article = require('./models').Article;
-var config = require('../config/config');
+var Article = require(__dirname + '/models').Article;
+var config = require(__dirname + '/../config/config');
 var path = require('path');
 
 var databaseConnector = module.exports = {};

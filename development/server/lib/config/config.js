@@ -4,7 +4,7 @@ var extend = require('extend');
 
 var params = {};
 if (fs.existsSync(path.join(__dirname, 'params.json'))) {
-    params = require('./params.json');
+    params = require(__dirname + '/params.json');
 }
 
 module.exports = extend(
