@@ -33,18 +33,19 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
 
-var server = http.createServer(app);
-server.on('error', onError);
-server.on('listening', onListening);
+//var server = http.createServer(app);
+//server.on('error', onError);
+//server.on('listening', onListening);
 
 module.exports.app = app;
-module.exports.server = server;
+module.exports.server = null;
 module.exports.listen = function () {
-    server.listen.apply(server, arguments);
-    console.log('Example app listening on port ' + app.get('port') + '!');
+    this.server = app.listen(app.get('port'), function(){
+        console.log('Example app listening on port ' + app.get('port') + '!');
+    });
 };
 module.exports.close = function (callback) {
-    server.close(callback);
+    this.server.close(callback);
 };
 
 /**
