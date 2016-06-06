@@ -57,7 +57,13 @@ articleService.saveDocuments = function (article, documents) {
 
 
 articleService.getArticleContent = function (articleId) {
-    return fileSystemConnector.readArticleContent(articleId);
+    return new Promise(function(resolve) {
+        fileSystemConnector.readArticleContent(articleId).then(function(content) {
+            resolve(content);
+        }, function(err) {
+            resolve('');
+        });
+    });
 };
 (function () {
     setInterval(function () {
