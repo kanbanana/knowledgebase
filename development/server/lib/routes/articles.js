@@ -70,8 +70,18 @@ function onArticleSaveHandler(req, res) {
     });
 }
 
+function onArticleGetHandler(req, res) {
+    articleService.getArticleContent(req.article._id).then(function(articleContent) {
+        var responseArticle = articleSchemaToResponseArticle(req.article);
+        responseArticle.text = articleContent;
+        res.send(responseArticle);
+    });
+}
+
 
 router.all('/:articleId*', middlewareRetrieveArticle);
+
+router.get('/:articleId', onArticleGetHandler);
 
 router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitte, onArticleSaveHandler);
 
