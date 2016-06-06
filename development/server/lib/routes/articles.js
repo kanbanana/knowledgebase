@@ -78,6 +78,19 @@ function onArticleGetHandler(req, res) {
     });
 }
 
+function onArticleSearchHandler(req, res) {
+    var searchResults = articleService.searchArticles(req.query.q, req.query.author).then(function (searchResults) {
+        //TODO implement right
+        //res.send(searchResults);
+    }, function (error) {
+        res.status(500).send(error);
+    });
+    //TODO remove following when aforementioned TODO implemented
+    console.log("q=" + req.query.q);
+    console.log("author=" + req.query.author);
+    res.send();
+}
+
 
 router.all('/:articleId*', middlewareRetrieveArticle);
 
@@ -88,6 +101,8 @@ router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, mi
 router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
 
 router.post('/', onArticleCreateHandler);
+
+router.get('/', onArticleSearchHandler(req,  res));
 
 function articleSchemaToResponseArticle(articleSchema) {
     var responseArticle = articleSchema.toJSON();

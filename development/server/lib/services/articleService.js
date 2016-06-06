@@ -79,3 +79,27 @@ articleService.getArticleContent = function (articleId) {
         });
     }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
 })();
+
+articleService.searchArticles = function (q, author) {
+    if(q) {
+        return new Promise(function (resolve, reject) {
+            searchResults = searchEngineConnector.searchArticles(q).then(function (searchResults) {
+                if (author) {
+                    //TODO: filter searchResults by author (where to get author field?)
+                    resolve(searchResults);
+                } else {
+                    resolve(searchResults);
+                }
+            });
+        }).then(function (searchResults) {
+            //TODO add metadata and convert to search results schema (specification needed)
+            resolve(searchResults);
+        });
+    } else if(author) {
+        //TODO: filter articles in database by author (how to get content intro as search snippet?)
+        return new Promise(function (resolve, reject) {
+            resolve('TODO');
+        });
+    }
+
+}
