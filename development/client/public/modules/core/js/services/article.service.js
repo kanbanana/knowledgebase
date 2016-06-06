@@ -1,14 +1,85 @@
 'use strict';
 
-angular.module('core').factory('ArticleService', ['$q', function ($q) {
+angular.module('core').factory('ArticleService', ['$q', '$http', '$rootScope', function ($q, $http, $rootScope) {
 
     return {
-        createArticle: function () {
-            setTimeout(function () {
-            }, 1000)
-            return Math.ceil(Math.random()*10000)
+        searchArticles: function (query) {
+            $http({
+                method: 'GET',
+                url: $rootScope.baseUrl + "/api/articles?q=" + query
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
         },
-        getArticleItems: function () {
+        getArticle: function (id) {
+            return $http({
+                method: 'GET',
+                url: $rootScope.baseUrl + "/api/articles/" + id
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                console.log(response)
+                return response
+            });
+        },
+        createArticle: function () {
+            return $http({
+                method: 'POST',
+                url: $rootScope.baseUrl + "/api/articles/"
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
+        },
+        uploadDocument: function (id, doc) {
+            $http({
+                method: 'POST',
+                url: $rootScope.baseUrl + "/api/articles/" + id + "/documents/",
+                transformRequest: angular.identity,
+                headers: {'Content-Type': false},
+                data: {}
+            }).then(function successCallback(response) {
+                console.log(response)
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
+        },
+        saveArticle: function (id, article) {
+            return $http({
+                method: 'PUT',
+                url: $rootScope.baseUrl + "/api/articles/" + id,
+                data: article
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
+        },
+        deleteArticle: function (id) {
+            return $http({
+                method: 'DELETE',
+                url: $rootScope.baseUrl + "/api/articles/" + id,
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
+        },
+        deleteDocument: function (id, filename) {
+            return $http({
+                method: 'DELETE',
+                url: $rootScope.baseUrl + "/api/articles/" + id + "/documents/" + filename
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                return response
+            });
+        },
+        getArticleItemsDep: function () {
             return [
                 {
                     "id": 0,
@@ -299,7 +370,7 @@ angular.module('core').factory('ArticleService', ['$q', function ($q) {
                 }
             ]
         },
-        getArticle: function (id) {
+        getArticleDep: function (id) {
             var articles = [
                 {
                     "id": 0,
@@ -602,11 +673,11 @@ angular.module('core').factory('ArticleService', ['$q', function ($q) {
                 "isTemp": true,
                 "author": {
                     name: "",
-                    email:""
+                    email: ""
                 },
                 "changedBy": {
                     name: "",
-                    email:""
+                    email: ""
                 },
                 "lastChanged": "16.02.2016",
                 "text": "",

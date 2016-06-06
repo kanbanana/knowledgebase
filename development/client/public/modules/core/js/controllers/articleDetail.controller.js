@@ -1,21 +1,9 @@
 'use strict';
 
 angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$http', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $http) {
-    $scope.article = angular.fromJson(ArticleService.getArticle($stateParams.articleId));
-
-    //Save a copy of the loaded version to reset to when user edits and cancels
-
-    $scope.articleServerVer = $scope.article;
-    if ($rootScope.article && ($rootScope.article.id == $stateParams.articleId)) {
-        $scope.article = $rootScope.article;
+    $scope.article = {
+        text: ''
     }
-
-    var dragTimer;
-
-
-    $scope.isSaving = false;
-    $scope.isCanceling = false;
-    $scope.isDragging = false;
 
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
@@ -92,7 +80,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                 title: "Insert file reference",
                 width: 450,
                 height: 80,
-                html: '<ul class="list-group"> <li ng-repeat="file in article.files" class="list-group-item"> <span class="badge">{{article}}</span>{{file.name}}</li></ul>',
+                html: '<ul class="list-group"> <li ng-repeat="file in article.documents" class="list-group-item"> <span class="badge">{{article}}</span>{{file.name}}</li></ul>',
                 buttons: [{
                     text: "Ok",
                     subtype: "primary",
@@ -132,119 +120,133 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | table link bdesk_photo reference_manager'
     };
 
-    $scope.isEditing = false;
+    ArticleService.getArticle($stateParams.articleId).then(function (response) {
+        $scope.article = response.data;
+        console.log($scope.article)
 
-    $scope.$watch("article.text", function () {
-        $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text)
-    }, true)
 
-    $scope.toggleEditing = function () {
-        if ($scope.isEditing === true) {
-            $scope.isEditing = false;
-        } else {
-            $scope.isEditing = true;
+        $scope.articleServerVer = $scope.article;
+
+        var dragTimer;
+
+        $scope.isSaving = false;
+        $scope.isCanceling = false;
+        $scope.isDragging = false;
+        $scope.isEditing = false;
+
+        $scope.$watch("article.text", function () {
+            $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text)
+        }, true)
+
+        $scope.toggleEditing = function () {
+            if ($scope.isEditing === true) {
+                $scope.isEditing = false;
+            } else {
+                $scope.isEditing = true;
+            }
         }
-    }
 
-    $(document).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    })
-        .on('dragover dragenter', function () {
-            $scope.$apply(function () {
-                $scope.isDragging = true;
-            })
+        $(document).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
         })
-        .on('dragleave dragend drop', function () {
-            window.clearTimeout(dragTimer);
-            dragTimer = window.setTimeout(function () {
+            .on('dragover dragenter', function () {
                 $scope.$apply(function () {
-                    $scope.isDragging = false;
+                    $scope.isDragging = true;
                 })
-            }, 1000);
-        })
-        .on('drop', function (e) {
-            var droppedFiles = e.originalEvent.dataTransfer.files;
-            $scope.uploadFile(droppedFiles)
+            })
+            .on('dragleave dragend drop', function () {
+                window.clearTimeout(dragTimer);
+                dragTimer = window.setTimeout(function () {
+                    $scope.$apply(function () {
+                        $scope.isDragging = false;
+                    })
+                }, 1000);
+            })
+            .on('drop', function (e) {
+                var droppedFiles = e.originalEvent.dataTransfer.files;
+                $scope.uploadFile(droppedFiles)
+            });
+
+        $scope.startEditing = function () {
+            $location.path('article/' + $scope.article.id).search('e', 'true');
+        };
+
+        $scope.uploadFile = function (files) {
+            var fd = new FormData();
+            fd.append("documents", files[0]);
+            //ArticleService.uploadDocument($stateParams.articleId, fd)
+
+            console.log($rootScope.baseUrl + "/api/articles/" + $stateParams.articleId + "/documents/")
+
+            var uploadUrl = $rootScope.baseUrl + "/api/articles/" + $stateParams.articleId + "/documents/";
+
+            //ArticleService.uploadDocument($stateParams.articleId, fd)
+
+            $http.post(uploadUrl, fd, {
+                headers: {
+                    'Content-Type': 'undefined',
+                },
+                transformRequest: angular.identity,
+            }).success(function (response) {
+                $scope.article.documents.concat(response)
+                $scope.$emit("makeToast", {type: "success", message: 'File successfully uploaded'});
+            }).error(function () {
+                $scope.$emit("makeToast", {type: "warning", message: 'Failed to upload file'});
+            })
+
+
+        };
+
+
+        $scope.saveArticle = function () {
+            $scope.isSaving = true;
+            if ($scope.article.isTemporary === true) {
+                $scope.article.lastChangedBy = $scope.article.author;
+            } else {
+                if ($scope.lastChangedBy.name != '' && $scope.lastChangedBy.email != '') {
+                    $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
+                    $scope.article.lastChangedBy.email = $scope.lastChangedBy.email;
+                }
+
+            }
+            ArticleService.saveArticle($stateParams.articleId, $scope.article).then(function (response) {
+                $scope.$emit("makeToast", {type: "success", message: 'Article has been save'});
+                $location.path('article/' + $scope.article.id).search('e', 'false');
+            })
+        };
+
+        $scope.cancelEditing = function () {
+            $scope.isCanceling = true;
+            $scope.article = $scope.articleServerVer;
+            if ($scope.article.isTemporary === false) {
+                $location.path('article/' + $scope.article.id).search('e', 'false');
+            } else {
+                $location.path('/').search();
+            }
+        };
+
+
+        $scope.deleteFile = function (index) {
+            ArticleService.deleteDocument($stateParams.articleId, index).then(function() {
+                $scope.article.documents.splice(index, 1);
+
+            })
+        }
+
+        $scope.$on('$locationChangeStart', function (event) {
+            if ($scope.isEditing === true && $scope.isSaving === false && $scope.isCanceling === false) {
+                event.preventDefault();
+                $scope.$emit("makeToast", {type: "warning", message: 'Save or cancel editing this article'});
+            }
         });
 
-    $scope.startEditing = function () {
-        $location.path('article/' + $scope.article.id).search('e', 'true');
-    };
 
-    $scope.uploadFile = function (files) {
-        var fd = new FormData();
-        fd.append("file", files[0]);
-        var uploadUrl = '/upload';
-
-
-        var file = {
-            type: files[0].name.split('.')[1],
-            name: files[0].name.split('.')[0],
-            url: "www.google.com"
-        }
-
-        $scope.$apply(function () {
-            $scope.article.files.push(file);
-        })
-
-
-        /*
-         $http.post(uploadUrl, fd, {
-         withCredentials: true,
-         headers: {'Content-Type': undefined},
-         transformRequest: angular.identity
-         }).success( function() {
-         $scope.$emit("makeToast", {type: "success", message: 'File successfully uploaded'});
-         }).error( function() {
-         $scope.$emit("makeToast", {type: "warning", message: 'Failed to upload file'});
-         })
-         */
-
-    };
-
-
-    $scope.saveArticle = function () {
-        $scope.isSaving = true;
-        if ($scope.article.isTemp === true) {
-            $scope.article.changedBy = $scope.article.author;
-        } else {
-            if($scope.changedBy != '' && $scope.changedByMail != '')
-            $scope.article.changedBy.name = $scope.changedBy;
-            $scope.article.changedBy.email = $scope.changedByMail;
-        }
-        $rootScope.article = $scope.article;
-        $scope.$emit("makeToast", {type: "success", message: 'Article has been save'});
-        $location.path('article/' + $scope.article.id).search('e', 'false');
-    };
-
-    $scope.cancelEditing = function () {
-        $scope.isCanceling = true;
-        $scope.article = $scope.articleServerVer;
-        if($scope.article.isTemp === false) {
-            $location.path('article/' + $scope.article.id).search('e', 'false');
-        } else {
-            $location.path('/').search();
-        }
-    };
-
-
-    $scope.deleteFile = function() {
-            $scope.article.files.splice(this.$index, 1);
-    }
-
-    $scope.$on('$locationChangeStart', function (event) {
-        if ($scope.isEditing === true && $scope.isSaving === false && $scope.isCanceling === false) {
-            event.preventDefault();
-            $scope.$emit("makeToast", {type: "warning", message: 'Save or cancel editing this article'});
+        if ($stateParams.e == 'true') {
+            $scope.toggleEditing();
         }
     });
 
+    //Save a copy of the loaded version to reset to when user edits and cancels
 
-    if ($stateParams.e == 'true') {
-        if ($scope.article.isTemp === true) {
-            $rootScope.article = $scope.article;
-        }
-        $scope.toggleEditing();
-    }
 }]);

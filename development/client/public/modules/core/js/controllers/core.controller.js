@@ -2,7 +2,7 @@
 
 angular.module('core')
     .controller("CoreCtrl", ['$scope', 'ScrollSmooth','ArticleService', function ($scope, ScrollSmooth, ArticleService) {
-        $scope.lastSeenArticles = ArticleService.getArticleItems();
+        $scope.lastSeenArticles = ArticleService.searchArticles();
         $scope.$on("makeToast", function (e, toast) {
             setTimeout(function() {$scope.$broadcast("makeToastRelay", toast)},100)
         })

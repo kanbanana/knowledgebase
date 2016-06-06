@@ -2,6 +2,7 @@
 
 ApplicationConfiguration.registerModule('core'); // jshint ignore:line
 
+require('./main.js'); // jshint ignore:line
 require('./js/config/core.route.js'); // jshint ignore:line
 require('./js/controllers/core.controller.js'); // jshint ignore:line
 require('./js/controllers/nav.controller.js'); // jshint ignore:line
