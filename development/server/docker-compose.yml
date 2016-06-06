@@ -19,5 +19,6 @@ services:
       - nodeserver
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/api.conf:ro
+      - ../client:/usr/share/nginx/html:ro
   ossserver:
     image: ossserver
