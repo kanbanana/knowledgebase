@@ -2,7 +2,13 @@
 
 angular.module('core').directive('articleListItemDirective', [function () {
   return {
+    scope: {
+      articleTmbs: "="
+    },
     restrict: 'E', // A: Attribute, E: Element
-    templateUrl: '../views/articleListItem.template.html'
+    templateUrl: 'modules/core/views/articleListItem.template.html',
+    controller: ['$scope', function($scope) {
+
+    }]
   };
 }]);

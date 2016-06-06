@@ -12,245 +12,287 @@ angular.module('core').factory('ArticleService', ['$q', function ($q) {
             return [
                 {
                     "id": 0,
-                    "title": "reprehenderit minim",
+                    "title": "excepteur eu",
+                    "isTemp": false,
                     "author": {
-                        "name": "Marks Small",
-                        "email": "heleneortega@comvey.com"
+                        "name": "English Diaz",
+                        "email": "morrisdaniels@kraggle.com"
                     },
                     "changedBy": {
-                        "name": "Dianna Lowery",
-                        "email": "bradyhahn@pheast.com"
+                        "name": "Sylvia Simon",
+                        "email": "eleanorrichmond@comtrak.com"
                     },
-                    "lastChanged": "02.04.2016",
-                    "text": "Voluptate cillum do commodo cillum labore id. Enim voluptate qui id deserunt et ex veniam consequat esse. Ad ipsum culpa pariatur aliqua velit labore non. Voluptate ullamco sint magna laboris nulla nulla commodo excepteur veniam labore officia tempor aliqua. Nisi sunt nisi excepteur dolore enim tempor ad est commodo qui fugiat cupidatat exercitation. Ad officia dolor est deserunt ullamco aliqua veniam enim dolore minim. Officia ex consequat culpa excepteur ad laboris fugiat sint labore et est ad aliquip esse.\r\nTempor et sint cillum dolore proident. Officia mollit fugiat pariatur tempor nostrud et dolor enim qui aute. Do fugiat adipisicing sunt sunt exercitation commodo. Duis labore occaecat cupidatat ut quis consectetur excepteur officia. Adipisicing pariatur aliquip officia nisi.\r\n",
+                    "lastChanged": "31.01.2016",
+                    "text": "Cupidatat sit enim magna sunt ipsum. Dolore aute anim pariatur qui deserunt commodo fugiat Lorem nostrud velit. Tempor exercitation officia reprehenderit deserunt exercitation proident. Commodo tempor nulla nostrud ex aliquip reprehenderit enim eu incididunt. In aute velit cupidatat eu cupidatat incididunt aute labore do officia.\r\nConsectetur Lorem ut fugiat et quis in tempor ea cupidatat commodo pariatur irure sunt. Consequat reprehenderit sunt reprehenderit veniam eiusmod irure magna commodo duis. Do labore do sit eu minim non tempor consequat ut ut in. Labore cupidatat anim consectetur deserunt.\r\n",
                     "files": [
                         {
-                            "type": "txt",
-                            "name": "ipsum deserunt",
+                            "type": "pdf",
+                            "name": "quis reprehenderit",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "velit culpa",
+                            "name": "esse commodo",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "occaecat proident",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "aliquip in",
+                            "type": "docx",
+                            "name": "reprehenderit magna",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "cupidatat ea",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "laboris proident",
+                            "name": "exercitation voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "laborum commodo",
+                            "name": "ullamco nostrud",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "officia proident",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 1,
-                    "title": "mollit nulla",
+                    "title": "amet non",
+                    "isTemp": false,
                     "author": {
-                        "name": "Willa Daniel",
-                        "email": "blaircunningham@elentrix.com"
+                        "name": "George Stone",
+                        "email": "deenacarey@andryx.com"
                     },
                     "changedBy": {
-                        "name": "Rosalinda Newton",
-                        "email": "evangelinalevine@enersol.com"
+                        "name": "Sheila Solis",
+                        "email": "ceceliaochoa@prosure.com"
                     },
-                    "lastChanged": "27.05.2016",
-                    "text": "Sunt laboris nisi Lorem duis cillum amet cillum voluptate in excepteur sint. Voluptate proident laborum cupidatat ipsum veniam. Ut duis anim nostrud est exercitation.\r\nSint amet commodo nostrud in duis tempor velit excepteur labore est sint. Enim ea id tempor aute reprehenderit consectetur id consequat eu commodo. Proident aute ex nisi voluptate.\r\n",
+                    "lastChanged": "13.02.2016",
+                    "text": "Tempor elit voluptate reprehenderit adipisicing labore duis cillum consectetur non laboris aliqua officia. Non commodo deserunt aliquip eu amet eiusmod dolor nisi aliqua. Veniam qui elit non ad adipisicing ad reprehenderit enim magna. Qui ex magna cupidatat in culpa ullamco consectetur aliquip magna laborum.\r\nAd non dolore proident enim. Dolore incididunt non veniam exercitation irure nostrud laborum excepteur tempor nisi non ad deserunt officia. In pariatur voluptate incididunt fugiat commodo Lorem nisi est voluptate reprehenderit eiusmod fugiat culpa enim. Aliquip laboris irure elit aliqua consectetur nostrud labore ipsum ea eiusmod nisi consectetur.\r\n",
                     "files": [
                         {
-                            "type": "txt",
-                            "name": "nisi ipsum",
+                            "type": "pdf",
+                            "name": "ea voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "dolor nulla",
+                            "name": "fugiat eiusmod",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "do occaecat",
+                            "name": "eiusmod in",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "id sit",
+                            "name": "id aliqua",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "id dolore",
+                            "name": "minim occaecat",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "et dolore",
+                            "type": "pdf",
+                            "name": "id tempor",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "ex nisi",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 2,
-                    "title": "commodo dolor",
+                    "title": "non reprehenderit",
+                    "isTemp": false,
                     "author": {
-                        "name": "Rojas Lancaster",
-                        "email": "dorothearyan@intergeek.com"
+                        "name": "Whitney Burt",
+                        "email": "janicewilkerson@eschoir.com"
                     },
                     "changedBy": {
-                        "name": "Florence Weeks",
-                        "email": "bradfordgriffin@orbixtar.com"
+                        "name": "Tabitha Wiley",
+                        "email": "bruceallen@hopeli.com"
                     },
-                    "lastChanged": "21.03.2016",
-                    "text": "Veniam dolor culpa eu fugiat ex sint dolor veniam. Mollit exercitation culpa deserunt velit dolor. Non laboris est officia amet qui ex voluptate pariatur sint adipisicing voluptate. Et minim et eu pariatur ut veniam elit reprehenderit amet voluptate.\r\nIrure ullamco exercitation ea fugiat dolore ut mollit. Culpa eu labore voluptate eu aute incididunt amet duis. Labore officia consectetur esse incididunt est eiusmod exercitation enim cillum ex aute. Ea nulla aliquip ea aute adipisicing nostrud exercitation sint adipisicing non fugiat sunt non eu. Qui dolore minim magna tempor aute eu duis anim. Ipsum deserunt eu consequat consequat irure. Veniam deserunt voluptate nulla qui esse non amet aliquip.\r\n",
+                    "lastChanged": "13.03.2016",
+                    "text": "Proident nisi pariatur sit incididunt Lorem voluptate dolore non excepteur. Lorem consequat id incididunt cupidatat minim. Pariatur dolore et reprehenderit exercitation sint ex quis aliqua amet tempor. Culpa laborum dolore enim mollit esse non nostrud sunt.\r\nSint ullamco exercitation adipisicing eiusmod ad aliqua sint irure amet eiusmod id proident nulla nostrud. Qui cillum irure qui consequat culpa ea non amet et minim cillum sit magna velit. Aliquip laboris esse enim voluptate aliquip quis dolore adipisicing nisi.\r\n",
                     "files": [
                         {
                             "type": "txt",
-                            "name": "eiusmod id",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "pdf",
-                            "name": "ipsum nisi",
+                            "name": "exercitation qui",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "esse voluptate",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "pdf",
-                            "name": "aliqua occaecat",
+                            "name": "dolore quis",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "duis eu",
+                            "name": "sint tempor",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "ea dolor",
+                            "type": "docx",
+                            "name": "sit anim",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "velit labore",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 3,
-                    "title": "nostrud duis",
+                    "title": "esse sit",
+                    "isTemp": false,
                     "author": {
-                        "name": "Richmond Mitchell",
-                        "email": "sandrazamora@steeltab.com"
+                        "name": "Velazquez Chandler",
+                        "email": "andrewsharrison@combot.com"
                     },
                     "changedBy": {
-                        "name": "Kirkland Benton",
-                        "email": "donnadaniels@slambda.com"
+                        "name": "Clarice Romero",
+                        "email": "griffithnorris@comvene.com"
                     },
-                    "lastChanged": "06.05.2016",
-                    "text": "Esse proident dolor quis aute. In reprehenderit enim nisi adipisicing non deserunt enim. Qui aliqua ipsum officia mollit exercitation ad ea esse commodo et fugiat consequat. Consequat magna eu magna aliqua id et proident in nulla velit qui.\r\nNisi nostrud fugiat labore in esse eu tempor pariatur commodo. Cupidatat veniam commodo nisi veniam et aliqua tempor ea veniam fugiat ut. Deserunt mollit aliquip proident ad id cupidatat nulla veniam officia irure aliqua aliquip sunt. Cillum aliqua exercitation consequat magna excepteur reprehenderit.\r\n",
+                    "lastChanged": "09.02.2016",
+                    "text": "Commodo officia incididunt deserunt ex irure deserunt dolor amet ullamco est pariatur ex pariatur. Nulla labore nulla laboris adipisicing. Reprehenderit aliquip ullamco occaecat elit est minim elit quis tempor tempor nulla magna. Ut aute nulla pariatur dolore ipsum aliqua sit mollit enim amet tempor.\r\nFugiat ullamco proident elit ullamco consectetur nostrud aliquip officia sit occaecat duis anim. Nostrud enim ea esse pariatur nulla in reprehenderit do elit aliqua sint non aliqua. Esse minim ea cupidatat elit amet ad dolor quis occaecat voluptate incididunt. Cupidatat veniam ex adipisicing non laboris elit esse dolore. Dolore pariatur veniam eu pariatur sit adipisicing duis anim eu mollit excepteur nostrud in do. Aliqua ut cupidatat exercitation consectetur nostrud eu. In in quis dolore officia pariatur commodo ut ullamco eu anim sunt.\r\n",
                     "files": [
                         {
                             "type": "txt",
-                            "name": "fugiat velit",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "irure veniam",
+                            "name": "dolor consectetur",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "do ullamco",
+                            "name": "reprehenderit ut",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "Lorem dolor",
+                            "name": "veniam consequat",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "eiusmod excepteur",
+                            "name": "consequat veniam",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "est occaecat",
+                            "type": "docx",
+                            "name": "irure dolor",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "eu tempor",
+                            "type": "docx",
+                            "name": "id sint",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "eu cupidatat",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 4,
-                    "title": "exercitation culpa",
+                    "title": "tempor minim",
+                    "isTemp": false,
                     "author": {
-                        "name": "Stein Ball",
-                        "email": "kaitlinsolomon@minga.com"
+                        "name": "Hernandez Patrick",
+                        "email": "lolajohnston@frenex.com"
                     },
                     "changedBy": {
-                        "name": "Ellis Harper",
-                        "email": "mcgowancompton@teraprene.com"
+                        "name": "Reilly Trevino",
+                        "email": "branchcallahan@anarco.com"
                     },
-                    "lastChanged": "27.03.2016",
-                    "text": "Id culpa culpa voluptate enim ex aliqua qui occaecat. Ex ad anim adipisicing officia. Quis laborum dolore exercitation elit sint ipsum deserunt anim sunt dolor enim deserunt elit. Elit est velit ullamco id duis. Ea labore amet sint qui duis labore commodo fugiat non tempor. Veniam minim sunt aliquip veniam ex. Magna minim sint ut ad veniam sunt deserunt enim cupidatat ad ut tempor commodo.\r\nUt anim ullamco ex elit labore magna exercitation nostrud laboris ipsum Lorem cillum fugiat reprehenderit. Non eiusmod et consequat amet excepteur excepteur sunt aliqua sint est ut est. Sit mollit in nisi non. Proident nisi reprehenderit tempor exercitation ullamco ex in ullamco sint proident dolor anim. Cupidatat deserunt aliqua anim cillum velit fugiat et magna aliqua labore veniam incididunt dolore.\r\n",
+                    "lastChanged": "02.03.2016",
+                    "text": "Cillum proident elit voluptate labore. Mollit minim mollit consequat et incididunt minim velit. Non dolor Lorem tempor laboris excepteur ullamco consequat occaecat non.\r\nDo non labore consequat tempor deserunt voluptate adipisicing laboris id. Veniam excepteur officia sunt velit sint. Amet eu labore commodo voluptate ad est officia proident sint quis cillum amet eu tempor. Culpa pariatur dolore cillum consectetur amet ullamco duis nostrud est aliqua. Laborum fugiat in elit laboris reprehenderit aliqua magna sit.\r\n",
                     "files": [
                         {
                             "type": "pdf",
-                            "name": "reprehenderit sunt",
+                            "name": "nulla consectetur",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "duis tempor",
+                            "name": "reprehenderit cillum",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "id aute",
+                            "name": "nisi voluptate",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "officia minim",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "commodo aliquip",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "anim ea",
+                            "name": "elit est",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "nulla cillum",
+                            "url": "www.google.com"
+                        }
+                    ]
+                },
+                {
+                    "id": 5,
+                    "title": "qui ea",
+                    "isTemp": false,
+                    "author": {
+                        "name": "Lloyd Richardson",
+                        "email": "lynettealbert@ginkogene.com"
+                    },
+                    "changedBy": {
+                        "name": "Maryellen Mathis",
+                        "email": "doreenhardy@boilcat.com"
+                    },
+                    "lastChanged": "25.03.2016",
+                    "text": "Mollit nulla labore laborum ad cupidatat Lorem. Anim Lorem anim deserunt dolor est voluptate in elit elit dolor mollit. Do excepteur in excepteur voluptate pariatur sit minim aliquip commodo esse eiusmod culpa.\r\nCommodo anim id sint laboris laboris. Exercitation deserunt officia labore irure ipsum reprehenderit. Enim dolor mollit sunt esse fugiat esse ex quis cillum qui. Amet esse aliquip elit veniam enim cillum quis velit nisi sit velit voluptate anim. Ad exercitation est anim duis in commodo cillum aliquip mollit id. Laboris ad enim elit dolor labore cillum.\r\n",
+                    "files": [
+                        {
+                            "type": "pdf",
+                            "name": "aliquip proident",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "do voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "ipsum duis",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "docx",
-                            "name": "proident ut",
+                            "name": "velit tempor",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "fugiat laboris",
+                            "name": "id nisi",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "nulla laborum",
                             "url": "www.google.com"
                         }
                     ]
@@ -261,245 +303,287 @@ angular.module('core').factory('ArticleService', ['$q', function ($q) {
             var articles = [
                 {
                     "id": 0,
-                    "title": "reprehenderit minim",
+                    "title": "excepteur eu",
+                    "isTemp": false,
                     "author": {
-                        "name": "Marks Small",
-                        "email": "heleneortega@comvey.com"
+                        "name": "English Diaz",
+                        "email": "morrisdaniels@kraggle.com"
                     },
                     "changedBy": {
-                        "name": "Dianna Lowery",
-                        "email": "bradyhahn@pheast.com"
+                        "name": "Sylvia Simon",
+                        "email": "eleanorrichmond@comtrak.com"
                     },
-                    "lastChanged": "02.04.2016",
-                    "text": "Voluptate cillum do commodo cillum labore id. Enim voluptate qui id deserunt et ex veniam consequat esse. Ad ipsum culpa pariatur aliqua velit labore non. Voluptate ullamco sint magna laboris nulla nulla commodo excepteur veniam labore officia tempor aliqua. Nisi sunt nisi excepteur dolore enim tempor ad est commodo qui fugiat cupidatat exercitation. Ad officia dolor est deserunt ullamco aliqua veniam enim dolore minim. Officia ex consequat culpa excepteur ad laboris fugiat sint labore et est ad aliquip esse.\r\nTempor et sint cillum dolore proident. Officia mollit fugiat pariatur tempor nostrud et dolor enim qui aute. Do fugiat adipisicing sunt sunt exercitation commodo. Duis labore occaecat cupidatat ut quis consectetur excepteur officia. Adipisicing pariatur aliquip officia nisi.\r\n",
+                    "lastChanged": "31.01.2016",
+                    "text": "Cupidatat sit enim magna sunt ipsum. Dolore aute anim pariatur qui deserunt commodo fugiat Lorem nostrud velit. Tempor exercitation officia reprehenderit deserunt exercitation proident. Commodo tempor nulla nostrud ex aliquip reprehenderit enim eu incididunt. In aute velit cupidatat eu cupidatat incididunt aute labore do officia.\r\nConsectetur Lorem ut fugiat et quis in tempor ea cupidatat commodo pariatur irure sunt. Consequat reprehenderit sunt reprehenderit veniam eiusmod irure magna commodo duis. Do labore do sit eu minim non tempor consequat ut ut in. Labore cupidatat anim consectetur deserunt.\r\n",
                     "files": [
                         {
-                            "type": "txt",
-                            "name": "ipsum deserunt",
+                            "type": "pdf",
+                            "name": "quis reprehenderit",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "velit culpa",
+                            "name": "esse commodo",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "occaecat proident",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "aliquip in",
+                            "type": "docx",
+                            "name": "reprehenderit magna",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "cupidatat ea",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "laboris proident",
+                            "name": "exercitation voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "laborum commodo",
+                            "name": "ullamco nostrud",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "officia proident",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 1,
-                    "title": "mollit nulla",
+                    "title": "amet non",
+                    "isTemp": false,
                     "author": {
-                        "name": "Willa Daniel",
-                        "email": "blaircunningham@elentrix.com"
+                        "name": "George Stone",
+                        "email": "deenacarey@andryx.com"
                     },
                     "changedBy": {
-                        "name": "Rosalinda Newton",
-                        "email": "evangelinalevine@enersol.com"
+                        "name": "Sheila Solis",
+                        "email": "ceceliaochoa@prosure.com"
                     },
-                    "lastChanged": "27.05.2016",
-                    "text": "Sunt laboris nisi Lorem duis cillum amet cillum voluptate in excepteur sint. Voluptate proident laborum cupidatat ipsum veniam. Ut duis anim nostrud est exercitation.\r\nSint amet commodo nostrud in duis tempor velit excepteur labore est sint. Enim ea id tempor aute reprehenderit consectetur id consequat eu commodo. Proident aute ex nisi voluptate.\r\n",
+                    "lastChanged": "13.02.2016",
+                    "text": "Tempor elit voluptate reprehenderit adipisicing labore duis cillum consectetur non laboris aliqua officia. Non commodo deserunt aliquip eu amet eiusmod dolor nisi aliqua. Veniam qui elit non ad adipisicing ad reprehenderit enim magna. Qui ex magna cupidatat in culpa ullamco consectetur aliquip magna laborum.\r\nAd non dolore proident enim. Dolore incididunt non veniam exercitation irure nostrud laborum excepteur tempor nisi non ad deserunt officia. In pariatur voluptate incididunt fugiat commodo Lorem nisi est voluptate reprehenderit eiusmod fugiat culpa enim. Aliquip laboris irure elit aliqua consectetur nostrud labore ipsum ea eiusmod nisi consectetur.\r\n",
                     "files": [
                         {
-                            "type": "txt",
-                            "name": "nisi ipsum",
+                            "type": "pdf",
+                            "name": "ea voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "dolor nulla",
+                            "name": "fugiat eiusmod",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "do occaecat",
+                            "name": "eiusmod in",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "id sit",
+                            "name": "id aliqua",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "id dolore",
+                            "name": "minim occaecat",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "et dolore",
+                            "type": "pdf",
+                            "name": "id tempor",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "ex nisi",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 2,
-                    "title": "commodo dolor",
+                    "title": "non reprehenderit",
+                    "isTemp": false,
                     "author": {
-                        "name": "Rojas Lancaster",
-                        "email": "dorothearyan@intergeek.com"
+                        "name": "Whitney Burt",
+                        "email": "janicewilkerson@eschoir.com"
                     },
                     "changedBy": {
-                        "name": "Florence Weeks",
-                        "email": "bradfordgriffin@orbixtar.com"
+                        "name": "Tabitha Wiley",
+                        "email": "bruceallen@hopeli.com"
                     },
-                    "lastChanged": "21.03.2016",
-                    "text": "Veniam dolor culpa eu fugiat ex sint dolor veniam. Mollit exercitation culpa deserunt velit dolor. Non laboris est officia amet qui ex voluptate pariatur sint adipisicing voluptate. Et minim et eu pariatur ut veniam elit reprehenderit amet voluptate.\r\nIrure ullamco exercitation ea fugiat dolore ut mollit. Culpa eu labore voluptate eu aute incididunt amet duis. Labore officia consectetur esse incididunt est eiusmod exercitation enim cillum ex aute. Ea nulla aliquip ea aute adipisicing nostrud exercitation sint adipisicing non fugiat sunt non eu. Qui dolore minim magna tempor aute eu duis anim. Ipsum deserunt eu consequat consequat irure. Veniam deserunt voluptate nulla qui esse non amet aliquip.\r\n",
+                    "lastChanged": "13.03.2016",
+                    "text": "Proident nisi pariatur sit incididunt Lorem voluptate dolore non excepteur. Lorem consequat id incididunt cupidatat minim. Pariatur dolore et reprehenderit exercitation sint ex quis aliqua amet tempor. Culpa laborum dolore enim mollit esse non nostrud sunt.\r\nSint ullamco exercitation adipisicing eiusmod ad aliqua sint irure amet eiusmod id proident nulla nostrud. Qui cillum irure qui consequat culpa ea non amet et minim cillum sit magna velit. Aliquip laboris esse enim voluptate aliquip quis dolore adipisicing nisi.\r\n",
                     "files": [
                         {
                             "type": "txt",
-                            "name": "eiusmod id",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "pdf",
-                            "name": "ipsum nisi",
+                            "name": "exercitation qui",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "esse voluptate",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "pdf",
-                            "name": "aliqua occaecat",
+                            "name": "dolore quis",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "duis eu",
+                            "name": "sint tempor",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "ea dolor",
+                            "type": "docx",
+                            "name": "sit anim",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "velit labore",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 3,
-                    "title": "nostrud duis",
+                    "title": "esse sit",
+                    "isTemp": false,
                     "author": {
-                        "name": "Richmond Mitchell",
-                        "email": "sandrazamora@steeltab.com"
+                        "name": "Velazquez Chandler",
+                        "email": "andrewsharrison@combot.com"
                     },
                     "changedBy": {
-                        "name": "Kirkland Benton",
-                        "email": "donnadaniels@slambda.com"
+                        "name": "Clarice Romero",
+                        "email": "griffithnorris@comvene.com"
                     },
-                    "lastChanged": "06.05.2016",
-                    "text": "Esse proident dolor quis aute. In reprehenderit enim nisi adipisicing non deserunt enim. Qui aliqua ipsum officia mollit exercitation ad ea esse commodo et fugiat consequat. Consequat magna eu magna aliqua id et proident in nulla velit qui.\r\nNisi nostrud fugiat labore in esse eu tempor pariatur commodo. Cupidatat veniam commodo nisi veniam et aliqua tempor ea veniam fugiat ut. Deserunt mollit aliquip proident ad id cupidatat nulla veniam officia irure aliqua aliquip sunt. Cillum aliqua exercitation consequat magna excepteur reprehenderit.\r\n",
+                    "lastChanged": "09.02.2016",
+                    "text": "Commodo officia incididunt deserunt ex irure deserunt dolor amet ullamco est pariatur ex pariatur. Nulla labore nulla laboris adipisicing. Reprehenderit aliquip ullamco occaecat elit est minim elit quis tempor tempor nulla magna. Ut aute nulla pariatur dolore ipsum aliqua sit mollit enim amet tempor.\r\nFugiat ullamco proident elit ullamco consectetur nostrud aliquip officia sit occaecat duis anim. Nostrud enim ea esse pariatur nulla in reprehenderit do elit aliqua sint non aliqua. Esse minim ea cupidatat elit amet ad dolor quis occaecat voluptate incididunt. Cupidatat veniam ex adipisicing non laboris elit esse dolore. Dolore pariatur veniam eu pariatur sit adipisicing duis anim eu mollit excepteur nostrud in do. Aliqua ut cupidatat exercitation consectetur nostrud eu. In in quis dolore officia pariatur commodo ut ullamco eu anim sunt.\r\n",
                     "files": [
                         {
                             "type": "txt",
-                            "name": "fugiat velit",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "txt",
-                            "name": "irure veniam",
+                            "name": "dolor consectetur",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "do ullamco",
+                            "name": "reprehenderit ut",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "Lorem dolor",
+                            "name": "veniam consequat",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "eiusmod excepteur",
+                            "name": "consequat veniam",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "est occaecat",
+                            "type": "docx",
+                            "name": "irure dolor",
                             "url": "www.google.com"
                         },
                         {
-                            "type": "txt",
-                            "name": "eu tempor",
+                            "type": "docx",
+                            "name": "id sint",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "pdf",
+                            "name": "eu cupidatat",
                             "url": "www.google.com"
                         }
                     ]
                 },
                 {
                     "id": 4,
-                    "title": "exercitation culpa",
+                    "title": "tempor minim",
+                    "isTemp": false,
                     "author": {
-                        "name": "Stein Ball",
-                        "email": "kaitlinsolomon@minga.com"
+                        "name": "Hernandez Patrick",
+                        "email": "lolajohnston@frenex.com"
                     },
                     "changedBy": {
-                        "name": "Ellis Harper",
-                        "email": "mcgowancompton@teraprene.com"
+                        "name": "Reilly Trevino",
+                        "email": "branchcallahan@anarco.com"
                     },
-                    "lastChanged": "27.03.2016",
-                    "text": "Id culpa culpa voluptate enim ex aliqua qui occaecat. Ex ad anim adipisicing officia. Quis laborum dolore exercitation elit sint ipsum deserunt anim sunt dolor enim deserunt elit. Elit est velit ullamco id duis. Ea labore amet sint qui duis labore commodo fugiat non tempor. Veniam minim sunt aliquip veniam ex. Magna minim sint ut ad veniam sunt deserunt enim cupidatat ad ut tempor commodo.\r\nUt anim ullamco ex elit labore magna exercitation nostrud laboris ipsum Lorem cillum fugiat reprehenderit. Non eiusmod et consequat amet excepteur excepteur sunt aliqua sint est ut est. Sit mollit in nisi non. Proident nisi reprehenderit tempor exercitation ullamco ex in ullamco sint proident dolor anim. Cupidatat deserunt aliqua anim cillum velit fugiat et magna aliqua labore veniam incididunt dolore.\r\n",
+                    "lastChanged": "02.03.2016",
+                    "text": "Cillum proident elit voluptate labore. Mollit minim mollit consequat et incididunt minim velit. Non dolor Lorem tempor laboris excepteur ullamco consequat occaecat non.\r\nDo non labore consequat tempor deserunt voluptate adipisicing laboris id. Veniam excepteur officia sunt velit sint. Amet eu labore commodo voluptate ad est officia proident sint quis cillum amet eu tempor. Culpa pariatur dolore cillum consectetur amet ullamco duis nostrud est aliqua. Laborum fugiat in elit laboris reprehenderit aliqua magna sit.\r\n",
                     "files": [
                         {
                             "type": "pdf",
-                            "name": "reprehenderit sunt",
+                            "name": "nulla consectetur",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "duis tempor",
+                            "name": "reprehenderit cillum",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "id aute",
+                            "name": "nisi voluptate",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "officia minim",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "commodo aliquip",
                             "url": "www.google.com"
                         },
                         {
                             "type": "docx",
-                            "name": "anim ea",
+                            "name": "elit est",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "txt",
+                            "name": "nulla cillum",
+                            "url": "www.google.com"
+                        }
+                    ]
+                },
+                {
+                    "id": 5,
+                    "title": "qui ea",
+                    "isTemp": false,
+                    "author": {
+                        "name": "Lloyd Richardson",
+                        "email": "lynettealbert@ginkogene.com"
+                    },
+                    "changedBy": {
+                        "name": "Maryellen Mathis",
+                        "email": "doreenhardy@boilcat.com"
+                    },
+                    "lastChanged": "25.03.2016",
+                    "text": "Mollit nulla labore laborum ad cupidatat Lorem. Anim Lorem anim deserunt dolor est voluptate in elit elit dolor mollit. Do excepteur in excepteur voluptate pariatur sit minim aliquip commodo esse eiusmod culpa.\r\nCommodo anim id sint laboris laboris. Exercitation deserunt officia labore irure ipsum reprehenderit. Enim dolor mollit sunt esse fugiat esse ex quis cillum qui. Amet esse aliquip elit veniam enim cillum quis velit nisi sit velit voluptate anim. Ad exercitation est anim duis in commodo cillum aliquip mollit id. Laboris ad enim elit dolor labore cillum.\r\n",
+                    "files": [
+                        {
+                            "type": "pdf",
+                            "name": "aliquip proident",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "do voluptate",
                             "url": "www.google.com"
                         },
                         {
                             "type": "pdf",
-                            "name": "ipsum duis",
-                            "url": "www.google.com"
-                        },
-                        {
-                            "type": "docx",
-                            "name": "proident ut",
+                            "name": "velit tempor",
                             "url": "www.google.com"
                         },
                         {
                             "type": "txt",
-                            "name": "fugiat laboris",
+                            "name": "id nisi",
+                            "url": "www.google.com"
+                        },
+                        {
+                            "type": "docx",
+                            "name": "nulla laborum",
                             "url": "www.google.com"
                         }
                     ]
@@ -515,8 +599,15 @@ angular.module('core').factory('ArticleService', ['$q', function ($q) {
             return {
                 "id": id,
                 "title": "",
-                "author": "Unknown",
-                "changedBy": "",
+                "isTemp": true,
+                "author": {
+                    name: "",
+                    email:""
+                },
+                "changedBy": {
+                    name: "",
+                    email:""
+                },
                 "lastChanged": "16.02.2016",
                 "text": "",
                 "files": []

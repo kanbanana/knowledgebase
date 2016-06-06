@@ -1,20 +1,33 @@
 'use strict';
 
-angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService','$sce','$location', function($scope, $stateParams, ArticleService, $sce, $location){
+angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$http', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $http) {
     $scope.article = angular.fromJson(ArticleService.getArticle($stateParams.articleId));
-    $scope.isSaving = false;
 
-    tinymce.PluginManager.add("bdesk_photo", function(editor, f) {
-        editor.addCommand("bdesk_photo", function() {
+    //Save a copy of the loaded version to reset to when user edits and cancels
+
+    $scope.articleServerVer = $scope.article;
+    if ($rootScope.article && ($rootScope.article.id == $stateParams.articleId)) {
+        $scope.article = $rootScope.article;
+    }
+
+    var dragTimer;
+
+
+    $scope.isSaving = false;
+    $scope.isCanceling = false;
+    $scope.isDragging = false;
+
+    tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
+        editor.addCommand("bdesk_photo", function () {
             editor.windowManager.open({
                 title: "Insert embedded image",
                 width: 450,
                 height: 80,
-                html: '<input type="file" class="input" name="single-image" style="font-size:14px;padding:30px;" accept="image/png, image/gif, image/jpeg, image/jpg"/>',
+                html: '<input type="file" class="input" name="single-image" style="font-size:14px;padding: 40px;" accept="image/png, image/gif, image/jpeg, image/jpg"/>',
                 buttons: [{
                     text: "Ok",
                     subtype: "primary",
-                    onclick: function() {
+                    onclick: function () {
                         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
                             alert("This feature needs a modern browser.");
                             (this).parent().parent().close();
@@ -30,11 +43,10 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                         }
 
 
-
                         var thisOne = this;
 
                         var classFilereader = new FileReader();
-                        classFilereader.onload = function(base64) {
+                        classFilereader.onload = function (base64) {
                             var imgData = base64.target.result;
                             var img = new Image();
                             img.src = imgData;
@@ -43,7 +55,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                             thisOne.parent().parent().close();
                         };
 
-                        classFilereader.onerror = function(err) {
+                        classFilereader.onerror = function (err) {
                             alert("Error reading file - " + err.getMessage());
                         };
 
@@ -51,7 +63,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                     }
                 }, {
                     text: "Cancel",
-                    onclick: function() {
+                    onclick: function () {
                         (this).parent().parent().close();
                     }
                 }]
@@ -74,8 +86,8 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         });
     });
 
-    tinymce.PluginManager.add("reference_manager", function(editor, f) {
-        editor.addCommand("reference_manager", function() {
+    tinymce.PluginManager.add("reference_manager", function (editor, f) {
+        editor.addCommand("reference_manager", function () {
             editor.windowManager.open({
                 title: "Insert file reference",
                 width: 450,
@@ -84,12 +96,12 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                 buttons: [{
                     text: "Ok",
                     subtype: "primary",
-                    onclick: function() {
+                    onclick: function () {
 
                     }
                 }, {
                     text: "Cancel",
-                    onclick: function() {
+                    onclick: function () {
                         (this).parent().parent().close();
                     }
                 }]
@@ -115,42 +127,124 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             'emoticons template paste textcolor colorpicker textpattern imagetools',
             'bdesk_photo', 'reference_manager'
         ],
+        table_default_styles: {width: '80%'},
         menubar: false,
-        toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link bdesk_photo reference_manager'
+        toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | table link bdesk_photo reference_manager'
     };
 
     $scope.isEditing = false;
 
-    $scope.$watch("article.text", function() {
+    $scope.$watch("article.text", function () {
         $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text)
-    },true)
+    }, true)
 
-
-
-    $scope.toggleEditing = function() {
-        if($scope.isEditing === true) {
+    $scope.toggleEditing = function () {
+        if ($scope.isEditing === true) {
             $scope.isEditing = false;
         } else {
             $scope.isEditing = true;
         }
     }
 
-    $scope.startEditing = function() {
-        $location.path('article/'+ $scope.article.id).search('e', 'true');
-    }
+    $(document).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+        .on('dragover dragenter', function () {
+            $scope.$apply(function () {
+                $scope.isDragging = true;
+            })
+        })
+        .on('dragleave dragend drop', function () {
+            window.clearTimeout(dragTimer);
+            dragTimer = window.setTimeout(function () {
+                $scope.$apply(function () {
+                    $scope.isDragging = false;
+                })
+            }, 1000);
+        })
+        .on('drop', function (e) {
+            var droppedFiles = e.originalEvent.dataTransfer.files;
+            $scope.uploadFile(droppedFiles)
+        });
 
-    $scope.saveArticle = function() {
+    $scope.startEditing = function () {
+        $location.path('article/' + $scope.article.id).search('e', 'true');
+    };
+
+    $scope.uploadFile = function (files) {
+        var fd = new FormData();
+        fd.append("file", files[0]);
+        var uploadUrl = '/upload';
+
+
+        var file = {
+            type: files[0].name.split('.')[1],
+            name: files[0].name.split('.')[0],
+            url: "www.google.com"
+        }
+
+        $scope.$apply(function () {
+            $scope.article.files.push(file);
+        })
+
+
+        /*
+         $http.post(uploadUrl, fd, {
+         withCredentials: true,
+         headers: {'Content-Type': undefined},
+         transformRequest: angular.identity
+         }).success( function() {
+         $scope.$emit("makeToast", {type: "success", message: 'File successfully uploaded'});
+         }).error( function() {
+         $scope.$emit("makeToast", {type: "warning", message: 'Failed to upload file'});
+         })
+         */
+
+    };
+
+
+    $scope.saveArticle = function () {
         $scope.isSaving = true;
-        $location.path('article/'+ $scope.article.id).search('e', 'false');
+        if ($scope.article.isTemp === true) {
+            $scope.article.changedBy = $scope.article.author;
+        } else {
+            if($scope.changedBy != '' && $scope.changedByMail != '')
+            $scope.article.changedBy.name = $scope.changedBy;
+            $scope.article.changedBy.email = $scope.changedByMail;
+        }
+        $rootScope.article = $scope.article;
+        $scope.$emit("makeToast", {type: "success", message: 'Article has been save'});
+        $location.path('article/' + $scope.article.id).search('e', 'false');
+    };
+
+    $scope.cancelEditing = function () {
+        $scope.isCanceling = true;
+        $scope.article = $scope.articleServerVer;
+        if($scope.article.isTemp === false) {
+            $location.path('article/' + $scope.article.id).search('e', 'false');
+        } else {
+            $location.path('/').search();
+        }
+    };
+
+
+    $scope.deleteFile = function() {
+            $scope.article.files.splice(this.$index, 1);
     }
 
-    $scope.$on('$locationChangeStart', function(event) {
-        if($scope.isEditing === true && $scope.isSaving === false) {
+    $scope.$on('$locationChangeStart', function (event) {
+        if ($scope.isEditing === true && $scope.isSaving === false && $scope.isCanceling === false) {
             event.preventDefault();
+            $scope.$emit("makeToast", {type: "warning", message: 'Save or cancel editing this article'});
         }
     });
 
+
     if ($stateParams.e == 'true') {
+        if ($scope.article.isTemp === true) {
+            $rootScope.article = $scope.article;
+        }
         $scope.toggleEditing();
     }
 }]);

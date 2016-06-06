@@ -1,7 +1,25 @@
 <section class="full-height">
     <div class="container" id="knowl-content-container">
         <div class="row">
-            <div class="col-lg-9">
+            <div class="col-lg-12">
+                <div class="alert alert-{{alert.type}} alert-dismissible" role="alert" ng-repeat="alert in alerts">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> {{alert.msg}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9 col-md-8 col-xs-12">
+                <div class="row visible-xs">
+                    <div class="col-xs-6">
+                        <a href="mailto:{{article.author.email}}" ng-hide="isEditing" ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</a>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block" ng-click="cancelEditing()">Cancel</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" ng-hide="isEditing" class="btn btn-default btn-block" ng-click="startEditing()">Edit</button>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block" ng-click="saveArticle()">Save</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="page-header">
@@ -35,7 +53,8 @@
                         <form>
                             <div class="form-group">
                                 <label for="changedbyInput">Your Name:</label>
-                                <input type="email" class="form-control" id="changedbyInput" placeholder="Your name" ng-model="changedBy">
+                                <input type="text" class="form-control" ng-hide="article.isTemp === true" id="changedbyInput" placeholder="Your name" ng-model="changedBy">
+                                <input type="text" class="form-control" ng-hide="article.isTemp === false" id="changedbyInput" placeholder="Your name" ng-model="article.author.name">
                             </div>
                         </form>
                     </div>
@@ -43,7 +62,8 @@
                         <form>
                             <div class="form-group">
                                 <label for="changedbyEmailInput">Your E-mail Adress:</label>
-                                <input type="email" class="form-control" id="changedbyEmailInput" placeholder="Your Email" ng-model="changedByMail">
+                                <input type="text" class="form-control" ng-hide="article.isTemp === true" id="changedbyEmailInput" placeholder="Your Email" ng-model="changedByMail">
+                                <input type="text" class="form-control" ng-hide="article.isTemp === false" id="changedbyEmailInput" placeholder="Your Email" ng-model="article.author.email">
                             </div>
                         </form>
                     </div>
@@ -63,10 +83,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="row article-detail-buttons-wrapper">
+            <div class="col-lg-3 col-md-4 col-xs-12">
+                <div class="row article-detail-buttons-wrapper hidden-xs">
                     <div class="col-lg-6">
-                        <button type="button" ng-hide="isEditing" ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</button>
+                        <a href="mailto:{{article.author.email}}" ng-hide="isEditing" ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</a>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block" ng-click="cancelEditing()">Cancel</button>
                     </div>
                     <div class="col-lg-6">
                         <button type="button" ng-hide="isEditing" class="btn btn-default btn-block" ng-click="startEditing()">Edit</button>
@@ -80,24 +101,33 @@
                                 <h3 class="panel-title">Files:</h3>
                             </div>
                             <div class="panel-body">
-                                <div class="row" ng-show="isEditing">
-                                    <div class="col-lg-12">
-                                        <button type="upload"  class="btn btn-default btn-block">Upload</button>
+                                <div class="dropzone hidden-xs" ng-show="isDragging">Drag files here</div>
+                                <div class="row" ng-show="isEditing" >
+                                    <div class="col-lg-12 hidden-xs">
+                                        <label class="btn btn-default btn-block">
+                                            Upload <input type="file" name="file" style="display: none;" onchange="angular.element(this).scope().uploadFile(this.files)"/>
+                                        </label>
                                         <hr>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <ul class="list-group">
+                                        <ul class="list-group" id="files">
                                             <li ng-repeat="file in article.files" class="list-group-item">
+                                                <span class="file-delete-button" ng-show="isEditing" ng-click="deleteFile()">x</span>
                                                 <span class="badge">{{file.type}}</span>
-                                                {{file.name}}
+                                                {{file.name  | limitTo: 10}}
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-12">
+                        <a href="#" class="btn btn-block btn-warning" ng-hide="article.isTemp">Delete Article</a>
                     </div>
                 </div>
             </div>

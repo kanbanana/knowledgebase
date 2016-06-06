@@ -12,3 +12,5 @@ require('./js/directives/core.directive.js'); // jshint ignore:line
 require('./js/controllers/articleDetail.controller.js');  // jshint ignore:line
 require('./js/directives/articleListItem.directive.js');  // jshint ignore:line
 require('./js/services/article.service.js');  // jshint ignore:line
+require('./js/directives/alertContainer.directive.js');  // jshint ignore:line
+require('./js/directives/toast.directive.js');  // jshint ignore:line
