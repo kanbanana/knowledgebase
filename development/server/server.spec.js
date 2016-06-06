@@ -41,6 +41,7 @@ describe('server', function () {
             it('respond with json', function(done) {
                 this.timeout(15000);
                 exec('node node_modules/.bin/abao ./raml/api.raml --server http://localhost:3000/api', function (err, stdout) {
+                    console.log(err);
                     console.log(stdout);
                     done();
                 });
