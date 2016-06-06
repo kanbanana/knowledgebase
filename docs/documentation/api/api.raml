@@ -1,10 +1,11 @@
 #%RAML 0.8
 title: knowledgebase
 version: v0.1
+baseUri: http://localhost:8888/api
 schemas:
   - Article: !include schemas/article.json
   - Articles: !include schemas/articles.json
-/article:
+/articles:
   get:
     queryParameters:
       q:
