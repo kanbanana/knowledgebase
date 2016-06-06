@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment/>
+<entry key="enabled">false</entry>
+<entry key="expirationValue">0</entry>
+<entry key="expirationUnit">days</entry>
+<entry key="provider">LOCAL_FILE</entry>
+</properties>
