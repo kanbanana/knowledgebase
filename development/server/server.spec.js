@@ -40,7 +40,9 @@ describe('server', function () {
         describe('Run Abao', function() {
             it('respond with json', function(done) {
                 this.timeout(15000);
-                exec('abao ../../docs/documentation/api/api.raml --server http://localhost:3000', function (err) {
+                exec('node node_modules/abao/bin/abao ./raml/api.raml --server http://localhost:3000/api', function (err, stdout) {
+                    console.log(err);
+                    console.log(stdout);
                     done();
                 });
             });

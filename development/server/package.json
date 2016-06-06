@@ -19,6 +19,7 @@
     "request": "^2.72.0"
   },
   "devDependencies": {
+    "abao": "^0.4.0-beta.8",
     "gulp": "^3.9.1",
     "gulp-istanbul": "^0.10.4",
     "gulp-mocha": "^2.2.0",
