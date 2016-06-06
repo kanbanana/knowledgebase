@@ -1,8 +1,9 @@
-#%RAML 1.0
+#%RAML 0.8
 title: knowledgebase
 version: v0.1
-types:
-  Article: !include schemas/article.raml
+schemas:
+  - Article: !include schemas/article.json
+  - Articles: !include schemas/articles.json
 /article:
   get:
     queryParameters:
@@ -12,8 +13,7 @@ types:
       200:
         body:
           application/json:
-            type: array
-            items: Article
+            schema: Articles
             example: !include examples/getArticles.json
       400:
         description: Send when there the parameter q contains bad data
@@ -24,13 +24,13 @@ types:
   post:
     body:
       application/json:
-        type: Article
+        schema: Article
         description: The article that needs to be created
     responses:
       200:
         body:
           application/json:
-            type: Article
+            schema: Article
             example: !include examples/getArticle.json
             description: Returns the exact article as the one send, but corrects the id
       400:
@@ -43,7 +43,7 @@ types:
         200:
           body:
             application/json:
-              type: Article
+              schema: Article
               example: !include examples/getArticle.json
         404:
           description: Send when there is no article with this articleid
@@ -52,12 +52,12 @@ types:
     put:
       body:
         application/json:
-          type: Article
+          schema: Article
       responses:
         200:
           body:
             application/json:
-              type: Article
+              schema: Article
               example: !include examples/getArticle.json
         400:
           description: Send when the body contains bad data
@@ -68,7 +68,7 @@ types:
     delete:
       body:
         application/json:
-          type: Article
+          schema: Article
       responses:
         200:
           description: Send when the article got deleted
