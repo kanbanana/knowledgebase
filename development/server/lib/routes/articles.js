@@ -32,7 +32,7 @@ function onArticleCreateHandler(req, res) {
 }
 
 function middlewareCeckTitte(req, res, next) {
-    if (req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+    if (req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
@@ -81,14 +81,10 @@ function onArticleGetHandler(req, res) {
 function onArticleSearchHandler(req, res) {
     var searchResults = articleService.searchArticles(req.query.q, req.query.author).then(function (searchResults) {
         //TODO implement right
-        //res.send(searchResults);
+        res.send(searchResults);
     }, function (error) {
         res.status(500).send(error);
     });
-    //TODO remove following when aforementioned TODO implemented
-    console.log("q=" + req.query.q);
-    console.log("author=" + req.query.author);
-    res.send();
 }
 
 

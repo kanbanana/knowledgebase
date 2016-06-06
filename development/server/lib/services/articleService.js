@@ -81,7 +81,7 @@ articleService.getArticleContent = function (articleId) {
 })();
 
 articleService.searchArticles = function (q) {
-    var author = q.match(/author:([^\s]*)/);
+    var author = q.match(/author:([^\s]*)/)[1];
     var onlyAuthor = q.match(/^author:([^\s]*)$/);
 
     return new Promise(function (resolve, reject) {

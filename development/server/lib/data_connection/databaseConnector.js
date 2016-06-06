@@ -70,7 +70,10 @@ databaseConnector.findArticleById = function (id) {
 
 databaseConnector.findArticleByAuthor = function (author) {
     return new Promise(function (resolve, reject) {
-        var queryOptions = {'author.name': new RegExp('.*' + author + '.*', 'i')};
+        var queryOptions = {$or: [
+            {'author.name': new RegExp('.*' + author + '.*', 'i')},
+            {'lastChangedBy.name': new RegExp('.*' + author + '.*', 'i')}
+        ]};
         Article.find(queryOptions, function (findErr, result) {
             if (findErr) {
                 return reject(findErr);
