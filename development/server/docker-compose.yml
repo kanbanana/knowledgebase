@@ -1,0 +1,24 @@
+version: '2'
+services:
+  nodeserver:
+    build:
+      context: .
+    environment:
+      - DATABASE_ADDR=mongo
+    links:
+      - mongo
+      - ossserver
+    depends_on:
+      - mongo
+      - ossserver
+  mongo:
+    image: mongo
+  nginx:
+    image: nginx
+    links:
+      - nodeserver
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/api.conf:ro
+      - ~/dist:/usr/share/nginx/html:ro
+  ossserver:
+    image: ossserver

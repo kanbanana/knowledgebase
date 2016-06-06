@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><parsers fileCrawlerDefault="FileSystem parser">
+<parser class="com.jaeksoft.searchlib.parser.DocParser" fileOver="" name="DOC parser" sizeLimit="33554432">
+<contentType>application/msword</contentType>
+<extension>doc</extension>
+<map>
+<link source="author" target="content"/>
+<link source="content" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.DocxParser" fileOver="" name="DOCX parser" sizeLimit="33554432">
+<contentType>application/vnd.openxmlformats-officedocument.wordprocessingml.document
+		</contentType>
+<extension>docx</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="description" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.FileSystemParser" fileOver="" name="FileSystem parser">
+<map/>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.HtmlParser" defaultCharset="UTF-8" fileOver="" h1_boost="1.8" h2_boost="1.6" h3_boost="1.4" h4_boost="1.2" h5_boost="1.1" h6_boost="1.1" htmlParser="Best score" ignoreLinkNoFollow="false" ignoreMetaNoFollow="false" ignoreMetaNoIndex="false" ignoreNonCanonical="true" ignoreUntitledDocuments="false" name="HTML parser" sizeLimit="33554432" title_boost="2" url_fragment="remove">
+<attributes>
+<attribute name="xPathExclusion"/>
+</attributes>
+<contentType>text/html</contentType>
+<extension>htm</extension>
+<extension>html</extension>
+<extension>xhtml</extension>
+<map>
+<link source="body" target="content"/>
+<link source="meta_description" target="metaDescription"/>
+<link source="meta_keywords" target="metaKeywords"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.OdpParser" fileOver="" name="ODP parser" sizeLimit="33554432">
+<contentType>application/vnd.oasis.opendocument.presentation
+		</contentType>
+<extension>odp</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.OdsParser" fileOver="" name="ODS/ODF parser" sizeLimit="33554432">
+<contentType>application/vnd.oasis.opendocument.formula
+		</contentType>
+<contentType>application/vnd.oasis.opendocument.spreadsheet
+		</contentType>
+<extension>odf</extension>
+<extension>ods</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.OdtParser" fileOver="" name="ODT parser" sizeLimit="33554432">
+<contentType>application/vnd.oasis.opendocument.text
+		</contentType>
+<extension>odt</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.PdfParser" fileOver="" ghostscriptBinaryPath="" name="PDF parser" pdfCrackCommandLine="" sizeLimit="33554432">
+<contentType>application/pdf</contentType>
+<extension>pdf</extension>
+<map>
+<link source="author" target="content"/>
+<link source="content" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.PptParser" fileOver="" name="PPT parser" sizeLimit="33554432">
+<contentType>application/vnd.ms-powerpoint
+		</contentType>
+<extension>ppt</extension>
+<map>
+<link source="body" target="content"/>
+<link source="content" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.PptxParser" fileOver="" name="PPTX parser" sizeLimit="33554432">
+<contentType>application/vnd.openxmlformats-officedocument.presentationml.presentation
+		</contentType>
+<extension>pptx</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="description" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.PublisherParser" fileOver="" name="Publisher parser" sizeLimit="33554432">
+<contentType>application/x-mspublisher</contentType>
+<extension>pub</extension>
+<map>
+<link source="author" target="content"/>
+<link source="content" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.RtfParser" fileOver="" name="RTF parser" sizeLimit="33554432">
+<contentType>application/rtf</contentType>
+<extension>rtf</extension>
+<map>
+<link source="content" target="content"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.TextParser" fileOver="" name="Text parser" sizeLimit="33554432">
+<contentType>text/plain</contentType>
+<extension>txt</extension>
+<map>
+<link source="content" target="content"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.VisioParser" fileOver="" name="Visio parser" sizeLimit="33554432">
+<contentType>application/vnd.visio</contentType>
+<extension>vsd</extension>
+<map>
+<link source="author" target="content"/>
+<link source="content" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.XlsParser" fileOver="" name="XLS parser" sizeLimit="33554432">
+<contentType>application/vnd.ms-excel</contentType>
+<extension>xls</extension>
+<map>
+<link source="author" target="content"/>
+<link source="content" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.XlsxParser" fileOver="" name="XLSX parser" sizeLimit="33554432">
+<contentType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+		</contentType>
+<extension>xlsx</extension>
+<map>
+<link source="content" target="content"/>
+<link source="creator" target="content"/>
+<link source="description" target="content"/>
+<link source="subject" target="content"/>
+<link source="title" target="title"/>
+</map>
+</parser>
+<parser class="com.jaeksoft.searchlib.parser.XmlParser" fileOver="" name="XML parser" sizeLimit="33554432">
+<contentType>application/xhtml+xml</contentType>
+<contentType>application/xml</contentType>
+<contentType>text/xml</contentType>
+<extension>xml</extension>
+<map>
+<link source="content" target="content"/>
+</map>
+</parser>
+</parsers>

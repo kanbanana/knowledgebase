@@ -1,5 +1,4 @@
 # Created by https://www.gitignore.io/api/eclipse,linux,node,phpstorm,webstorm,windows
-
 ### Eclipse ###
 
 .metadata
@@ -242,5 +241,8 @@ $RECYCLE.BIN/
 
 
 ## Project-specific files
+development/server/uploads/
+development/server/uploadsTemp/
+development/server/config/params.json
 development/server/uploads/*
 !development/server/uploads/

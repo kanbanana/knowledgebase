@@ -1,0 +1,28 @@
+{
+  "name": "knowledgebase-frontend",
+  "version": "1.0.0",
+  "main": "index.html",
+  "directory": "public/bower_components",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "~2.0",
+    "underscore": "~1.5",
+    "bootstrap": "~3.1",
+    "angular-ui-router": "~0.2",
+    "angular-ui-utils": "~0.1",
+    "angular-bootstrap": "~0.10",
+    "moment": "~2.5",
+    "font-awesome": "~4.0",
+    "angular-translate": "~2.7.2",
+    "angular-translate-loader-url": "~2.7.2",
+    "angular-translate-loader-static-files": "~2.7.2",
+    "angular-ui-tinymce": "latest"
+  },
+  "devDependencies": {
+    "angular-ui-tinymce": "^0.0.16"
+  }
+}
