@@ -34,6 +34,7 @@
     "gulp-jshint": "^1.9.2",
     "gulp-livereload": "^3.8.0",
     "gulp-sass": "^2.0.3",
+    "gulp-sass-unicode": "latest",
     "gulp-util": "^3.0.4",
     "http-server": "^0.6.1",
     "jasmine-core": "^2.3.4",
