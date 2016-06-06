@@ -68,6 +68,18 @@ databaseConnector.findArticleById = function (id) {
     });
 };
 
+databaseConnector.findArticleByAuthor = function (author) {
+    return new Promise(function (resolve, reject) {
+        var queryOptions = {'author.name': new RegExp('.*' + author + '.*', 'i')};
+        Article.find(queryOptions, function (findErr, result) {
+            if (findErr) {
+                return reject(findErr);
+            }
+            resolve(result);
+        });
+    });
+};
+
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     var date = new Date();
     date.setHours(date.getHours() - ageInHours);
@@ -89,5 +101,3 @@ databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
         });
     });
 };
-
-

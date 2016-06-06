@@ -57,10 +57,10 @@ articleService.saveDocuments = function (article, documents) {
 
 
 articleService.getArticleContent = function (articleId) {
-    return new Promise(function(resolve) {
-        fileSystemConnector.readArticleContent(articleId).then(function(content) {
+    return new Promise(function (resolve) {
+        fileSystemConnector.readArticleContent(articleId).then(function (content) {
             resolve(content);
-        }, function(err) {
+        }, function (err) {
             resolve('');
         });
     });
@@ -80,26 +80,24 @@ articleService.getArticleContent = function (articleId) {
     }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
 })();
 
-articleService.searchArticles = function (q, author) {
-    if(q) {
-        return new Promise(function (resolve, reject) {
-            searchResults = searchEngineConnector.searchArticles(q).then(function (searchResults) {
+articleService.searchArticles = function (q) {
+    var author = q.match(/author:([^\s]*)/);
+    var onlyAuthor = q.match(/^author:([^\s]*)$/);
+
+    return new Promise(function (resolve, reject) {
+        if (!onlyAuthor) {
+            searchEngineConnector.searchArticles(q).then(function (searchResults) {
                 if (author) {
                     //TODO: filter searchResults by author (where to get author field?)
-                    resolve(searchResults);
-                } else {
-                    resolve(searchResults);
                 }
+                //TODO add metadata and convert to search results schema (specification needed)
+                resolve(searchResults);
             });
-        }).then(function (searchResults) {
-            //TODO add metadata and convert to search results schema (specification needed)
-            resolve(searchResults);
-        });
-    } else if(author) {
-        //TODO: filter articles in database by author (how to get content intro as search snippet?)
-        return new Promise(function (resolve, reject) {
-            resolve('TODO');
-        });
-    }
-
-}
+        } else { //onlyAuthor
+            databaseConnector.findArticleByAuthor(author).then(function (articles) {
+                //TODO add content snippet?
+                resolve(articles);
+            });
+        }
+    });
+};
