@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
-var upload = require('multer')({dest: path.join( __projectDir, 'uploadsTemp/')});
-var articleService = require(__dirname + '/../services/articleService');
+var upload = require('multer')({dest: path.join( __projectDir, 'uploads_temp/')});
+var articleService = require(__dirname + '/../services/article_service');
 var config = require(__dirname + '/../config/config')
 
 var router = express.Router();
@@ -31,8 +31,8 @@ function onArticleCreateHandler(req, res) {
     });
 }
 
-function middlewareCeckTitte(req, res, next) {
-    if(req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+function middlewareCeckTitle(req, res, next) {
+    if(req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
@@ -83,7 +83,7 @@ router.all('/:articleId*', middlewareRetrieveArticle);
 
 router.get('/:articleId', onArticleGetHandler);
 
-router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitte, onArticleSaveHandler);
+router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitle, onArticleSaveHandler);
 
 router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
 
