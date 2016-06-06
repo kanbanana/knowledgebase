@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // Define Routes
-app.use('/articles', articles);
+app.use('/api/articles', articles);
 
 // This is a route that sends the index.html, which contains UI for testing
 app.get('/', function (req, res) {
