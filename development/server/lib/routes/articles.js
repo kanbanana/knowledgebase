@@ -32,7 +32,7 @@ function onArticleCreateHandler(req, res) {
 }
 
 function middlewareCeckTitte(req, res, next) {
-    if(req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+    if(req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
@@ -40,8 +40,8 @@ function middlewareCeckTitte(req, res, next) {
 }
 
 function middlewareCeckAutherName(req, res, next) {
-    if(req.body.author && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
-        req.body.lastChangedBy && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+    if(req.body.author && req.body.author.name && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.name && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
         return res.status(400).send('Invalid author name length (max. ' + config.postBodyValidationValues.maxArticleAuthorNameLength + ' characters).');
     }
 
@@ -49,8 +49,8 @@ function middlewareCeckAutherName(req, res, next) {
 }
 
 function middlewareCeckAutherMail(req, res, next) {
-    if(req.body.author && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
-        req.body.lastChangedBy && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
+    if(req.body.author && req.body.author.email && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
+        req.body.lastChangedBy && req.body.lastChangedBy.email && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
         return res.status(400).send('Invalid author email address length (max. ' + config.postBodyValidationValues.maxArticleAuthorEmailLength + ' characters).');
     }
 

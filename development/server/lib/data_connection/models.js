@@ -16,7 +16,7 @@ var ArticleSchema = new Schema({
         path: String
     }],
     lastChanged: Date,
-    title: String,
+    title: {type: String, default: ""},
     isTemporary: {type: Boolean, default: true}
 });
 
