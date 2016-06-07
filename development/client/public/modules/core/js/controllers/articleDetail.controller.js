@@ -4,6 +4,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
     $scope.article = {
         text: ''
     }
+    $scope.isUploading = false;
 
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
@@ -122,7 +123,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
         $scope.article = response.data;
-        console.log($scope.article)
 
 
         $scope.articleServerVer = $scope.article;
@@ -175,6 +175,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.uploadFile = function (files) {
             var fd = new FormData();
             fd.append("documents", files[0]);
+
             //ArticleService.uploadDocument($stateParams.articleId, fd)
 
             console.log($rootScope.baseUrl + "/api/articles/" + $stateParams.articleId + "/documents/")
@@ -182,7 +183,29 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             var uploadUrl = $rootScope.baseUrl + "/api/articles/" + $stateParams.articleId + "/documents/";
 
             //ArticleService.uploadDocument($stateParams.articleId, fd)
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", uploadProgress, false)
 
+            xhr.open('POST', uploadUrl);
+            xhr.send(fd);
+            $scope.isUploading = true;
+
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    $scope.isUploading = false;
+                    var json = JSON.parse(xhr.responseText);
+                    json.forEach(function(file) {
+                        $scope.article.documents.push(file);
+                    })
+                    $scope.isUploading = false;
+                    $scope.$emit("makeToast", {type: "success", message: 'File successfully uploaded'});
+                }
+            }
+
+
+            /*
+            ---- DEPRECATED ----
             $http.post(uploadUrl, fd, {
                 headers: {
                     'Content-Type': 'undefined',
@@ -194,26 +217,45 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             }).error(function () {
                 $scope.$emit("makeToast", {type: "warning", message: 'Failed to upload file'});
             })
+            */
 
 
         };
 
-
-        $scope.saveArticle = function () {
-            $scope.isSaving = true;
-            if ($scope.article.isTemporary === true) {
-                $scope.article.lastChangedBy = $scope.article.author;
-            } else {
-                if ($scope.lastChangedBy.name != '' && $scope.lastChangedBy.email != '') {
-                    $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
-                    $scope.article.lastChangedBy.email = $scope.lastChangedBy.email;
-                }
+        var uploadProgress = function (e) {
+            if (e.lengthComputable) {
+                var percent = Math.round(e.loaded * 100 / e.total);
+                $scope.$apply(function() {
+                    $scope.uploadProgress = percent;
+                })
 
             }
-            ArticleService.saveArticle($stateParams.articleId, $scope.article).then(function (response) {
-                $scope.$emit("makeToast", {type: "success", message: 'Article has been save'});
-                $location.path('article/' + $scope.article.id).search('e', 'false');
-            })
+        }
+
+
+        $scope.saveArticle = function () {
+            if($scope.article.title && $scope.article.title !=  "") {
+                $scope.isSaving = true;
+                if ($scope.article.isTemporary === true) {
+                    $scope.article.lastChangedBy = $scope.article.author;
+                } else {
+                    if ($scope.lastChangedBy) {
+                        $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
+                        $scope.article.lastChangedBy.email = $scope.lastChangedBy.email;
+                    } else {
+                        $scope.article.lastChangedBy.name = "";
+                        $scope.article.lastChangedBy.email = "";
+                    }
+
+                }
+                ArticleService.saveArticle($stateParams.articleId, $scope.article).then(function (response) {
+                    $scope.$emit("makeToast", {type: "success", message: 'Article has been saved'});
+                    $location.path('article/' + $scope.article.id).search('e', 'false');
+                })
+            } else {
+                $scope.$emit("makeToast", {type: "warning", message: 'Save failed! Article needs a title!'});
+            }
+
         };
 
         $scope.cancelEditing = function () {
