@@ -1,0 +1,10 @@
+<suite name="TestSuite">
+
+<test name="FireFox Test">
+	<parameter name="baseUrl" value="http://127.0.0.1:5000/"/> 
+	<parameter name="browserName" value="Firefox"/> 
+	<classes>
+		<class name="de.kanbanana.selenium.testcases.FirefoxTestFactory"></class>
+	</classes>
+</test>
+</suite>
