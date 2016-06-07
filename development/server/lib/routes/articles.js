@@ -1,63 +1,62 @@
 var express = require('express');
 var path = require('path');
-var upload = require('multer')({dest: path.join( __projectDir, 'uploads_temp/')});
-var articleService = require(__dirname + '/../services/article_service');
-var config = require(__dirname + '/../config/config')
+var articleService = require('../services/article_service');
+var config = require('../config/config');
 
-var router = express.Router();
+var router = module.exports = {};
 
-function middlewareRetrieveArticle(req, res, next) {
+router.middlewareRetrieveArticle = function(req, res, next) {
     articleService.findArticleById(req.params.articleId).then(function(article) {
         req.article = article;
         next();
     }, function(err){
         res.send(500, error);
     });
-}
+};
 
-function onDocumentUploadHandler(req, res) {
+router.onDocumentUploadHandler = function(req, res) {
     articleService.saveDocuments(req.article, req.files).then(function(storageInfoList) {
         res.send(storageInfoList);
     }, function(error) {
         res.send(500, error);
     })
-}
+};
 
-function onArticleCreateHandler(req, res) {
+router.onArticleCreateHandler = function(req, res) {
     articleService.createArticle().then(function(article) {
         res.send(article._id);
     }, function(error) {
         res.send(500, error);
     });
-}
+};
 
-function middlewareCeckTitle(req, res, next) {
+router.middlewareCeckTitle = function(req, res, next) {
     if(req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
     next();
-}
+};
 
-function middlewareCeckAutherName(req, res, next) {
+router.middlewareCeckAutherName = function(req, res, next) {
     if(req.body.author && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
         req.body.lastChangedBy && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
         return res.status(400).send('Invalid author name length (max. ' + config.postBodyValidationValues.maxArticleAuthorNameLength + ' characters).');
     }
 
     next();
-}
+};
 
-function middlewareCeckAutherMail(req, res, next) {
+router.middlewareCeckAutherMail = function(req, res, next) {
     if(req.body.author && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
         req.body.lastChangedBy && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
         return res.status(400).send('Invalid author email address length (max. ' + config.postBodyValidationValues.maxArticleAuthorEmailLength + ' characters).');
     }
 
     next()
-}
+};
 
-function onArticleSaveHandler(req, res) {
+router.onArticleSaveHandler = function(req, res) {
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
         articleService.getArticleContent(article._id).then(function(articleContent) {
             var responseArticle = articleSchemaToResponseArticle(article);
@@ -68,28 +67,18 @@ function onArticleSaveHandler(req, res) {
     }, function(error) {
         res.status(500).send(error);
     });
-}
+};
 
-function onArticleGetHandler(req, res) {
+router.onArticleGetHandler = function(req, res) {
     articleService.getArticleContent(req.article._id).then(function(articleContent) {
         var responseArticle = articleSchemaToResponseArticle(req.article);
         responseArticle.text = articleContent;
         res.send(responseArticle);
     });
-}
+};
 
 
-router.all('/:articleId*', middlewareRetrieveArticle);
-
-router.get('/:articleId', onArticleGetHandler);
-
-router.put('/:articleId', middlewareCeckAutherMail, middlewareCeckAutherName, middlewareCeckTitle, onArticleSaveHandler);
-
-router.post('/:articleId/documents', upload.array('documents'), onDocumentUploadHandler);
-
-router.post('/', onArticleCreateHandler);
-
-function articleSchemaToResponseArticle(articleSchema) {
+router.articleSchemaToResponseArticle = function(articleSchema) {
     var responseArticle = articleSchema.toJSON();
     responseArticle.id = responseArticle._id;
     delete responseArticle._id;
@@ -100,6 +89,5 @@ function articleSchemaToResponseArticle(articleSchema) {
     });
 
     return responseArticle;
-}
+};
 
-module.exports = router;

@@ -6,11 +6,15 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var debug = require('debug')('server');
+var config = require('./lib/config/config');
+var path = require('path');
 
-var articles = require(__dirname + '/lib/routes/articles');
-var config = require(__dirname + '/lib/config/config');
+var upload = require('multer')({dest:  path.join(__projectDir, config.temporaryUploadDir)});
+
+var articles = require('./lib/routes/articles');
 
 var app = express();
+var router = express.Router();
 var port = normalizePort(process.env.PORT || config.port);
 
 mongoose.connect(config.dbConnectionString);
@@ -24,10 +28,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 // app.use(cookieParser());
 
 // Define Routes
-app.use('/api/articles', articles);
+router.all('/:articleId*',articles.middlewareRetrieveArticle);
+router.get('/:articleId', articles.onArticleGetHandler);
+router.put('/:articleId', articles.middlewareCeckAutherMail, articles.middlewareCeckAutherName, articles.middlewareCeckTitle, articles.onArticleSaveHandler);
+router.post('/:articleId/documents', upload.array('documents'), articles.onDocumentUploadHandler);
+router.post('/', articles.onArticleCreateHandler);
 
-module.exports.app = app;
-module.exports.server = null;
+app.use('/api/articles', router);
+
 module.exports.listen = function () {
     this.server = app.listen(app.get('port'), function(){
         console.log('server listening on port ' + app.get('port') + '!');

@@ -1,13 +1,14 @@
 var asyncLib = require('async');
-var fileSystemConnector = require(__dirname + '/../data_connection/file_system_connector');
-var databaseConnector = require(__dirname + '/../data_connection/database_connector');
-var config = require(__dirname + '/../config/config');
+var fileSystemConnector = require('../data_connection/file_system_connector');
+var databaseConnector = require('../data_connection/database_connector');
+var config = require('../config/config');
 
 var articleService = module.exports = {};
 
 articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
+
 
 articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
@@ -60,23 +61,25 @@ articleService.getArticleContent = function (articleId) {
     return new Promise(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
             resolve(content);
-        }, function(err) {
+        }, function() {
             resolve('');
         });
     });
 };
 
-(function () {
-    setInterval(function () {
-        databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
-            articles.forEach(function (article) {
-                fileSystemConnector.deleteArticle(article._id).then(function () {
-                    },
-                    function (err) {
-                        console.log(err);
-                    });
-            });
-            console.log(articles);
+function deleteTemporises() {
+    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
+        articles.forEach(function (article) {
+            fileSystemConnector.deleteArticle(article._id).then(function () {
+                },
+                function (err) {
+                    console.log(err);
+                });
         });
-    }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
+        console.log(articles);
+    });
+}
+
+(function () {
+    setInterval(deleteTemporises, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
 })();

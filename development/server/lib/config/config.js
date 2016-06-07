@@ -9,6 +9,12 @@ module.exports =
     uploadDirTmp: 'uploads/articles_tmp',
     uploadDirOld: 'uploads/articles_old',
 
+    temporaryUploadDir: 'uploads_temp/',
+    whitelistWithDocumentMimeTypes: [
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf',
+        'text/plain'],
+
     articleContentFileName: 'article.html',
 
     oldTemporaryArticlesDeleteJobOptions: {
@@ -19,6 +25,6 @@ module.exports =
     postBodyValidationValues: {
         maxArticleTitleLength: 1000,
         maxArticleAuthorEmailLength: 255,
-        maxArticleAuthorNameLength: 1000,
+        maxArticleAuthorNameLength: 1000
     }
 };

@@ -1,12 +1,7 @@
 var path = require('path');
 var fs = require('fs-extra');
 var asyncLib = require('async');
-var config = require(__dirname + '/../config/config');
-
-const whitelistWithDocumentMimeTypes = [
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-    'text/plain'];
+var config = require('../config/config');
 
 function PathContainer(articleId) {
     this.articleId = articleId + '';
