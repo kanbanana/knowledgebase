@@ -1,0 +1,170 @@
+<section class="full-height">
+    <div class="container" id="knowl-content-container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-{{alert.type}} alert-dismissible" role="alert" ng-repeat="alert in alerts">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> {{alert.msg}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9 col-md-8 col-xs-12">
+                <div class="row visible-xs">
+                    <div class="col-xs-6">
+                        <a href="mailto:{{article.author.email}}" ng-hide="isEditing"
+                           ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</a>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block"
+                                ng-click="cancelEditing()">Cancel
+                        </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" ng-hide="isEditing" class="btn btn-default btn-block"
+                                ng-click="startEditing()">Edit
+                        </button>
+                        <button type="button" ng-show="isEditing" class="btn btn-default btn-block"
+                                ng-click="saveArticle()">Save
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>{{article.title}}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-hide="isEditing">
+                    <div class="col-sm-3">
+                        <span><b>Author:</b> <a href="mailto:{{article.author.email}}" id="searchByAuthor">{{article.author.name}}</a></span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><b>Last changed by:</b> <a href="mailto:{{article.lastChangedBy.email}}"
+                                                         id="searchByChangedBy">{{article.lastChangedBy.name}}</a></span>
+                    </div>
+                    <div class="col-sm-5">
+                        <span><b>Last changed:</b> <a href="#" id="searchByDate">{{article.lastChanged}}</a></span>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="titelInput">Title:</label>
+                                <input type="text" class="form-control" id="titelInput" placeholder="Title"
+                                       ng-model="article.title">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-6">
+                        <form>
+                            <div class="form-group" ng-hide="article.isTemporary === true">
+                                <label for="changedbyInput">Your Name:</label>
+                                <input type="text" class="form-control" id="changedbyInput" placeholder="Your name"
+                                       ng-model="lastChangedBy.name">
+                            </div>
+                            <div class="form-group" ng-hide="article.isTemporary === false">
+                                <label for="authorInput">Your Name:</label>
+                                <input type="text" class="form-control" id="authorInput" placeholder="Your name"
+                                       ng-model="article.author.name">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6">
+                        <form>
+                            <div class="form-group" ng-hide="article.isTemporary === true">
+                                <label for="changedbyEmailInput">Your E-mail Adress:</label>
+                                <input type="text" class="form-control" id="changedbyEmailInput"
+                                       placeholder="Your Email" ng-model="lastChangedBy.email">
+                            </div>
+                            <div class="form-group" ng-hide="article.isTemporary === false">
+                                <label for="authorEmailInput">Your E-mail Adress:</label>
+                                <input type="text" class="form-control" id="authorEmailInput" placeholder="Your Email"
+                                       ng-model="article.author.email">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" ng-hide="isEditing">
+                    <div class="col-sm-12">
+                        <p class="article-detail-text">
+
+                        <div ng-bind-html="sanatizedArticleText"></div>
+                        </p>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-sm-12">
+                        <form method="post">
+                            <textarea ui-tinymce="tinymceOptions" ng-model="article.text"></textarea>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-12">
+                <div class="row article-detail-buttons-wrapper hidden-xs">
+                    <div class="col-lg-6">
+                        <a href="mailto:{{article.author.email}}" id="alertAuthor" ng-hide="isEditing"
+                           ng-disabled="article.author.email === ''" class="btn btn-default btn-block">Alert</a>
+                        <button type="button" ng-show="isEditing" id="cancelEditing" class="btn btn-default btn-block"
+                                ng-click="cancelEditing()">Cancel
+                        </button>
+                    </div>
+                    <div class="col-lg-6">
+                        <button type="button" ng-hide="isEditing" id="startEditing" class="btn btn-default btn-block"
+                                ng-click="startEditing()">Edit
+                        </button>
+                        <button type="button" ng-show="isEditing" id="saveArticle" class="btn btn-default btn-block"
+                                ng-click="saveArticle()">Save
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Files:</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="dropzone hidden-xs" ng-show="isDragging">Drag files here</div>
+                                <div class="row" ng-show="isEditing">
+                                    <div class="col-lg-12 hidden-xs">
+                                        <label class="btn btn-default btn-block">
+                                            Upload <input type="file" id="fileUploadInput" name="file"
+                                                          style="display: none;"
+                                                          onchange="angular.element(this).scope().uploadFile(this.files)"/>
+                                        </label>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <ul class="list-group" id="files">
+                                            <li ng-repeat="file in article.documents" class="list-group-item">
+                                                <span class="file-delete-button" ng-show="isEditing"
+                                                      ng-click="deleteFile($index)">x</span>
+                                                <span class="badge">{{file.filetype}}</span>
+                                                <a href="{{file.url}}" class="fileDownload">
+                                                    {{file.name | limitTo: 10}}
+                                                </a>
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="isEditing">
+                    <div class="col-lg-12">
+                        <a href="#" class="btn btn-block btn-warning" ng-hide="article.isTemporary">Delete Article</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

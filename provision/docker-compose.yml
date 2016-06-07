@@ -1,0 +1,22 @@
+version: '2'
+services:
+  nodeserver:
+    build:
+      context: ../development/server/
+    environment:
+      - DATABASE_ADDR=mongo
+    links:
+      - mongo
+      - ossserver
+    depends_on:
+      - mongo
+      - ossserver
+  mongo:
+    image: mongo
+  nginx:
+    build:
+     context: nginx/
+    links:
+      - nodeserver
+  ossserver:
+    image: ossserver

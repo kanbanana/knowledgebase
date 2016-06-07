@@ -1,0 +1,6 @@
+$dropzone-color: rgba(190,180,33,0.3);
+
+.dropzone {
+  background-color: $dropzone-color;
+  border: 1px solid darken($dropzone-color, 0.5)
+}
