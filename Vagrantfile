@@ -1,18 +1,18 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$install_ansible = <<SCRIPT
-apt-add-repository ppa:ansible/ansible
+$install_docker = <<SCRIPT
 touch /etc/apt/sources.list.d/docker.list
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" >> /etc/apt/sources.list.d/docker.list
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 apt-get -y update
-apt-get -y install ansible
 apt-get -y install docker-engine
 apt-get -y install python-pip
-pip install docker-py 
+pip install docker-compose
 groupadd docker
 usermod -aG docker vagrant
+cd /vagrant/provision
+/usr/local/bin/docker-compose -f docker-compose.dev.yml up -d --build
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -34,7 +34,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 27017, host: 27017
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 9090, host: 9090
-  config.vm.network "forwarded_port", guest: 8888, host: 8888
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -83,15 +83,5 @@ Vagrant.configure(2) do |config|
   
   # Vagrant.configure("2") do |config|
   # Install ansible-galaxy to avoid status response bug in /etc/init.d/vagrant
-  config.vm.provision "shell", inline: $install_ansible
-	# Patch for https://github.com/mitchellh/vagrant/issues/6793
-	config.vm.provision "shell" do |s|
-		s.inline = '[[ ! -f $1 ]] || grep -F -q "$2" $1 || sed -i "/__main__/a \\    $2" $1'
-		s.args = ['/usr/bin/ansible-galaxy', "if sys.argv == ['/usr/bin/ansible-galaxy', '--help']: sys.argv.insert(1, 'info')"]
-	end
-	# Execute playbook
-	config.vm.provision "ansible_local" do |ansible|
-		ansible.playbook = "provision/site.yml"		
-		ansible.install = true
-  end
+  config.vm.provision "shell", inline: $install_docker
 end
