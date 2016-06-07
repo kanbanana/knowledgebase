@@ -1,6 +1,7 @@
 var async = require('async');
 var fileSystemConnector = require(__dirname + '/../data_connection/fileSystemConnector');
 var databaseConnector = require(__dirname + '/../data_connection/databaseConnector');
+var searchEngineConnector = require(__dirname + '/../data_connection/searchEngineConnector');
 var config = require(__dirname + '/../config/config');
 
 var articleService = module.exports = {};
@@ -94,7 +95,7 @@ articleService.searchArticles = function (q) {
                 resolve(searchResults);
             });
         } else { //onlyAuthor
-            databaseConnector.findArticleByAuthor(author).then(function (articles) {
+            databaseConnector.findArticlesByAuthor(author).then(function (articles) {
                 //TODO add content snippet?
                 resolve(articles);
             });

@@ -68,7 +68,24 @@ databaseConnector.findArticleById = function (id) {
     });
 };
 
-databaseConnector.findArticleByAuthor = function (author) {
+databaseConnector.findArticlesByIds = function (ids) {
+    return new Promise(function (resolve, reject) {
+        var inIds = [];
+        ids.forEach(function (id) {
+            inIds.push(new mongoose.Types.ObjectId(id));
+        });
+
+        var queryOptions = { _id: { $in: inIds }};
+        Article.find(queryOptions, function (findErr, result) {
+            if (findErr) {
+                return reject(findErr);
+            }
+            resolve(result);
+        });
+    });
+};
+
+databaseConnector.findArticlesByAuthor = function (author) {
     return new Promise(function (resolve, reject) {
         var queryOptions = {$or: [
             {'author.name': new RegExp('.*' + author + '.*', 'i')},

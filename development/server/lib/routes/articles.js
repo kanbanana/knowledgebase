@@ -79,7 +79,7 @@ function onArticleGetHandler(req, res) {
 }
 
 function onArticleSearchHandler(req, res) {
-    var searchResults = articleService.searchArticles(req.query.q, req.query.author).then(function (searchResults) {
+    articleService.searchArticles(req.query.q).then(function (searchResults) {
         //TODO implement right
         res.send(searchResults);
     }, function (error) {
@@ -111,6 +111,12 @@ function articleSchemaToResponseArticle(articleSchema) {
     });
 
     return responseArticle;
+}
+
+function multipleArticleSchemaToResponseArticles(articleSchemas) {
+    articleSchemas.forEach(function (articleSchema) {
+        articleSchemaToResponseArticle(articleSchema);
+    });
 }
 
 module.exports = router;
