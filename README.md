@@ -15,8 +15,11 @@ Jenkins CI build is triggered on every push event. Build results (including test
 ### Installed Services
 - ssh (Port: 2222 - "vagrant ssh")
 - mongodb (Port: 27017)
-- nginx (Port:8080 Directory: development)
-- opensearchserver (Port:9090 Directory: provision/roles/staging/volume/opensearchserver)
+- ~~nginx (Port:8080 Directory: development)~~
+- nginx (localhost:8080 -> /development/client/dist | 
+  localhost:8080/api/ -> nodeserver:3000/api/)
+- nodeserver (localhost:3000)
+- opensearchserver (Port:9090 Configuration: provision/roles/staging/volume/opensearchserver Files: development/server/uploads/articles/)
 
 ### Test
 - run "npm install -g gulp"
