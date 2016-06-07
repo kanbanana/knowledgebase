@@ -1,0 +1,37 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    ports:
+    - "27017:27017"
+  oss:
+    build: dev/oss
+    ports:
+     - "9090:9090"
+    volumes:
+     - ./roles/staging/volume:/srv
+  nodeserver:
+    build: dev/node
+    environment:
+      - DATABASE_ADDR=mongo
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
+      - oss
+    depends_on:
+      - mongo
+      - oss
+    volumes:
+      - ../development/server:/usr/src/app
+  nginx:
+    image: nginx
+    ports:
+     - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../development/client/dist:/usr/share/nginx/html
+    depends_on:
+      - nodeserver
+    links: 
+      - nodeserver
