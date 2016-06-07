@@ -9,8 +9,9 @@ Jenkins CI build is triggered on every push event. Build results (including test
 ## Setup Development VM
 1. Donwload and install VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 2. Download and install vagrant https://www.vagrantup.com/downloads.html
-3. Open cmd and navigate to project root directory
-4. Run "vagrant up --provision"
+3. Follow instructions in the clients readme (development/client/README.md)
+4. Open cmd and navigate to project root directory
+5. Run "vagrant up --provision"
 
 ### Installed Services
 - ssh (Port: 2222 - "vagrant ssh")
