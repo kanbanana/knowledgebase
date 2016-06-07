@@ -84,10 +84,14 @@ articleService.getArticleContent = function (articleId) {
 articleService.searchArticles = function (q) {
     var author = q.match(/author:([^\s]*)/)[1];
     var onlyAuthor = q.match(/^author:([^\s]*)$/);
+    // remove author from search terms
+    var search = q.replace(/(author:[^\s]*)/, '');
 
     return new Promise(function (resolve, reject) {
         if (!onlyAuthor) {
-            searchEngineConnector.searchArticles(q).then(function (searchResults) {
+            searchEngineConnector.searchArticles(search).then(function (searchResults) {
+                //TODO map search results to articles
+
                 if (author) {
                     //TODO: filter searchResults by author (where to get author field?)
                 }
