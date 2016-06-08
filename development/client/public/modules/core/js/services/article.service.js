@@ -4,7 +4,7 @@ angular.module('core').factory('ArticleService', ['$q', '$http', '$rootScope', f
 
     return {
         searchArticles: function (query) {
-            $http({
+            return $http({
                 method: 'GET',
                 url: $rootScope.baseUrl + "/api/articles?q=" + query
             }).then(function successCallback(response) {
@@ -24,6 +24,17 @@ angular.module('core').factory('ArticleService', ['$q', '$http', '$rootScope', f
                 return response
             });
         },
+        getLastSeenArticles: function (cookie) {
+            return $http({
+                method: 'GET',
+                url: $rootScope.baseUrl + "/api/getLastSeen/"
+            }).then(function successCallback(response) {
+                return response
+            }, function errorCallback(response) {
+                console.log(response)
+                return response
+            });
+        },
         createArticle: function () {
             return $http({
                 method: 'POST',
@@ -35,7 +46,7 @@ angular.module('core').factory('ArticleService', ['$q', '$http', '$rootScope', f
             });
         },
         uploadDocument: function (id, doc) {
-            $http({
+            return $http({
                 method: 'POST',
                 url: $rootScope.baseUrl + "/api/articles/" + id + "/documents/",
                 transformRequest: angular.identity,
