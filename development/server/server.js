@@ -31,6 +31,8 @@ router.get('/:articleId', articles.onArticleGetHandler);
 router.put('/:articleId', articles.middlewareCeckAutherMail, articles.middlewareCeckAutherName, articles.middlewareCeckTitle, articles.onArticleSaveHandler);
 router.post('/:articleId/documents', upload.array('documents'), articles.onDocumentUploadHandler);
 router.post('/', articles.onArticleCreateHandler);
+router.delete('/:articleId', articles.onArticleDeleteHandler);
+router.delete('/:articleId/documents/:filename', articles.onDocumentDeleteHandler);
 
 app.use('/api/articles', router);
 
