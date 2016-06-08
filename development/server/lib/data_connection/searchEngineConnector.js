@@ -4,6 +4,7 @@
 //var async = require('async');
 var config = require(__dirname + '/../config/config');
 var request = require('request');
+var path = require('path');
 
 var uri = config.oss.protocol + '://' + config.oss.hostname + ':' + config.oss.port;
 
@@ -19,6 +20,7 @@ searchEngineConnector.pushCrawler = function () {
                 if(!crawlerResponse || !crawlerResponse.successful) {
                     reject(new Error('Could not push Search Engine Crawler to index new article contents: request to search engine was unsuccessful'));
                 } else {
+                    console.log(body);
                     resolve();
                 }
             } else {
@@ -47,14 +49,6 @@ searchEngineConnector.searchArticles = function (q) {
             ],
             "snippets": [
                 {
-                    "field": "title",
-                    "tag": "em",
-                    "separator": "...",
-                    "maxSize": 50,
-                    "maxNumber": 1,
-                    "fragmenter": "NO"
-                },
-                {
                     "field": "content",            //Get snippet from document content, do not touch!
                     "tag": "em",                //Html tag to highlight keyword in snippet
                     "separator": "...",            //Shortener for snippet, do not touch!
@@ -63,7 +57,7 @@ searchEngineConnector.searchArticles = function (q) {
                     "fragmenter": "SENTENCE"        //Do not touch!
                 }
             ],
-            "enableLog": false,                    //Do not touch!
+            "enableLog": config.oss.enableLog,                    //Do not touch!
             "searchFields": [                    //Fields to search in, do not touch!
                 {
                     "field": "title",
@@ -86,15 +80,58 @@ searchEngineConnector.searchArticles = function (q) {
             if (err) {
                 reject(err);
             } else {
-                var searchQueryResponse = JSON.parse(body);
-                if(!searchQueryResponse || !searchQueryResponse.successful) {
-                    reject('Search query could not be processed: request to search engine was unsuccessful')
+                // var searchQueryResponse = JSON.parse(body);
+                //body is already a parsed json for some reason...
+                if(!body || !body.successful || !Array.isArray(body.documents)) {
+                    reject('Search query could not be processed: request to search engine was unsuccessful');
                 } else {
-                    //TODO filter not required fields?
-                    resolve(searchQueryResponse);
+                    var searchResult = [];
+                    //original order must be preserved due to the score sorting in each search result
+                    for(var i = 0; i < body.documents.length; ++i) {
+                        var filepath = null;
+                        var textSnippet = null;
+                        var fields = body.documents[i].fields;
+                        if(Array.isArray(fields)) {
+                            for(var j = 0; j < fields.length; ++j) {
+                                var field = fields[j];
+                                if(field.fieldName && field.fieldName === 'url' && Array.isArray(field.values)) {
+                                    filepath = field.values[0];
+                                }
+                            }
+                        }
+
+                        var snippets = body.documents[i].snippets;
+                        if(Array.isArray(snippets)) {
+                            for(var j = 0; j < snippets.length; ++j) {
+                                var snippet = snippets[j];
+                                if(snippet.fieldName && snippet.fieldName === 'content' && Array.isArray(snippet.values)) {
+                                    textSnippet = snippet.values[0];
+                                }
+                            }
+                        }
+
+                        if(!filepath) {
+                            reject('Search query could not be processed: json schema of the result is unsupported');
+                        } else {
+                            searchResult[i] = {
+                                id: filterArticleIdFromFilePath(filepath),
+                                filename: decodeURI(path.basename(filepath)),
+                                text: textSnippet
+                            };
+                        }
+                    }
+                    resolve(searchResult);
                 }
             }
         });
     });
 
+}
+
+function filterArticleIdFromFilePath(filepath) {
+    var documentDir = path.dirname(filepath);
+    var lastIndexOfSlash = documentDir.lastIndexOf('/');
+    var lastIndexOfBackslash = documentDir.lastIndexOf('\\');
+    var articleIdStartIndex = Math.max(lastIndexOfSlash, lastIndexOfBackslash) + 1;
+    return documentDir.substr(articleIdStartIndex);
 }

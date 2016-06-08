@@ -35,6 +35,7 @@ module.exports = extend(
             hostname: 'localhost',
             port: 9090,
             protocol: 'http',
-            indexName: 'file_index'
+            indexName: 'file_index',
+            enableLog: true
         }
     }, params);
