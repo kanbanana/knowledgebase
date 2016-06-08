@@ -32,7 +32,11 @@ function onArticleCreateHandler(req, res) {
 }
 
 function middlewareCeckTitte(req, res, next) {
+<<<<<<< HEAD
+    if (req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+=======
     if(req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+>>>>>>> develop
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
@@ -113,10 +117,13 @@ function articleSchemaToResponseArticle(articleSchema) {
     return responseArticle;
 }
 
+<<<<<<< HEAD
 function multipleArticleSchemaToResponseArticles(articleSchemas) {
     articleSchemas.forEach(function (articleSchema) {
         articleSchemaToResponseArticle(articleSchema);
     });
 }
 
+=======
+>>>>>>> develop
 module.exports = router;

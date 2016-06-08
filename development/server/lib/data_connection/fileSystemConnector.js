@@ -100,7 +100,9 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
                 if (!isTemporary) {
                     return cb();
                 }
-                fs.move(pathContainer.tempFolderPath, pathContainer.permFolderPath, cb);
+                fs.remove(pathContainer.permFolderPath, function(err) {
+                    fs.move(pathContainer.tempFolderPath, pathContainer.permFolderPath, cb);
+                });
             },
             function (cb) {
                 fs.writeFile(pathContainer.fullNameOfCurrentArticleContentFile, content, cb);
@@ -238,7 +240,6 @@ function getFolderForArticle(articleId, uploadDir, cb) {
     var targetFilePath = path.join(uploadPath, articleId);
     var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
-        cb(err, targetFilePath, targetFileLink);
+        cb(null, targetFilePath, targetFileLink); //TODO: fixme first param should be error
     });
 }
-

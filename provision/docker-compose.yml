@@ -2,7 +2,7 @@ version: '2'
 services:
   nodeserver:
     build:
-      context: .
+      context: ../development/server/
     environment:
       - DATABASE_ADDR=mongo
     links:
@@ -14,11 +14,9 @@ services:
   mongo:
     image: mongo
   nginx:
-    image: nginx
+    build:
+     context: nginx/
     links:
       - nodeserver
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/api.conf:ro
-      - ../client:/usr/share/nginx/html:ro
   ossserver:
     image: ossserver
