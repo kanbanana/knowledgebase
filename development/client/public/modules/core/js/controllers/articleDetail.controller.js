@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$http', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $http) {
+angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$cookies', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $cookies) {
     $scope.article = {
         text: ''
     }
@@ -114,7 +114,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             'searchreplace wordcount visualblocks visualchars code fullscreen',
             'insertdatetime media nonbreaking save table contextmenu directionality',
             'emoticons template paste textcolor colorpicker textpattern imagetools',
-            'bdesk_photo', 'reference_manager'
+            'bdesk_photo'
         ],
         table_default_styles: {width: '80%'},
         menubar: false,
@@ -123,6 +123,23 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
         $scope.article = response.data;
+        var lastSeenArticles = $cookies.get("lastSeenArticles")
+        if (lastSeenArticles) {
+            var articles = new Array();
+            var lastSeenArticlesArray = lastSeenArticles.split(",")
+            articles.push($stateParams.articleId);
+            var articleCookieIndex = lastSeenArticles.indexOf($stateParams.articleId);
+            if(articleCookieIndex > -1) {
+                lastSeenArticlesArray.splice(articleCookieIndex, 1);
+            }
+            articles.concat(lastSeenArticlesArray);
+            $cookies.put("lastSeenArticles", articles)
+        } else {
+            var article = new Array();
+            article.push($stateParams.articleId)
+            $cookies.put("lastSeenArticles", article)
+        }
+
 
 
         $scope.articleServerVer = $scope.article;
