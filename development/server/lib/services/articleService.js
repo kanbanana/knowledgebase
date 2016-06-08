@@ -82,21 +82,63 @@ articleService.getArticleContent = function (articleId) {
 })();
 
 articleService.searchArticles = function (q) {
-    var author = q.match(/author:([^\s]*)/)[1];
-    var onlyAuthor = q.match(/^author:([^\s]*)$/);
+    var author = q.match(/author:([^\s]+)/)[1];
+    var onlyAuthor = q.match(/^author:([^\s]+)$/);
     // remove author from search terms
-    var search = q.replace(/(author:[^\s]*)/, '');
+    var search = q.replace(/(author:[^\s]+)/, '');
 
     return new Promise(function (resolve, reject) {
         if (!onlyAuthor) {
             searchEngineConnector.searchArticles(search).then(function (searchResults) {
-                //TODO map search results to articles
+                var ids = [];
+                searchResults.forEach(function(searchResult) {
+                    if(!ids.contains(searchResult.id)) {
+                        ids.push(searchResult.id);
+                    }
+                });
 
-                if (author) {
-                    //TODO: filter searchResults by author (where to get author field?)
-                }
-                //TODO add metadata and convert to search results schema (specification needed)
-                resolve(searchResults);
+                databaseConnector.findArticlesByIds(ids).then(function (articles) {
+                    // sort articles like search results
+                    articles = articles.sort(function (a, b) {
+                        return ids.indexOf(a._id+'') - ids.indexOf(b._id+'');
+                    });
+
+                    // map search results to articles
+                    articles.forEach(function (article) {
+                        searchResults.forEach(function (searchResult) {
+                            if (article._id+'' === searchResult.id) {
+                                if (searchResult.filename === config.articleContentFileName) {
+                                    article.text = searchResult.text;
+                                    //TODO title handling?
+                                } else {
+                                    article.documents.forEach(function (document){
+                                        if (document.name + '.' + document.filetype === searchResult.filename) {
+                                            document.containsSearchText = true;
+                                            if (!article.text) {
+                                                article.text = searchResult.text;
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+
+                    // filter searchResults by author
+                    if (author) {
+                        var spliceIndexes = [];
+                        articles.forEach(function (author, id){
+                            if (article.author !== author) {
+                                spliceIndexes.push(id);
+                            }
+                        });
+                        spliceIndexes.forEach(function (index){
+                            articles = articles.splice(index, 1);
+                        });
+                    }
+
+                    resolve(articles);
+                }, reject);
             });
         } else { //onlyAuthor
             databaseConnector.findArticlesByAuthor(author).then(function (articles) {

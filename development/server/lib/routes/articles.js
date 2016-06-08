@@ -80,8 +80,7 @@ function onArticleGetHandler(req, res) {
 
 function onArticleSearchHandler(req, res) {
     articleService.searchArticles(req.query.q).then(function (searchResults) {
-        //TODO implement right
-        res.send(searchResults);
+        res.send(multipleArticleSchemaToResponseArticles(searchResults));
     }, function (error) {
         res.status(500).send(error);
     });
@@ -114,9 +113,11 @@ function articleSchemaToResponseArticle(articleSchema) {
 }
 
 function multipleArticleSchemaToResponseArticles(articleSchemas) {
+    var responseArticles = [];
     articleSchemas.forEach(function (articleSchema) {
-        articleSchemaToResponseArticle(articleSchema);
+        responseArticles.push(articleSchemaToResponseArticle(articleSchema));
     });
+    return responseArticles;
 }
 
 module.exports = router;
