@@ -3,12 +3,12 @@ var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema({
     author: {
-        name: {type: String, default: ""},
-        email: {type: String, default: ""}
+        name: {type: String, default: ''},
+        email: {type: String, default: ''}
     },
     lastChangedBy: {
-        name: {type: String, default: ""},
-        email: {type: String, default: ""}
+        name: {type: String, default: ''},
+        email: {type: String, default: ''}
     },
     documents: [{
         filetype: String,

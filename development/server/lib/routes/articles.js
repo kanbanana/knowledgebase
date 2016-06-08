@@ -59,7 +59,7 @@ router.middlewareCeckAutherMail = function(req, res, next) {
 router.onArticleSaveHandler = function(req, res) {
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
         articleService.getArticleContent(article._id).then(function(articleContent) {
-            var responseArticle = articleSchemaToResponseArticle(article);
+            var responseArticle = router.articleSchemaToResponseArticle(article);
             responseArticle.text = articleContent;
             res.send(responseArticle);
         });

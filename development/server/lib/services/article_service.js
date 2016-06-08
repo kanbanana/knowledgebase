@@ -12,11 +12,11 @@ articleService.createArticle = function () {
 
 articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
-        var authorName = "";
-        var authorMail = "";
+        var authorName = '';
+        var authorMail = '';
         if (author) {
-            authorName = author.name || "";
-            authorMail = author.email || "";
+            authorName = author.name || '';
+            authorMail = author.email || '';
         }
 
         fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(
@@ -67,7 +67,7 @@ articleService.getArticleContent = function (articleId) {
     });
 };
 
-function deleteTemporises() {
+articleService.deleteTemporaryArticles = function(){
     databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
         articles.forEach(function (article) {
             fileSystemConnector.deleteArticle(article._id).then(function () {
@@ -78,8 +78,4 @@ function deleteTemporises() {
         });
         console.log(articles);
     });
-}
-
-(function () {
-    setInterval(deleteTemporises, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
-})();
+};

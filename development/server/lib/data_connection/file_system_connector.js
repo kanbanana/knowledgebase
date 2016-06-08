@@ -110,10 +110,6 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
     });
 };
 
-fileSystemConnector.saveFileTemp = function (document, articleId) {
-    return fileSystemConnector.saveDocument(document, articleId, true);
-};
-
 fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     articleId += '';
     return new Promise(function (resolve, reject) {
@@ -227,7 +223,7 @@ function getOldFolderForArticle(articleId, cb) {
 }
 
 function getFolderForArticle(articleId, uploadDir, cb) {
-    var uploadPath = path.join(__projectDir, uploadDir) + '/';
+    var uploadPath = path.join(__dirname, '..', '..', uploadDir) + '/';
     var targetFilePath = path.join(uploadPath, articleId);
     var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
