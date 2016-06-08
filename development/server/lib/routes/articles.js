@@ -91,3 +91,19 @@ router.articleSchemaToResponseArticle = function(articleSchema) {
     return responseArticle;
 };
 
+
+router.onArticleDeleteHandler = function(req,res){
+    articleService.deleteArticle(req.article._id).then(function() {
+        res.send(true);
+    }, function(err){
+        res.status(500).send(err);
+    });
+};
+
+router.onDocumentDeleteHandler = function(req,res){
+    articleService.deleteDocument(req.article, req.params.filename).then(function() {
+        res.send(true);
+    }, function(err){
+        res.status(500).send(err);
+    });
+};

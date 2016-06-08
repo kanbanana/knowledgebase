@@ -18,11 +18,11 @@ databaseConnector.createArticle = function () {
     });
 };
 
-databaseConnector.addDocumentToArticle = function(article, storageInfo) {
+databaseConnector.addDocumentToArticle = function (article, storageInfo) {
     return new Promise(function (resolve, reject) {
         article.documents.push(storageInfo);
         article.save(function (err) {
-            if(err) {
+            if (err) {
                 return reject(err);
             }
 
@@ -31,22 +31,8 @@ databaseConnector.addDocumentToArticle = function(article, storageInfo) {
     });
 };
 
-databaseConnector.saveArticle = function (article, title, authorName, authorMail) {
+databaseConnector.saveArticle = function (article) {
     return new Promise(function (resolve, reject) {
-        article.title = title;
-        if (!article.author.name && !article.author.email) {
-            article.author.name = authorName;
-            article.author.email = authorMail;
-        }
-
-        article.lastChangedBy.name = authorName;
-        article.lastChangedBy.email = authorMail;
-        article.isTemporary = false;
-
-        article.documents.forEach(function(document) {
-            document.path = path.join(config.fileLinkPrefix, config.uploadDirPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
-        });
-
         article.save(function (error) {
             if (error) {
                 return reject(error);
@@ -89,5 +75,19 @@ databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
         });
     });
 };
+
+databaseConnector.deleteArticles = function (articleId) {
+    return new Promise(function (resolve, reject) {
+        var queryOptions = {_id: articleId};
+        Article.remove(queryOptions, function (deleteErr) {
+            if (deleteErr) {
+                return reject(deleteErr);
+            }
+
+            resolve();
+        });
+    });
+};
+
 
 

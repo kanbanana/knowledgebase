@@ -179,6 +179,29 @@ fileSystemConnector.extractHTMLBodyContent = function(content) {
     return content;
 };
 
+fileSystemConnector.getPathToDocumentUnsafe = function(article, document) {
+    var filePath;
+    if(article.isTemporary) {
+        filePath = getTempFolderForArticle(article._id);
+    } else {
+        filePath = getPermFolderForArticle(article._id);
+    }
+
+    return path.join(filePath, document.name + '.' + document.filetype)
+};
+
+fileSystemConnector.deleteDocument = function(filePath) {
+    return new Promise(function(resolve, reject){
+        fs.remove(filePath, function(err){
+           if(err) {
+               return reject(err);
+           }
+
+            resolve(true);
+        });
+    });
+};
+
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
 
@@ -227,22 +250,27 @@ function getFilenameLike(pathToFile, cb) {
 }
 
 function getPermFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadDirPerm, cb);
+    return getFolderForArticle(articleId, config.uploadDirPerm, cb);
 }
 
 function getTempFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadDirTmp, cb);
+    return getFolderForArticle(articleId, config.uploadDirTmp, cb);
 }
 
 function getOldFolderForArticle(articleId, cb) {
-    getFolderForArticle(articleId, config.uploadDirOld, cb);
+    return getFolderForArticle(articleId, config.uploadDirOld, cb);
 }
 
 function getFolderForArticle(articleId, uploadDir, cb) {
+    articleId = articleId+'';
     var uploadPath = path.join(__dirname, '..', '..', uploadDir) + '/';
     var targetFilePath = path.join(uploadPath, articleId);
     var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
-        cb(null, targetFilePath, targetFileLink); //TODO: fixme first param should be error
+        if(cb) {
+            cb(null, targetFilePath, targetFileLink); //TODO: fixme first param should be error
+        }
     });
+
+    return targetFilePath
 }
