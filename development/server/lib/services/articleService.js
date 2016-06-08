@@ -104,6 +104,19 @@ articleService.searchArticles = function (q) {
                         return ids.indexOf(a._id+'') - ids.indexOf(b._id+'');
                     });
 
+                    // filter articles by author
+                    if (author) {
+                        var spliceIndexes = [];
+                        articles.forEach(function (author, id){
+                            if (article.author !== author) {
+                                spliceIndexes.push(id);
+                            }
+                        });
+                        for (var i = spliceIndexes.length-1; i >= 0; i--) {
+                            articles = articles.splice(spliceIndexes[i], 1);
+                        }
+                    }
+
                     // map search results to articles
                     articles.forEach(function (article) {
                         searchResults.forEach(function (searchResult) {
@@ -127,19 +140,6 @@ articleService.searchArticles = function (q) {
                             }
                         });
                     });
-
-                    // filter searchResults by author
-                    if (author) {
-                        var spliceIndexes = [];
-                        articles.forEach(function (author, id){
-                            if (article.author !== author) {
-                                spliceIndexes.push(id);
-                            }
-                        });
-                        spliceIndexes.forEach(function (index){
-                            articles = articles.splice(index, 1);
-                        });
-                    }
 
                     resolve(articles);
                 }, reject);
