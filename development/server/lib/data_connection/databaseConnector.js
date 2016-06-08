@@ -1,5 +1,6 @@
 var Article = require(__dirname + '/models').Article;
 var config = require(__dirname + '/../config/config');
+var ObjectId = require('mongoose').Types.ObjectId;
 var path = require('path');
 
 var databaseConnector = module.exports = {};
@@ -72,11 +73,11 @@ databaseConnector.findArticlesByIds = function (ids) {
     return new Promise(function (resolve, reject) {
         var inIds = [];
         ids.forEach(function (id) {
-            inIds.push(new mongoose.Types.ObjectId(id));
+            inIds.push(new ObjectId(id));
         });
 
         var queryOptions = { _id: { $in: inIds }};
-        Article.find(queryOptions, function (findErr, result) {
+        Article.find(queryOptions).lean().exec(function (findErr, result) {
             if (findErr) {
                 return reject(findErr);
             }

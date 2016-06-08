@@ -19,11 +19,10 @@ articleService.saveArticle = function (article, title, content, author) {
             authorMail = author.email || "";
         }
 
-        fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(
-            function () {
-                databaseConnector.saveArticle(article, title, authorName, authorMail).then(resolve, reject);
-            }
-            , reject);
+        fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(function () {
+            databaseConnector.saveArticle(article, title, authorName, authorMail).then(resolve, reject);
+            searchEngineConnector.updateIndex();
+        }, reject);
     });
 };
 
@@ -35,6 +34,7 @@ articleService.saveDocument = function (article, document) {
     return new Promise(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
             databaseConnector.addDocumentToArticle(article, storageInfo).then(resolve, reject);
+            searchEngineConnector.updateIndex();
         }, reject);
     });
 };
@@ -83,17 +83,25 @@ articleService.getArticleContent = function (articleId) {
 
 articleService.searchArticles = function (q) {
     // captures author:foobar and author:'foo bar'
-    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i)[1];
+    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i);
     var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
     // remove author from search terms
     var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/i, '');
 
+    if (author) {
+        author = author[1];
+    }
+
     return new Promise(function (resolve, reject) {
         if (!onlyAuthor) {
             searchEngineConnector.searchArticles(search).then(function (searchResults) {
+                if (searchResults.length === 0) {
+                    return resolve(searchResults);
+                }
+
                 var ids = [];
-                searchResults.forEach(function(searchResult) {
-                    if(!ids.contains(searchResult.id)) {
+                searchResults.forEach(function (searchResult) {
+                    if (ids.indexOf(searchResult.id) < 0) {
                         ids.push(searchResult.id);
                     }
                 });
@@ -101,34 +109,38 @@ articleService.searchArticles = function (q) {
                 databaseConnector.findArticlesByIds(ids).then(function (articles) {
                     // sort articles like search results
                     articles = articles.sort(function (a, b) {
-                        return ids.indexOf(a._id+'') - ids.indexOf(b._id+'');
+                        return ids.indexOf(a._id + '') - ids.indexOf(b._id + '');
                     });
 
                     // filter articles by author
                     if (author) {
                         var spliceIndexes = [];
-                        articles.forEach(function (author, id){
+                        articles.forEach(function (author, id) {
                             if (article.author !== author) {
                                 spliceIndexes.push(id);
                             }
                         });
-                        for (var i = spliceIndexes.length-1; i >= 0; i--) {
+                        for (var i = spliceIndexes.length - 1; i >= 0; i--) {
                             articles = articles.splice(spliceIndexes[i], 1);
                         }
                     }
 
+                    var promiseList = [];
+
                     // map search results to articles
                     articles.forEach(function (article) {
                         searchResults.forEach(function (searchResult) {
-                            if (article._id+'' === searchResult.id) {
+                            if (article._id + '' === searchResult.id) {
                                 if (searchResult.filename === config.articleContentFileName) {
                                     if (searchResult.text) {
                                         article.text = searchResult.text;
                                     } else {
-                                        //TODO load snippet from fs
+                                        promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                                            article.text = content.substring(0, 200);
+                                        }));
                                     }
                                 } else {
-                                    article.documents.forEach(function (document){
+                                    article.documents.forEach(function (document) {
                                         if (document.name + '.' + document.filetype === searchResult.filename) {
                                             document.containsSearchText = true;
                                             if (!article.text) {
@@ -141,7 +153,13 @@ articleService.searchArticles = function (q) {
                         });
                     });
 
-                    resolve(articles);
+                    if (promiseList.length > 0) {
+                        Promise.all(promiseList).then(function (result) {
+                            resolve(articles);
+                        });
+                    } else {
+                        resolve(articles);
+                    }
                 }, reject);
             });
         } else { //onlyAuthor

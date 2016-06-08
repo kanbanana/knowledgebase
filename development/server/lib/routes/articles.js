@@ -64,7 +64,6 @@ function onArticleSaveHandler(req, res) {
             responseArticle.text = articleContent;
             res.send(responseArticle);
         });
-
     }, function(error) {
         res.status(500).send(error);
     });
@@ -79,11 +78,15 @@ function onArticleGetHandler(req, res) {
 }
 
 function onArticleSearchHandler(req, res) {
-    articleService.searchArticles(req.query.q).then(function (searchResults) {
-        res.send(multipleArticleSchemaToResponseArticles(searchResults));
-    }, function (error) {
-        res.status(500).send(error);
-    });
+    if(req.query.q) {
+        articleService.searchArticles(req.query.q).then(function (searchResults) {
+            res.send(multipleArticleSchemaToResponseArticles(searchResults));
+        }, function (error) {
+            res.status(500).send(error);
+        });
+    } else {
+        res.status(404).send('404 - not found');
+    }
 }
 
 
@@ -100,16 +103,15 @@ router.post('/', onArticleCreateHandler);
 router.get('/', onArticleSearchHandler);
 
 function articleSchemaToResponseArticle(articleSchema) {
-    var responseArticle = articleSchema.toJSON();
-    responseArticle.id = responseArticle._id;
-    delete responseArticle._id;
-    delete responseArticle.__v;
+    articleSchema.id = articleSchema._id;
+    delete articleSchema._id;
+    delete articleSchema.__v;
 
-    responseArticle.documents.forEach(function(document) {
+    articleSchema.documents.forEach(function(document) {
         delete document._id;
     });
 
-    return responseArticle;
+    return articleSchema;
 }
 
 function multipleArticleSchemaToResponseArticles(articleSchemas) {
