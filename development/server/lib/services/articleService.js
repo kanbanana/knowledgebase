@@ -82,10 +82,11 @@ articleService.getArticleContent = function (articleId) {
 })();
 
 articleService.searchArticles = function (q) {
-    var author = q.match(/author:([^\s]+)/)[1];
-    var onlyAuthor = q.match(/^author:([^\s]+)$/);
+    // captures author:foobar and author:'foo bar'
+    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i)[1];
+    var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
     // remove author from search terms
-    var search = q.replace(/(author:[^\s]+)/, '');
+    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/i, '');
 
     return new Promise(function (resolve, reject) {
         if (!onlyAuthor) {
@@ -108,8 +109,11 @@ articleService.searchArticles = function (q) {
                         searchResults.forEach(function (searchResult) {
                             if (article._id+'' === searchResult.id) {
                                 if (searchResult.filename === config.articleContentFileName) {
-                                    article.text = searchResult.text;
-                                    //TODO title handling?
+                                    if (searchResult.text) {
+                                        article.text = searchResult.text;
+                                    } else {
+                                        //TODO load snippet from fs
+                                    }
                                 } else {
                                     article.documents.forEach(function (document){
                                         if (document.name + '.' + document.filetype === searchResult.filename) {
