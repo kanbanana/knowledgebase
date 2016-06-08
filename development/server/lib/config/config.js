@@ -28,6 +28,6 @@ module.exports = extend(
         postBodyValidationValues: {
             maxArticleTitleLength: 1000,
             maxArticleAuthorEmailLength: 255,
-            maxArticleAuthorNameLength: 1000,
+            maxArticleAuthorNameLength: 1000
         }
     }, params);

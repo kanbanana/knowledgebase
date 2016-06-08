@@ -18,6 +18,7 @@ articleService.saveArticle = function (article, title, content, author) {
             authorMail = author.email || "";
         }
 
+        content = fileSystemConnector.wrapContentInHTMLBody(content, title);
         fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(
             function () {
                 databaseConnector.saveArticle(article, title, authorName, authorMail).then(resolve, reject);
@@ -59,6 +60,7 @@ articleService.saveDocuments = function (article, documents) {
 articleService.getArticleContent = function (articleId) {
     return new Promise(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
+            content = fileSystemConnector.extractHTMLBodyContent(content);
             resolve(content);
         }, function(err) {
             resolve('');

@@ -174,7 +174,21 @@ fileSystemConnector.readArticleContent = function(articleId) {
             });
         });
     });
-}
+};
+
+fileSystemConnector.wrapContentInHTMLBody = function(content, title) {
+    return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
+};
+
+fileSystemConnector.extractHTMLBodyContent = function(content) {
+    var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
+
+    content.replace(reg, function(match, bodyStartTag, bodyContent){
+        content = bodyContent;
+    });
+
+    return content;
+};
 
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
