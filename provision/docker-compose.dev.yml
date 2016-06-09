@@ -15,8 +15,10 @@ services:
     build: dev/node
     environment:
       - DATABASE_ADDR=mongo
+      - OSS_ADDR=oss
     ports:
       - "3000:3000"
+      - "5858:5858"
     links:
       - mongo
       - oss
@@ -26,12 +28,13 @@ services:
     volumes:
       - ../development/server:/usr/src/app
   nginx:
-    image: nginx
+    build: dev/nginx
     ports:
      - "8080:80"
     volumes:
       - ./dev/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ../development/client/dist:/usr/share/nginx/html
+      - ../development/server/uploads:/usr/share/nginx/files
     depends_on:
       - nodeserver
     links: 
