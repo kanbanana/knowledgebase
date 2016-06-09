@@ -175,7 +175,7 @@ fileSystemConnector.readOldArticleContentAndTitle = function(articleId) {
                 if (err) {
                     return reject(err);
                 }
-                returnValue.content = contentBuffer.toString();
+                returnValue.content = fileSystemConnector.extractHTMLBodyContent(contentBuffer.toString());
                 returnValue.title = ''; // TODO: MARTIN - insert logic for extracting title from content
                 resolve(returnValue);
             });
