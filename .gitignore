@@ -240,10 +240,6 @@ $RECYCLE.BIN/
 **/opensearchserver/**
 
 
-## Project-specific files
+## upload folders
 development/server/uploads/
-development/server/uploadsTemp/
-development/server/config/params.json
-development/server/uploads/*
-!development/server/uploads/
 development/server/uploads_temp/

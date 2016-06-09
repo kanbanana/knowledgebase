@@ -26,5 +26,13 @@ module.exports =
         maxArticleTitleLength: 1000,
         maxArticleAuthorEmailLength: 255,
         maxArticleAuthorNameLength: 1000
+    },
+
+    oss: {
+        hostname: 'localhost',
+        port: 9090,
+        protocol: 'http',
+        indexName: 'file_index',
+        queryName: 'search'
     }
 };

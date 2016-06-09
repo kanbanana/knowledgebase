@@ -28,7 +28,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 // Define Routes
 router.all('/:articleId*',articles.middlewareRetrieveArticle);
 router.get('/:articleId', articles.onArticleGetHandler);
-router.put('/:articleId', articles.middlewareCeckAutherMail, articles.middlewareCeckAutherName, articles.middlewareCeckTitle, articles.onArticleSaveHandler);
+router.get('/', articles.onArticleSearchHandler);
+router.put('/:articleId', articles.middlewareCheckAutherMail, articles.middlewareCheckAutherName, articles.middlewareCheckTitle, articles.onArticleSaveHandler);
 router.post('/:articleId/documents', upload.array('documents'), articles.onDocumentUploadHandler);
 router.post('/', articles.onArticleCreateHandler);
 router.delete('/:articleId', articles.onArticleDeleteHandler);

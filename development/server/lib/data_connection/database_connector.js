@@ -1,5 +1,6 @@
 var Article = require('./models').Article;
 var config = require('./../config/config');
+var ObjectId = require('mongoose').Types.ObjectId;
 var path = require('path');
 
 var databaseConnector = module.exports = {};
@@ -54,6 +55,38 @@ databaseConnector.findArticleById = function (id) {
     });
 };
 
+databaseConnector.findArticlesByIds = function (ids) {
+    return new Promise(function (resolve, reject) {
+        var inIds = [];
+        ids.forEach(function (id) {
+            inIds.push(new ObjectId(id));
+        });
+
+        var queryOptions = { _id: { $in: inIds }};
+        Article.find(queryOptions, function (findErr, result) {
+            if (findErr) {
+                return reject(findErr);
+            }
+            resolve(result);
+        });
+    });
+};
+
+databaseConnector.findArticlesByAuthor = function (author) {
+    return new Promise(function (resolve, reject) {
+        var queryOptions = {$or: [
+            {'author.name': new RegExp('.*' + author + '.*', 'i')},
+            {'lastChangedBy.name': new RegExp('.*' + author + '.*', 'i')}
+        ]};
+        Article.find(queryOptions, function (findErr, result) {
+            if (findErr) {
+                return reject(findErr);
+            }
+            resolve(result);
+        });
+    });
+};
+
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     var date = new Date();
     date.setHours(date.getHours() - ageInHours);
@@ -88,6 +121,3 @@ databaseConnector.deleteArticles = function (articleId) {
         });
     });
 };
-
-
-

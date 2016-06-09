@@ -1,6 +1,7 @@
 var asyncLib = require('async');
 var fileSystemConnector = require('../data_connection/file_system_connector');
 var databaseConnector = require('../data_connection/database_connector');
+var searchEngineConnector = require('../data_connection/search_engine_connector');
 var config = require('../config/config');
 var path = require('path');
 
@@ -9,7 +10,6 @@ var articleService = module.exports = {};
 articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
-
 
 articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
@@ -21,12 +21,11 @@ articleService.saveArticle = function (article, title, content, author) {
         }
 
         content = fileSystemConnector.wrapContentInHTMLBody(content, title);
-        fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(
-            function () {
-                updateArticle(article, title, authorName, authorMail);
-                databaseConnector.saveArticle(article).then(resolve, reject);
-            }
-            , reject);
+        fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(function () {
+            updateArticle(article, title, authorName, authorMail);
+            databaseConnector.saveArticle(article).then(resolve, reject);
+            searchEngineConnector.updateIndex();
+        }, reject);
     });
 };
 
@@ -38,6 +37,7 @@ articleService.saveDocument = function (article, document) {
     return new Promise(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
             databaseConnector.addDocumentToArticle(article, storageInfo).then(resolve, reject);
+            searchEngineConnector.updateIndex();
         }, reject);
     });
 };
@@ -59,11 +59,9 @@ articleService.saveDocuments = function (article, documents) {
     });
 };
 
-
 articleService.getArticleContent = function (articleId) {
     return new Promise(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
-            content = fileSystemConnector.extractHTMLBodyContent(content);
             resolve(content);
         }, function() {
             resolve('');
@@ -71,14 +69,25 @@ articleService.getArticleContent = function (articleId) {
     });
 };
 
+articleService.getOldArticleContentAndTitle = function(articleId) {
+    return new Promise(function(resolve) {
+        fileSystemConnector.readOldArticleContentAndTitle(articleId).then(function(contentAndTitle) {
+            resolve(contentAndTitle);
+        }, function() {
+            resolve('');
+        });
+    });
+}
+
 articleService.deleteArticle = function(articleId){
     var promiseList = [
         fileSystemConnector.deleteArticle(articleId),
         databaseConnector.deleteArticles(articleId)
     ];
 
-    return Promise.all(promiseList)
-
+    return Promise.all(promiseList).then(function () {
+        searchEngineConnector.updateIndex();
+    });
 };
 
 articleService.deleteTemporaryArticles = function(){
@@ -96,6 +105,9 @@ articleService.deleteTemporaryArticles = function(){
 
 articleService.deleteDocument = function(article, filename){
     var document = removeFileFromArticle(article, filename);
+    if (!document) {
+        return Promise.reject(new Error('Document not found'));
+    }
     var docPath = fileSystemConnector.getPathToDocumentUnsafe(article, document);
 
     var promiseList = [
@@ -103,7 +115,9 @@ articleService.deleteDocument = function(article, filename){
         databaseConnector.saveArticle(article)
     ];
 
-    return Promise.all(promiseList)
+    return Promise.all(promiseList).then(function () {
+        searchEngineConnector.updateIndex();
+    });
 };
 
 /**
@@ -152,3 +166,128 @@ function removeFileFromArticle(article, filename) {
 
     return hasFound;
 }
+
+articleService.searchArticles = function (q) {
+    // captures author:foobar and author:'foo bar'
+    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i);
+    var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
+    // remove author from search terms
+    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/i, '');
+
+    if (author) {
+        author = author[1];
+    }
+
+    return new Promise(function (resolve, reject) {
+        if (!onlyAuthor) {
+            searchEngineConnector.searchArticles(search).then(function (searchResults) {
+                if (searchResults.length === 0) {
+                    return resolve(searchResults);
+                }
+
+                var ids = [];
+                searchResults.forEach(function (searchResult) {
+                    if (ids.indexOf(searchResult.id) < 0) {
+                        ids.push(searchResult.id);
+                    }
+                });
+
+                databaseConnector.findArticlesByIds(ids).then(function (articles) {
+                    // sort articles like search results
+                    articles = articles.sort(function (a, b) {
+                        return ids.indexOf(a._id + '') - ids.indexOf(b._id + '');
+                    });
+
+                    // filter articles by author
+                    if (author) {
+                        var spliceIndexes = [];
+                        articles.forEach(function (author, id) {
+                            if (article.author !== author) {
+                                spliceIndexes.push(id);
+                            }
+                        });
+                        for (var i = spliceIndexes.length - 1; i >= 0; i--) {
+                            articles = articles.splice(spliceIndexes[i], 1);
+                        }
+                    }
+
+                    var promiseList = [];
+
+                    // map search results to articles
+                    articles.forEach(function (article) {
+                        searchResults.forEach(function (searchResult) {
+                            if (article._id + '' === searchResult.id) {
+                                if (searchResult.filename === config.articleContentFileName) {
+                                    if (searchResult.text) {
+                                        article.text = searchResult.text;
+                                    } else {
+                                        promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                                            article.text = content.substring(0, 200);
+                                        }));
+                                    }
+                                } else {
+                                    article.documents.forEach(function (document) {
+                                        if (document.name + '.' + document.filetype === searchResult.filename) {
+                                            document.containsSearchText = true;
+                                            if (!article.text) {
+                                                article.text = searchResult.text;
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+
+                    if (promiseList.length > 0) {
+                        Promise.all(promiseList).then(function (result) {
+                            resolve(articles);
+                        });
+                    } else {
+                        resolve(articles);
+                    }
+                }, reject);
+            });
+        } else { //onlyAuthor
+            databaseConnector.findArticlesByAuthor(author).then(function (articles) {
+                var promiseList = [];
+
+                articles.forEach(function (article) {
+                    promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                        article.text = content.substring(0, 200);
+                    }));
+                });
+
+                if (promiseList.length > 0) {
+                    Promise.all(promiseList).then(function (result) {
+                        resolve(articles);
+                    });
+                } else {
+                    resolve(articles);
+                }
+            });
+        }
+    });
+};
+
+articleService.getArticlesByIds = function (ids) {
+    return new Promise(function (resolve, reject) {
+        databaseConnector.findArticlesByIds(ids).then(function (articles) {
+            var promiseList = [];
+
+            articles.forEach(function (article) {
+                promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                    article.text = content.substring(0, 200);
+                }));
+            });
+
+            if (promiseList.length > 0) {
+                Promise.all(promiseList).then(function (result) {
+                    resolve(articles);
+                });
+            } else {
+                resolve(articles);
+            }
+        });
+    });
+};
