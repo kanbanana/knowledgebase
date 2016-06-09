@@ -26,7 +26,7 @@
 </parser>
 <parser class="com.jaeksoft.searchlib.parser.HtmlParser" defaultCharset="UTF-8" fileOver="" h1_boost="1.8" h2_boost="1.6" h3_boost="1.4" h4_boost="1.2" h5_boost="1.1" h6_boost="1.1" htmlParser="Best score" ignoreLinkNoFollow="false" ignoreMetaNoFollow="false" ignoreMetaNoIndex="false" ignoreNonCanonical="true" ignoreUntitledDocuments="false" name="HTML parser" sizeLimit="33554432" title_boost="2" url_fragment="remove">
 <attributes>
-<attribute name="xPathExclusion">img</attribute>
+<attribute name="xPathExclusion">//img/@src</attribute>
 </attributes>
 <contentType>text/html</contentType>
 <extension>htm</extension>
