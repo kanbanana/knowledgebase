@@ -1,8 +1,9 @@
-var async = require('async');
-var fileSystemConnector = require(__dirname + '/../data_connection/fileSystemConnector');
-var databaseConnector = require(__dirname + '/../data_connection/databaseConnector');
-var searchEngineConnector = require(__dirname + '/../data_connection/searchEngineConnector');
-var config = require(__dirname + '/../config/config');
+var asyncLib = require('async');
+var fileSystemConnector = require('../data_connection/file_system_connector');
+var databaseConnector = require('../data_connection/database_connector');
+var searchEngineConnector = require('../data_connection/search_engine_connector');
+var config = require('../config/config');
+var path = require('path');
 
 var articleService = module.exports = {};
 
@@ -10,17 +11,20 @@ articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
 
+
 articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
-        var authorName = "";
-        var authorMail = "";
+        var authorName = '';
+        var authorMail = '';
         if (author) {
-            authorName = author.name || "";
-            authorMail = author.email || "";
+            authorName = author.name || '';
+            authorMail = author.email || '';
         }
 
+        content = fileSystemConnector.wrapContentInHTMLBody(content, title);
         fileSystemConnector.saveContent(article._id, content, article.isTemporary).then(function () {
-            databaseConnector.saveArticle(article, title, authorName, authorMail).then(resolve, reject);
+            updateArticle(article, title, authorName, authorMail);
+            databaseConnector.saveArticle(article).then(resolve, reject);
             searchEngineConnector.updateIndex();
         }, reject);
     });
@@ -42,7 +46,7 @@ articleService.saveDocument = function (article, document) {
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
     return new Promise(function (resolve, reject) {
-        async.each(documents, function (item, cb) {
+        asyncLib.each(documents, function (item, cb) {
             articleService.saveDocument(article, item).then(function (storageInfo) {
                 storageInfoList.push(storageInfo);
                 cb();
@@ -58,28 +62,103 @@ articleService.saveDocuments = function (article, documents) {
 
 
 articleService.getArticleContent = function (articleId) {
-    return new Promise(function (resolve) {
-        fileSystemConnector.readArticleContent(articleId).then(function (content) {
+    return new Promise(function(resolve) {
+        fileSystemConnector.readArticleContent(articleId).then(function(content) {
+            content = fileSystemConnector.extractHTMLBodyContent(content);
             resolve(content);
-        }, function (err) {
+        }, function() {
             resolve('');
         });
     });
 };
-(function () {
-    setInterval(function () {
-        databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
-            articles.forEach(function (article) {
-                fileSystemConnector.deleteArticle(article._id).then(function () {
-                    },
-                    function (err) {
-                        console.log(err);
-                    });
-            });
-            console.log(articles);
+
+articleService.deleteArticle = function(articleId){
+    var promiseList = [
+        fileSystemConnector.deleteArticle(articleId),
+        databaseConnector.deleteArticles(articleId)
+    ];
+
+    return Promise.all(promiseList).then(function () {
+        searchEngineConnector.updateIndex();
+    });
+};
+
+articleService.deleteTemporaryArticles = function(){
+    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
+        articles.forEach(function (article) {
+            fileSystemConnector.deleteArticle(article._id).then(function () {
+                },
+                function (err) {
+                    console.log(err);
+                });
         });
-    }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
-})();
+        console.log(articles);
+    });
+};
+
+articleService.deleteDocument = function(article, filename){
+    var document = removeFileFromArticle(article, filename);
+    if (!document) {
+        return Promise.reject(new Error('Document not found'));
+    }
+    var docPath = fileSystemConnector.getPathToDocumentUnsafe(article, document);
+
+    var promiseList = [
+        fileSystemConnector.deleteDocument(docPath),
+        databaseConnector.saveArticle(article)
+    ];
+
+    return Promise.all(promiseList).then(function () {
+        searchEngineConnector.updateIndex();
+    });
+};
+
+/**
+ * updateArticle sets the lastChangedBy JSON and the author iff empty.
+ *
+ * @param article
+ * @param title
+ * @param authorName
+ * @param authorMail
+ */
+function updateArticle(article, title, authorName, authorMail) {
+        article.title = title;
+        if (!article.author.name && !article.author.email) {
+            article.author.name = authorName;
+            article.author.email = authorMail;
+        }
+
+        article.lastChangedBy.name = authorName;
+        article.lastChangedBy.email = authorMail;
+        if(article.isTemporary) {
+            article.isTemporary = false;
+            article.documents.forEach(function (document) {
+                document.path = path.join(config.fileLinkPrefix, config.uploadDirPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
+            });
+        }
+}
+
+function removeFileFromArticle(article, filename) {
+    var hasFound = false;
+    article.documents.forEach(function(document, idx) {
+        var tempFilename = document.name + "." + document.filetype;
+        if(filename == tempFilename) {
+            hasFound = document;
+            var tempDocument = article.documents.pop();
+            if(idx !== article.documents.length) {
+                article.documents[idx] = tempDocument;
+            }
+
+            return false;
+        }
+    });
+
+    if(hasFound && article.hasOwnProperty("markModified")) {
+        article.markModified('documents');
+    }
+
+    return hasFound;
+}
 
 articleService.searchArticles = function (q) {
     // captures author:foobar and author:'foo bar'

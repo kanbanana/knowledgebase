@@ -1,8 +1,0 @@
-{
-  /*
-    If you want to change the configs without commiting them to source control, copy this file and
-    remove the "-sample"-postfix.
-    params-sample.json => params.json
-    All settings that are declared in params.json will be overridden in config.js.
-   */
-}
