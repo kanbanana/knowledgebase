@@ -63,7 +63,7 @@ databaseConnector.findArticlesByIds = function (ids) {
         });
 
         var queryOptions = { _id: { $in: inIds }};
-        Article.find(queryOptions).lean().exec(function (findErr, result) {
+        Article.find(queryOptions, function (findErr, result) {
             if (findErr) {
                 return reject(findErr);
             }
@@ -121,6 +121,3 @@ databaseConnector.deleteArticles = function (articleId) {
         });
     });
 };
-
-
-
