@@ -95,7 +95,7 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
                 if (!isTemporary) {
                     return cb();
                 }
-                fs.remove(pathContainer.permFolderPath, function(err) {
+                fs.remove(pathContainer.permFolderPath, function (err) {
                     fs.move(pathContainer.tempFolderPath, pathContainer.permFolderPath, cb);
                 });
             },
@@ -150,9 +150,9 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     });
 };
 
-fileSystemConnector.readArticleContent = function(articleId) {
+fileSystemConnector.readArticleContent = function (articleId) {
     articleId += '';
-    return new Promise (function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         getPermFolderForArticle(articleId, function (err, permFolder) {
             var contentFilePath = path.join(permFolder, config.articleContentFileName);
             fs.readFile(contentFilePath, function (err, contentBuffer) {
@@ -165,9 +165,9 @@ fileSystemConnector.readArticleContent = function(articleId) {
     });
 };
 
-fileSystemConnector.readOldArticleContentAndTitle = function(articleId) {
+fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
-    return new Promise (function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         getOldFolderForArticle(articleId, function (err, oldFolder) {
             var contentFilePath = path.join(oldFolder, config.articleContentFileName);
             fs.readFile(contentFilePath, function (err, contentBuffer) {
@@ -186,10 +186,10 @@ fileSystemConnector.readOldArticleContentAndTitle = function(articleId) {
     });
 };
 
-fileSystemConnector.extractHTMLTitleContent = function(content) {
+fileSystemConnector.extractHTMLTitleContent = function (content) {
     var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
 
-    content.replace(reg, function(match, bodyStartTag, bodyContent){
+    content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
@@ -197,23 +197,23 @@ fileSystemConnector.extractHTMLTitleContent = function(content) {
 };
 
 
-fileSystemConnector.wrapContentInHTMLBody = function(content, title) {
+fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
     return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
 };
 
-fileSystemConnector.extractHTMLBodyContent = function(content) {
+fileSystemConnector.extractHTMLBodyContent = function (content) {
     var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
 
-    content.replace(reg, function(match, bodyStartTag, bodyContent){
+    content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
     return content;
 };
 
-fileSystemConnector.getPathToDocumentUnsafe = function(article, document) {
+fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
     var filePath;
-    if(article.isTemporary) {
+    if (article.isTemporary) {
         filePath = getTempFolderForArticle(article._id);
     } else {
         filePath = getPermFolderForArticle(article._id);
@@ -222,12 +222,12 @@ fileSystemConnector.getPathToDocumentUnsafe = function(article, document) {
     return path.join(filePath, document.name + '.' + document.filetype)
 };
 
-fileSystemConnector.deleteDocument = function(filePath) {
-    return new Promise(function(resolve, reject){
-        fs.remove(filePath, function(err){
-           if(err) {
-               return reject(err);
-           }
+fileSystemConnector.deleteDocument = function (filePath) {
+    return new Promise(function (resolve, reject) {
+        fs.remove(filePath, function (err) {
+            if (err) {
+                return reject(err);
+            }
 
             resolve(true);
         });
@@ -250,6 +250,31 @@ fileSystemConnector.deleteArticle = function (articleId) {
                 resolve(err);
             });
 
+    });
+
+};
+
+fileSystemConnector.isArticleFileExists = function (articleId) {
+    var pathContainer = new PathContainer(articleId);
+    var isExists;
+    return new Promise(function (resolve, reject) {
+        asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
+                pathContainer.loadArticleContentFilePaths.bind(pathContainer),
+                function(cb){
+                    fs.exists(pathContainer.fullNameOfCurrentArticleContentFile, function(exists) {
+                        isExists = exists;
+                        cb();
+                    });
+                }
+            ],
+            function (err) {
+                if (err) {
+                    return reject(err);
+                }
+
+
+                resolve(isExists);
+            });
     });
 
 };
@@ -294,12 +319,12 @@ function getOldFolderForArticle(articleId, cb) {
 }
 
 function getFolderForArticle(articleId, uploadDir, cb) {
-    articleId = articleId+'';
+    articleId = articleId + '';
     var uploadPath = path.join(__dirname, '..', '..', uploadDir) + '/';
     var targetFilePath = path.join(uploadPath, articleId);
     var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
-        if(cb) {
+        if (cb) {
             cb(null, targetFilePath, targetFileLink); //TODO: fixme first param should be error
         }
     });

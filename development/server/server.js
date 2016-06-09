@@ -49,5 +49,9 @@ module.exports.close = function (callback) {
 
 // start the background job that regularly deletes all temporary articles
 (function () {
-    setInterval(articleService.deleteTemporaryArticles, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000);
+    setInterval(function() {
+        articleService.deleteTemporaryArticles();
+        articleService.deleteEmptyArticles();
+    }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000
+    );
 })();
