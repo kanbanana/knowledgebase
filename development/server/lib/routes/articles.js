@@ -71,7 +71,7 @@ function onArticleSaveHandler(req, res) {
 
 function onArticleGetHandler(req, res) {
     articleService.getArticleContent(req.article._id).then(function(articleContent) {
-        var responseArticle = articleSchemaToResponseArticle(req.article);
+        var responseArticle = articleSchemaToResponseArticle(req.article.toJSON());
         responseArticle.text = articleContent;
         res.send(responseArticle);
     });

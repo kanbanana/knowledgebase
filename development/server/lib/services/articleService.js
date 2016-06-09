@@ -164,8 +164,21 @@ articleService.searchArticles = function (q) {
             });
         } else { //onlyAuthor
             databaseConnector.findArticlesByAuthor(author).then(function (articles) {
-                //TODO add content snippet?
-                resolve(articles);
+                var promiseList = [];
+
+                articles.forEach(function () {
+                    promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                        article.text = content.substring(0, 200);
+                    }));
+                });
+
+                if (promiseList.length > 0) {
+                    Promise.all(promiseList).then(function (result) {
+                        resolve(articles);
+                    });
+                } else {
+                    resolve(articles);
+                }
             });
         }
     });
