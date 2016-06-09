@@ -70,7 +70,7 @@ router.onArticleSaveHandler = function(req, res) {
 
 router.onArticleGetHandler = function(req, res) {
     articleService.getArticleContent(req.article._id).then(function(articleContent) {
-        var responseArticle = articleSchemaToResponseArticle(req.article.toJSON());
+        var responseArticle = router.articleSchemaToResponseArticle(req.article.toJSON());
         responseArticle.text = articleContent;
         res.send(responseArticle);
     });
@@ -79,7 +79,7 @@ router.onArticleGetHandler = function(req, res) {
 router.onArticleSearchHandler = function(req, res) {
     if(req.query.q) {
         articleService.searchArticles(req.query.q).then(function (searchResults) {
-            res.send(multipleArticleSchemaToResponseArticles(searchResults));
+            res.send(router.multipleArticleSchemaToResponseArticles(searchResults));
         }, function (error) {
             res.status(500).send(error);
         });
@@ -103,7 +103,7 @@ router.articleSchemaToResponseArticle = function(articleSchema) {
 router.multipleArticleSchemaToResponseArticles = function(articleSchemas) {
     var responseArticles = [];
     articleSchemas.forEach(function (articleSchema) {
-        responseArticles.push(articleSchemaToResponseArticle(articleSchema));
+        responseArticles.push(router.articleSchemaToResponseArticle(articleSchema));
     });
     return responseArticles;
 }
