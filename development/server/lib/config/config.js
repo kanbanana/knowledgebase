@@ -29,8 +29,8 @@ module.exports =
     },
 
     oss: {
-        hostname: 'localhost',
-        port: 9090,
+        hostname: (process.env.OSS_ADDR || 'oss'),
+        port: (process.env.OSS_PORT || 9090),
         protocol: 'http',
         indexName: 'file_index',
         queryName: 'search'
