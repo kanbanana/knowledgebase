@@ -69,6 +69,9 @@ router.onArticleSaveHandler = function(req, res) {
 };
 
 router.onArticleGetHandler = function(req, res) {
+    if(!req.article) {
+        return res.status(404).send('Article not found');
+    }
     articleService.getArticleContent(req.article._id).then(function(articleContent) {
         var responseArticle = router.articleSchemaToResponseArticle(req.article.toJSON());
         responseArticle.text = articleContent;
@@ -86,7 +89,7 @@ router.onArticleSearchHandler = function(req, res) {
     } else {
         res.status(404).send('404 - not found');
     }
-}
+};
 
 router.articleSchemaToResponseArticle = function(articleSchema) {
     articleSchema.id = articleSchema._id;
@@ -98,7 +101,7 @@ router.articleSchemaToResponseArticle = function(articleSchema) {
     });
 
     return articleSchema;
-}
+};
 
 router.multipleArticleSchemaToResponseArticles = function(articleSchemas) {
     var responseArticles = [];

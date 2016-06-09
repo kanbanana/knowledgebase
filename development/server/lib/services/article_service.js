@@ -245,7 +245,7 @@ articleService.searchArticles = function (q) {
             databaseConnector.findArticlesByAuthor(author).then(function (articles) {
                 var promiseList = [];
 
-                articles.forEach(function () {
+                articles.forEach(function (article) {
                     promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
                         article.text = content.substring(0, 200);
                     }));
