@@ -25,6 +25,37 @@ ArticleSchema.pre('save', function (next) {
     next();
 });
 
+var articleSchemaToResponseArticle = function(articleSchema) {
+    var responseArticle = articleSchema.toJSON();
+    responseArticle.id = responseArticle._id;
+    delete responseArticle._id;
+    delete responseArticle.__v;
+    responseArticle.documents.forEach(function(document, index) {
+        delete document._id;
+        if (articleSchema.documents[index].containsSearchText) {
+            document.containsSearchText = true;
+        }
+    });
+
+
+    if (articleSchema.text) {
+        responseArticle.text = articleSchema.text;
+    }
+    return responseArticle;
+
+};
+
+
+var multipleArticleSchemaToResponseArticles = function(articleSchemas) {
+    var responseArticles = [];
+    articleSchemas.forEach(function (articleSchema) {
+        responseArticles.push(articleSchemaToResponseArticle(articleSchema));
+    });
+    return responseArticles;
+}
+
 module.exports = {
     Article: mongoose.model('Article', ArticleSchema),
+    articleSchemaToResponseArticle: articleSchemaToResponseArticle,
+    multipleArticleSchemaToResponseArticles: multipleArticleSchemaToResponseArticles
 };

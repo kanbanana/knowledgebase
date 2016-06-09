@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var models = require('../data_connection/models');
 var articleService = require('../services/article_service');
 var config = require('../config/config');
 
@@ -59,7 +60,7 @@ router.middlewareCeckAutherMail = function(req, res, next) {
 router.onArticleSaveHandler = function(req, res) {
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function(article) {
         articleService.getArticleContent(article._id).then(function(articleContent) {
-            var responseArticle = router.articleSchemaToResponseArticle(article);
+            var responseArticle = models.articleSchemaToResponseArticle(article);
             responseArticle.text = articleContent;
             res.send(responseArticle);
         });
@@ -73,7 +74,7 @@ router.onArticleGetHandler = function(req, res) {
         return res.status(404).send('Article not found');
     }
     articleService.getArticleContent(req.article._id).then(function(articleContent) {
-        var responseArticle = router.articleSchemaToResponseArticle(req.article.toJSON());
+        var responseArticle = models.articleSchemaToResponseArticle(req.article);
         responseArticle.text = articleContent;
         res.send(responseArticle);
     });
@@ -82,7 +83,7 @@ router.onArticleGetHandler = function(req, res) {
 router.onArticleSearchHandler = function(req, res) {
     if(req.query.q) {
         articleService.searchArticles(req.query.q).then(function (searchResults) {
-            res.send(router.multipleArticleSchemaToResponseArticles(searchResults));
+            res.send(models.multipleArticleSchemaToResponseArticles(searchResults));
         }, function (error) {
             res.status(500).send(error);
         });
@@ -90,26 +91,6 @@ router.onArticleSearchHandler = function(req, res) {
         res.status(404).send('404 - not found');
     }
 };
-
-router.articleSchemaToResponseArticle = function(articleSchema) {
-    articleSchema.id = articleSchema._id;
-    delete articleSchema._id;
-    delete articleSchema.__v;
-
-    articleSchema.documents.forEach(function(document) {
-        delete document._id;
-    });
-
-    return articleSchema;
-};
-
-router.multipleArticleSchemaToResponseArticles = function(articleSchemas) {
-    var responseArticles = [];
-    articleSchemas.forEach(function (articleSchema) {
-        responseArticles.push(router.articleSchemaToResponseArticle(articleSchema));
-    });
-    return responseArticles;
-}
 
 router.onArticleDeleteHandler = function(req,res){
     articleService.deleteArticle(req.article._id).then(function() {
