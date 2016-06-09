@@ -159,7 +159,7 @@ fileSystemConnector.readArticleContent = function(articleId) {
                 if (err) {
                     return reject(err);
                 }
-                resolve(contentBuffer.toString());
+                resolve(fileSystemConnector.extractHTMLBodyContent(contentBuffer.toString()));
             });
         });
     });
