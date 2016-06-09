@@ -11,7 +11,6 @@ articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
 
-
 articleService.saveArticle = function (article, title, content, author) {
     return new Promise(function (resolve, reject) {
         var authorName = '';
@@ -60,7 +59,6 @@ articleService.saveDocuments = function (article, documents) {
     });
 };
 
-
 articleService.getArticleContent = function (articleId) {
     return new Promise(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
@@ -70,6 +68,16 @@ articleService.getArticleContent = function (articleId) {
         });
     });
 };
+
+articleService.getOldArticleContentAndTitle = function(articleId) {
+    return new Promise(function(resolve) {
+        fileSystemConnector.readOldArticleContentAndTitle(articleId).then(function(contentAndTitle) {
+            resolve(contentAndTitle);
+        }, function() {
+            resolve('');
+        });
+    });
+}
 
 articleService.deleteArticle = function(articleId){
     var promiseList = [
