@@ -33,6 +33,6 @@ module.exports =
         port: 9090,
         protocol: 'http',
         indexName: 'file_index',
-        enableLog: true
+        queryName: 'search'
     }
 };

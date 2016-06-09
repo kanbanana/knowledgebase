@@ -28,43 +28,9 @@ searchEngineConnector.updateIndex = function () {
 //Searches articles by key words
 searchEngineConnector.searchArticles = function (q) {
     return new Promise(function (resolve, reject) {
-        var apiUrl = uri + '/services/rest/index/' + config.oss.indexName + '/search/field';
+        var apiUrl = uri + '/services/rest/index/' + config.oss.indexName + '/search/field/' + config.oss.queryName;
         var requestData = {
-            "query": q,
-            "start": 0,
-            "rows": 10,                         //How many results do you want?
-            "operator": "AND",                     //Do not touch!
-            "collapsing": {                        //Aggregate multiple findings in single file
-                "max": 2,                        //Max aggregated findings, set to meaningful number
-                "mode": "OFF",                    //Do not touch!
-                "type": "OPTIMIZED"                //Do not touch!
-            },
-            "returnedFields": [                    //Get urls of findings, do not touch!
-                "url"
-            ],
-            "snippets": [
-                {
-                    "field": "content",            //Get snippet from document content, do not touch!
-                    "tag": "em",                //Html tag to highlight keyword in snippet
-                    "separator": "...",            //Shortener for snippet, do not touch!
-                    "maxSize": 200,                //Max size of snippet
-                    "maxNumber": 1,                //Do not touch!
-                    "fragmenter": "SENTENCE"        //Do not touch!
-                }
-            ],
-            "enableLog": config.oss.enableLog,                    //Do not touch!
-            "searchFields": [                    //Fields to search in, do not touch!
-                {
-                    "field": "title",
-                    "mode": "TERM_AND_PHRASE",
-                    "boost": 10
-                },
-                {
-                    "field": "content",            //Do not touch!
-                    "mode": "TERM_AND_PHRASE",    //Do not touch!
-                    "boost": 1                    //Do not touch!
-                }
-            ]
+            "query": q
         };
 
         request({
