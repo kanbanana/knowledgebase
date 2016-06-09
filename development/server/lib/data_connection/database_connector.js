@@ -87,6 +87,24 @@ databaseConnector.findArticlesByAuthor = function (author) {
     });
 };
 
+databaseConnector.findAllPermArticleIds = function () {
+    return new Promise(function (resolve, reject) {
+        Article.find({isTemporary: false}, function (findErr, result) {
+            if (findErr) {
+                return reject(findErr);
+            }
+
+            var idArray = [];
+
+            result.forEach(function(item) {
+                idArray.push(item._id+'');
+            });
+
+            resolve(idArray);
+        });
+    });
+};
+
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     var date = new Date();
     date.setHours(date.getHours() - ageInHours);

@@ -90,19 +90,6 @@ articleService.deleteArticle = function(articleId){
     });
 };
 
-articleService.deleteTemporaryArticles = function(){
-    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
-        articles.forEach(function (article) {
-            fileSystemConnector.deleteArticle(article._id).then(function () {
-                },
-                function (err) {
-                    console.log(err);
-                });
-        });
-        console.log(articles);
-    });
-};
-
 articleService.deleteDocument = function(article, filename){
     var document = removeFileFromArticle(article, filename);
     if (!document) {
@@ -289,5 +276,18 @@ articleService.getArticlesByIds = function (ids) {
                 resolve(articles);
             }
         });
+    });
+};
+
+articleService.deleteEmptyArticles = function(){
+    databaseConnector.findAllPermArticleIds().then(function (articleIds) {
+        articleIds.forEach(function (articleId) {
+            fileSystemConnector.isArticleFileExists(articleId).then(function(exists){
+                if(!exists) {
+                    return databaseConnector.deleteArticles(articleId);
+                }
+            });
+        });
+
     });
 };

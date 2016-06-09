@@ -41,6 +41,8 @@ var articleSchemaToResponseArticle = function(articleSchema) {
     if (articleSchema.text) {
         responseArticle.text = articleSchema.text;
     }
+
+    responseArticle.lastChanged = responseArticle.date = new Date(articleSchema.lastChanged).getTime();
     return responseArticle;
 
 };
