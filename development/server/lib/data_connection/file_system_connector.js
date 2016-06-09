@@ -165,6 +165,24 @@ fileSystemConnector.readArticleContent = function(articleId) {
     });
 };
 
+fileSystemConnector.readOldArticleContentAndTitle = function(articleId) {
+    articleId += '';
+    return new Promise (function(resolve, reject) {
+        getOldFolderForArticle(articleId, function (err, oldFolder) {
+            var contentFilePath = path.join(oldFolder, config.articleContentFileName);
+            fs.readFile(contentFilePath, function (err, contentBuffer) {
+                var returnValue = {};
+                if (err) {
+                    return reject(err);
+                }
+                returnValue.content = contentBuffer.toString();
+                returnValue.title = ''; // TODO: MARTIN - insert logic for extracting title from content
+                resolve(returnValue);
+            });
+        });
+    });
+};
+
 fileSystemConnector.wrapContentInHTMLBody = function(content, title) {
     return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
 };
