@@ -54,10 +54,16 @@ router.onArticleGetHandler = function (req, res) {
     });
 };
 
-router.onArticleSearchHandler = function (req, res) {
+router.onArticleSearchHandler = function(req, res) {
     if (req.query.q) {
         articleService.searchArticles(req.query.q).then(function (searchResults) {
             res.send(models.multipleArticleSchemaToResponseArticles(searchResults));
+        }, function (error) {
+            res.status(500).send(error);
+        });
+    } else if (req.query.ids) {
+        articleService.getArticlesByIds(req.query.ids.split(',')).then(function (articles) {
+            res.send(models.multipleArticleSchemaToResponseArticles(articles));
         }, function (error) {
             res.status(500).send(error);
         });

@@ -62,7 +62,6 @@ articleService.saveDocuments = function (article, documents) {
 articleService.getArticleContent = function (articleId) {
     return new Promise(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
-            content = fileSystemConnector.extractHTMLBodyContent(content);
             resolve(content);
         }, function() {
             resolve('');
@@ -268,5 +267,27 @@ articleService.searchArticles = function (q) {
                 }
             });
         }
+    });
+};
+
+articleService.getArticlesByIds = function (ids) {
+    return new Promise(function (resolve, reject) {
+        databaseConnector.findArticlesByIds(ids).then(function (articles) {
+            var promiseList = [];
+
+            articles.forEach(function (article) {
+                promiseList.push(fileSystemConnector.readArticleContent(article._id).then(function (content) {
+                    article.text = content.substring(0, 200);
+                }));
+            });
+
+            if (promiseList.length > 0) {
+                Promise.all(promiseList).then(function (result) {
+                    resolve(articles);
+                });
+            } else {
+                resolve(articles);
+            }
+        });
     });
 };
