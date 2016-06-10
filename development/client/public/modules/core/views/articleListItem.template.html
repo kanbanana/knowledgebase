@@ -16,7 +16,7 @@
                     </div>
                     <div class="row hidden-xs" ng-if="item.documents.length > 0">
                         <div class="col-sm-12">
-                            <b>Files: </b><span class="list-group-item-files"
+                            <b>Files: </b><span class="list-group-item-files" ng-class="{'marked-file': document.containsSearchText}"
                                                 ng-repeat="document in item.documents">{{document.name}}.{{document.filetype}},</span>
                         </div>
                     </div>
