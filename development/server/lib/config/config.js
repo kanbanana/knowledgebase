@@ -4,7 +4,8 @@ module.exports =
 
     dbConnectionString: process.env.MONGODB || 'mongodb://' + (process.env.DATABASE_ADDR || 'localhost') + ':' + (process.env.DATABASE_PORT || '27017') + '/knowledgebase',
 
-    fileLinkPrefix: '/server/',
+    fileLinkPrefixPerm: '/files/articles/',
+    fileLinkPrefixTemp: '/files/articles_tmp/',
     uploadDirPerm: 'uploads/articles',
     uploadDirTmp: 'uploads/articles_tmp',
     uploadDirOld: 'uploads/articles_old',

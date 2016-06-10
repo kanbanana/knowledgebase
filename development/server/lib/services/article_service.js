@@ -127,7 +127,7 @@ function updateArticle(article, title, authorName, authorMail) {
         if(article.isTemporary) {
             article.isTemporary = false;
             article.documents.forEach(function (document) {
-                document.path = path.join(config.fileLinkPrefix, config.uploadDirPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
+                document.path = path.join(config.fileLinkPrefixPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
             });
         }
 }

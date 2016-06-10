@@ -115,7 +115,8 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     articleId += '';
     return new Promise(function (resolve, reject) {
-        var saveDocumentHandler = function (err, targetDirectory, fileLinkPrefix) {
+        var fileLinkPrefix;
+        var saveDocumentHandler = function (err, targetDirectory) {
             if (err) {
                 return reject(err);
             }
@@ -143,8 +144,10 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
 
 
         if (isTemp) {
+            fileLinkPrefix = config.fileLinkPrefixTemp + articleId;
             getTempFolderForArticle(articleId, saveDocumentHandler);
         } else {
+            fileLinkPrefix = config.fileLinkPrefixPerm + articleId;
             getPermFolderForArticle(articleId, saveDocumentHandler);
         }
     });
@@ -178,7 +181,7 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 
                 var totalHtmlContent = contentBuffer.toString();
 
-                returnValue.content = fileSystemConnector.extractHTMLBodyContent(totalHtmlContent);
+                returnValue.text = fileSystemConnector.extractHTMLBodyContent(totalHtmlContent);
                 returnValue.title = fileSystemConnector.extractHTMLTitleContent(totalHtmlContent);
                 resolve(returnValue);
             });
@@ -322,10 +325,9 @@ function getFolderForArticle(articleId, uploadDir, cb) {
     articleId = articleId + '';
     var uploadPath = path.join(__dirname, '..', '..', uploadDir) + '/';
     var targetFilePath = path.join(uploadPath, articleId);
-    var targetFileLink = path.join(config.fileLinkPrefix, uploadDir, articleId);
     fs.mkdirs(targetFilePath, function (err) {
         if (cb) {
-            cb(null, targetFilePath, targetFileLink); //TODO: fixme first param should be error
+            cb(null, targetFilePath); //TODO: fixme first param should be error
         }
     });
 
