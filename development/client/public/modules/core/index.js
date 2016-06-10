@@ -19,3 +19,4 @@ require('./js/controllers/search.controller.js');  // jshint ignore:line
 require('./js/directives/lastSeenArticle.directive.js');  // jshint ignore:line
 require('./js/directives/previousVersionModal.directive.js');  // jshint ignore:line
 require('./js/directives/articleListItem.directive.js');  // jshint ignore:line
+require('./js/directives/confirmationModal.directive.js');  // jshint ignore:line
