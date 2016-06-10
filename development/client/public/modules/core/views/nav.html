@@ -12,7 +12,7 @@
 
         <div class="collapse navbar-collapse" id="knowl-navbar">
             <div class="input-group knowl-navbar-input">
-                <input type="text" class="form-control" ng-model="searchText">
+                <input type="search" class="form-control" ng-model="searchText" ui-keypress="{13:'searchArticle(searchText)'}" >
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-primary" id="searchArticle" ng-click="searchArticle(searchText)">Search</button>
                     <button type="button" class="btn btn-primary" ng-click="newArticle(searchText)" id="createNewArticle">New article</button>

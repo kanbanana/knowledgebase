@@ -2,9 +2,18 @@
   padding-top: 40px;
 }
 .article-detail-buttons-wrapper {
-  padding-top: 25px;
   padding-bottom: 25px;
 }
+.article-detail-sidebar-wrapper {
+  padding-top: 5px;
+}
+
+.page-header {
+  h1 {
+    word-break: break-all;
+  }
+}
+
 
 .file-delete-button {
   color: #d9534f;
