@@ -5,18 +5,23 @@ services:
       context: ../development/server/
     environment:
       - DATABASE_ADDR=mongo
+      - OSS_ADDR=ossserver
     links:
       - mongo
       - ossserver
     depends_on:
       - mongo
       - ossserver
+    restart: always
   mongo:
     image: mongo
+    restart: always
   nginx:
     build:
      context: nginx/
     links:
       - nodeserver
+    restart: always
   ossserver:
     image: ossserver
+    restart: always

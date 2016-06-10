@@ -1,16 +1,10 @@
-<section class="full-height">
+<section class="full-height" >
+    <last-seen-article-directive is-temporary="article.isTemporary"></last-seen-article-directive>
     <div class="container" id="knowl-content-container">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="alert alert-{{alert.type}} alert-dismissible" role="alert" ng-repeat="alert in alerts">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <strong>Warning!</strong> {{alert.msg}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
+            <!-- Content -->
             <div class="col-lg-9 col-md-8 col-xs-12">
+                <!-- buttons for mobile version -->
                 <div class="row visible-xs">
                     <div class="col-xs-6">
                         <a href="mailto:{{article.author.email}}" ng-hide="isEditing"
@@ -30,6 +24,8 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- title and content of article-->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="page-header">
@@ -39,14 +35,14 @@
                 </div>
                 <div class="row" ng-hide="isEditing">
                     <div class="col-sm-3">
-                        <span><b>Author:</b> <a href="mailto:{{article.author.email}}" id="searchByAuthor">{{article.author.name}}</a></span>
+                        <span><b>Author:</b> <a href="#/search?q=author:'{{article.author.name}}'" id="searchByAuthor">{{article.author.name}}</a></span>
                     </div>
                     <div class="col-sm-4">
-                        <span><b>Last changed by:</b> <a href="mailto:{{article.lastChangedBy.email}}"
+                        <span><b>Last changed by:</b> <a href="#/search?q=author:'{{article.lastChangedBy.name}}'"
                                                          id="searchByChangedBy">{{article.lastChangedBy.name}}</a></span>
                     </div>
                     <div class="col-sm-5">
-                        <span><b>Last changed:</b> <a href="#" id="searchByDate">{{article.lastChanged}}</a></span>
+                        <span><b>Last changed:</b> {{date}}</span>
                     </div>
                 </div>
                 <div class="row" ng-show="isEditing">
@@ -106,7 +102,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-xs-12">
+
+            <!-- Sidebar for desktop version -->
+            <div class="article-detail-sidebar-wrapper col-lg-3 col-md-4 col-xs-12">
                 <div class="row article-detail-buttons-wrapper hidden-xs">
                     <div class="col-lg-6">
                         <a href="mailto:{{article.author.email}}" id="alertAuthor" ng-hide="isEditing"
@@ -122,6 +120,11 @@
                         <button type="button" ng-show="isEditing" id="saveArticle" class="btn btn-default btn-block"
                                 ng-click="saveArticle()"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save
                         </button>
+                    </div>
+                </div>
+                <div class="row article-detail-buttons-wrapper">
+                    <div class="col-lg-12">
+                        <previous-version-modal-directive article-id="{{articleId}}"></previous-version-modal-directive>
                     </div>
                 </div>
                 <div class="row">
@@ -141,7 +144,7 @@
                                             </span>
                                              <input type="file" id="fileUploadInput" name="file"
                                                           style="display: none;"
-                                                          onchange="angular.element(this).scope().uploadFile(this.files)"/>
+                                                          onchange="angular.element(this).scope().uploadFile(this.files)" multiple/>
                                         </label>
                                         <hr>
                                         <div class="progress" ng-show="isUploading">
@@ -158,7 +161,7 @@
                                                 <span class="file-delete-button" ng-show="isEditing"
                                                       ng-click="deleteFile($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
                                                 <span class="badge">{{file.filetype}}</span>
-                                                <a href="{{file.url}}" class="fileDownload">
+                                                <a href="{{file.path}}" target="_blank" class="fileDownload">
                                                     {{file.name | limitTo: 10}}
                                                 </a>
 
@@ -172,10 +175,11 @@
                 </div>
                 <div class="row" ng-show="isEditing">
                     <div class="col-lg-12">
-                        <a href="#" class="btn btn-block btn-warning" ng-hide="article.isTemporary"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete Article</a>
+                        <button type="button" class="btn btn-block btn-warning" ng-hide="article.isTemporary" ng-click="deleteArticle()"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete Article</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
