@@ -5,6 +5,7 @@ services:
       context: ../development/server/
     environment:
       - DATABASE_ADDR=mongo
+      - OSS_ADDR=ossserver
     links:
       - mongo
       - ossserver
