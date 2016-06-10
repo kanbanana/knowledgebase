@@ -45,7 +45,7 @@ articleService.saveDocument = function (article, document) {
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
     return new Promise(function (resolve, reject) {
-        asyncLib.each(documents, function (item, cb) {
+        asyncLib.eachSeries(documents, function (item, cb) {
             articleService.saveDocument(article, item).then(function (storageInfo) {
                 storageInfoList.push(storageInfo);
                 cb();

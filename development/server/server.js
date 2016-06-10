@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var debug = require('debug')('server');
 var config = require('./lib/config/config');
 var path = require('path');
-var articleService = require('./lib/services/article_service')
+var articleService = require('./lib/services/article_service');
 
 var upload = require('multer')({dest:  path.join(__dirname, config.temporaryUploadDir)});
 
