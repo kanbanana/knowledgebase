@@ -122,7 +122,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="row article-detail-buttons-wrapper">
+                <div class="row article-detail-buttons-wrapper" ng-hide="article.isTemporary">
                     <div class="col-lg-12">
                         <previous-version-modal-directive article-id="{{articleId}}"></previous-version-modal-directive>
                     </div>
