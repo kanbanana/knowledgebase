@@ -24,17 +24,17 @@
                 <div class="col-sm-3 meta-information">
                     <div class="row">
                         <div class="col-sm-12">
-                            <span>Author: <a href="#">{{item.author.name}}</a></span>
+                            <span>Author: <a href="#/search?q=author:'{{item.author.name}}'">{{item.author.name}}</a></span>
                         </div>
                     </div>
                     <div class="row" ng-if="item.changedBy.name">
                         <div class="col-sm-12">
-                            <span>Last changed by: <a href="#">{{item.changedBy.name}}</a></span>
+                            <span>Last changed by: <a href="#/search?q=author:'{{item.changedBy.name}}'">{{item.changedBy.name}}</a></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <span>Last changed: <a href="#">{{item.lastChanged}}</a></span>
+                            <span>Last changed: {{date}}</span>
                         </div>
                     </div>
                 </div>

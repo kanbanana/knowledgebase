@@ -133,6 +133,9 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.isDragging = false;
         $scope.isEditing = false;
 
+        var d = new Date($scope.article.lastChanged);
+        $scope.date = (d.getHours()+":"+ d.getMinutes()+ ":"+d.getSeconds()+", "+ d.getDate() + "-" + (d.getMonth()+1) +  "-" + d.getFullYear());
+
         $scope.$watch("article.text", function () {
             $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text);
         }, true);
@@ -247,7 +250,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
 
         $scope.deleteFile = function (index) {
-            ArticleService.deleteDocument($scope.articleId, index).then(function() {
+            ArticleService.deleteDocument($scope.articleId, this.file.name +"."+ this.file.filetype).then(function() {
                 $scope.article.documents.splice(index, 1);
             });
         };
@@ -262,7 +265,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.$on('$locationChangeStart', function (event) {
             if ($scope.isEditing === true && $scope.isSaving === false && $scope.isOverridePageLock === false) {
                 event.preventDefault();
-                console.log("this one?")
                 $scope.$emit("makeToast", {type: "warning", message: 'Save or cancel editing this article'});
             }
         });

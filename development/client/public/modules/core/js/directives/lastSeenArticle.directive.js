@@ -34,7 +34,6 @@ angular.module('core').directive('lastSeenArticleDirective', [function () {
                     $cookies.put("lastSeenArticles", article);
                 }
             }
-
         }]
     };
 

@@ -11,9 +11,11 @@ angular.module('core').directive('articleListItemDirective', [function () {
         templateUrl: 'modules/core/views/articleListItem.template.html',
         controller: ['$scope', '$sce', function ($scope, $sce) {
             function htmlToPlaintext(text) {
-                return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+                return text ? String(text).replace(/<(?!\/?b\s*\/?)[^>]+>/gm, '') : '';
             }
-
+            var d = new Date($scope.item.lastChanged);
+            $scope.date = (d.getHours()+":"+ d.getMinutes()+ ":"+d.getSeconds()+", "+ d.getDate() + "-" + (d.getMonth()+1) +  "-" + d.getFullYear());
+            console.log($scope.item)
             if ($scope.sanatizeTags == "true") {
                 $scope.sanatizedArticleText = $sce.trustAsHtml(htmlToPlaintext($scope.item.text));
             } else {

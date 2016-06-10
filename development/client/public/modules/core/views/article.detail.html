@@ -35,14 +35,14 @@
                 </div>
                 <div class="row" ng-hide="isEditing">
                     <div class="col-sm-3">
-                        <span><b>Author:</b> <a href="mailto:{{article.author.email}}" id="searchByAuthor">{{article.author.name}}</a></span>
+                        <span><b>Author:</b> <a href="#/search?q=author:'{{article.author.name}}'" id="searchByAuthor">{{article.author.name}}</a></span>
                     </div>
                     <div class="col-sm-4">
-                        <span><b>Last changed by:</b> <a href="mailto:{{article.lastChangedBy.email}}"
+                        <span><b>Last changed by:</b> <a href="#/search?q=author:'{{article.lastChangedBy.name}}'"
                                                          id="searchByChangedBy">{{article.lastChangedBy.name}}</a></span>
                     </div>
                     <div class="col-sm-5">
-                        <span><b>Last changed:</b> <a href="#" id="searchByDate">{{article.lastChanged}}</a></span>
+                        <span><b>Last changed:</b> {{date}}</span>
                     </div>
                 </div>
                 <div class="row" ng-show="isEditing">
@@ -161,7 +161,7 @@
                                                 <span class="file-delete-button" ng-show="isEditing"
                                                       ng-click="deleteFile($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
                                                 <span class="badge">{{file.filetype}}</span>
-                                                <a href="{{file.url}}" class="fileDownload">
+                                                <a href="{{file.path}}" target="_blank" class="fileDownload">
                                                     {{file.name | limitTo: 10}}
                                                 </a>
 
