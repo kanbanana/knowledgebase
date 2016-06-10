@@ -132,6 +132,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.isOverridePageLock = false;
         $scope.isDragging = false;
         $scope.isEditing = false;
+        $scope.changeTo = "";
 
         var d = new Date($scope.article.lastChanged);
         $scope.date = (d.getHours()+":"+ d.getMinutes()+ ":"+d.getSeconds()+", "+ d.getDate() + "-" + (d.getMonth()+1) +  "-" + d.getFullYear());
@@ -173,8 +174,8 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.startEditing = function () {
             $location.path('article/' + $scope.article.id).search('e', 'true');
         };
-
         $scope.uploadFile = function (files) {
+
             var fd = new FormData();
             for (var i = 0; i < files.length; i++) {
                 fd.append("documents", files[i]);
@@ -186,6 +187,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
             xhr.open('POST', uploadUrl);
             xhr.send(fd);
+            console.log(xhr)
             $scope.isUploading = true;
 
 
@@ -212,7 +214,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             }
         };
 
-
         $scope.saveArticle = function () {
             if($scope.article.title && $scope.article.title !==  "") {
                 $scope.isSaving = true;
@@ -235,11 +236,9 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             } else {
                 $scope.$emit("makeToast", {type: "warning", message: 'Save failed! Article needs a title!'});
             }
-
         };
 
         $scope.cancelEditing = function () {
-            $scope.isOverridePageLock = true;
             $scope.article = $scope.articleServerVer;
             if ($scope.article.isTemporary === false) {
                 $location.path('article/' + $scope.article.id).search('e', 'false');
@@ -248,7 +247,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             }
         };
 
-
         $scope.deleteFile = function (index) {
             ArticleService.deleteDocument($scope.articleId, this.file.name +"."+ this.file.filetype).then(function() {
                 $scope.article.documents.splice(index, 1);
@@ -256,21 +254,34 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         };
 
         $scope.deleteArticle = function() {
-            ArticleService.deleteArticle($scope.articleId).then(function() {
-                $scope.isOverridePageLock = true;
-                $location.path('/').search();
-            });
+            $scope.$broadcast("callModal", {title: "Delete Article?", text: "If you confirm this article will be deleted!", onConfirmation:"deleteArticle"});
+
         }
 
-        $scope.$on('$locationChangeStart', function (event) {
+        $scope.$on('$locationChangeStart', function (event, next) {
             if ($scope.isEditing === true && $scope.isSaving === false && $scope.isOverridePageLock === false) {
                 event.preventDefault();
-                $scope.$emit("makeToast", {type: "warning", message: 'Save or cancel editing this article'});
+                $scope.changeTo = next;
+                $scope.$broadcast("callModal", {title: "Discard changes?", text: "If you confirm your changes will be discarded!", onConfirmation:"discardChanges"});
             }
         });
 
-        $scope.showModal = function() {
-            $('#previous-version-modal').modal('show')
+        $scope.$on('deleteArticle', function() {
+            $scope.changeTo = '/';
+            ArticleService.deleteArticle($scope.articleId).then(function() {
+                $scope.$emit("makeToast", {type: "success", message: 'Article deleted!'});
+                $scope.changeRoute();
+            });
+        });
+
+        $scope.$on('discardChanges', function() {
+            $scope.$emit("makeToast", {type: "success", message: 'Changes discarded!'});
+            $scope.changeRoute();
+        });
+
+        $scope.changeRoute = function() {
+            $scope.isOverridePageLock = true;
+            $location.path($scope.changeTo).search();
         };
 
 
