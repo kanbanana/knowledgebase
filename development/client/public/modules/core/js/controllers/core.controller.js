@@ -4,18 +4,27 @@ angular.module('core')
     .controller("CoreCtrl", ['$scope', 'ScrollSmooth','ArticleService','$cookies', function ($scope, ScrollSmooth, ArticleService, $cookies) {
         $scope.isLoading = true;
         $scope.$on("makeToast", function (e, toast) {
-            setTimeout(function() {$scope.$broadcast("makeToastRelay", toast)},100)
+            setTimeout(function() {
+                $scope.$broadcast("makeToastRelay", toast);
+            },100);
         });
 
 
         if(!($cookies.get("lastSeenArticles"))) {
-            $cookies.put("lastSeenArticles", []);
+            $cookies.put("lastSeenArticles", "");
         }
+
         var cookies = $cookies.get("lastSeenArticles");
 
-        ArticleService.getLastSeenArticles(cookies).then(function (response) {
+        if (cookies) {
+            ArticleService.getLastSeenArticles(cookies).then(function (response) {
+                $scope.isLoading = false;
+                $scope.lastSeenArticles = response.data;
+            });
+        } else {
             $scope.isLoading = false;
-        });
+        }
+
 
 
 

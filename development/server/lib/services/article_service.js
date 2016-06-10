@@ -159,10 +159,10 @@ articleService.searchArticles = function (q) {
     var author = q.match(/author:(['"].+?['"]|[^\s]+)/i);
     var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
     // remove author from search terms
-    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/i, '');
+    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/ig, '');
 
     if (author) {
-        author = author[1];
+        author = author[1].replace(/["']/g, '');
     }
 
     return new Promise(function (resolve, reject) {
