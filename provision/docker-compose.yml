@@ -12,6 +12,8 @@ services:
     depends_on:
       - mongo
       - ossserver
+    volumes:
+      - datavolume:/usr/src/app/uploads
     restart: always
   mongo:
     image: mongo
@@ -21,7 +23,15 @@ services:
      context: nginx/
     links:
       - nodeserver
+    volumes:
+      - datavolume:/usr/share/nginx/files
     restart: always
   ossserver:
-    image: ossserver
+    build:
+     context: .
+     dockerfile: oss/Dockerfile
     restart: always
+    volumes:
+      - datavolume:/files
+volumes:
+  datavolume: {}
