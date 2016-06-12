@@ -2,5 +2,5 @@ version: '2'
 services:
   nodeserver:
     volumes:
-      - ./coverage:/usr/src/app/coverage/
+      - ../development/server/coverage:/usr/src/app/coverage/
     command: node node_modules/.bin/istanbul cover node_modules/.bin/_mocha server.spec.js
