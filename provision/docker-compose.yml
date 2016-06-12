@@ -14,7 +14,6 @@ services:
       - ossserver
     volumes:
       - datavolume:/usr/src/app/uploads
-    restart: always
   mongo:
     image: mongo
     restart: always

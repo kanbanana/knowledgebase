@@ -10,7 +10,7 @@ services:
      - "9090:9090"
     volumes:
      - ./roles/staging/volume:/srv
-     - ../development/server/uploads/articles:/files
+     - ../development/server/uploads:/files
   nodeserver:
     build: dev/node
     environment:
