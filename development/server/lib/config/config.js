@@ -30,7 +30,7 @@ module.exports =
     },
 
     oss: {
-        hostname: (process.env.OSS_ADDR || 'oss'),
+        hostname: (process.env.OSS_ADDR || 'localhost'),
         port: (process.env.OSS_PORT || 9090),
         protocol: 'http',
         indexName: 'file_index',
