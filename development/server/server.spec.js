@@ -61,15 +61,17 @@ describe('', function () {
                 var numberOfArticlesToCreate = 10;
                 var counter = 0;
 
-                for (var i = 0; i < numberOfArticlesToCreate; i++)
+                for (var i = 0; i < numberOfArticlesToCreate; i++) {
+                    var data = JSON.parse(JSON.stringify(ArticleExample));
                     request(application.app)
                         .post('/api/articles/')
                         .end(function (err, res) {
                             if (err) return done(err);
                             ArticleIds.push(res.body);
+                            data.id = res.body;
                             request(application.app)
                                 .put('/api/articles/' + res.body)
-                                .send(ArticleExample)
+                                .send(data)
                                 .end(function () {
                                     request(application.app)
                                         .post('/api/articles/' + res.body + '/documents')
@@ -79,6 +81,7 @@ describe('', function () {
                                         });
                                 });
                         });
+                }
             });
 
 
@@ -287,9 +290,13 @@ describe('', function () {
 
             describe('/api/articles/:ArticleId', function () {
                 it('put with valid data', function (done) {
+                    var data = JSON.parse(JSON.stringify(ArticleExample));
+
+                    data.id = ArticleIds[0];
+
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
-                        .send(ArticleExample)
+                        .send(data)
                         .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
@@ -325,6 +332,7 @@ describe('', function () {
                     it('invalid', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '4d5f6g7hjkjhugzf65d4f5g6h7j8k';
 
                         request(application.app)
@@ -336,6 +344,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength + 1; i++)
@@ -355,6 +364,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorNameLength + 1; i++)
@@ -372,6 +382,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleTitleLength + 1; i++)
