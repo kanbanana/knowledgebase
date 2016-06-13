@@ -1,5 +1,5 @@
 # Folder Structure
 
-administration - product management related documents
-documentation - all other documents
-presentation - presentation slides
+- administration - Product management related documents
+- documentation - All other documents
+- presentation - Presentation slides
