@@ -54,7 +54,7 @@ var multipleArticleSchemaToResponseArticles = function(articleSchemas) {
         responseArticles.push(articleSchemaToResponseArticle(articleSchema));
     });
     return responseArticles;
-}
+};
 
 module.exports = {
     Article: mongoose.model('Article', ArticleSchema),

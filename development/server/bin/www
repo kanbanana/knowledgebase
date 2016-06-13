@@ -1,2 +1,35 @@
 #!/usr/bin/env node
-require(__dirname + '/../server').listen();
+var config = require('../lib/config/config');
+var articleService = require('../lib/services/article_service');
+var server = require(__dirname + '/../server');
+
+server.listen();
+
+function exitHandler() {
+
+    server.close(function () {
+        console.log("Closed.")
+    });
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null, true));
+
+//catches ctrl+c event
+process.on('SIGINT', process.exit.bind(process));
+
+module.exports.startIntervals = function () {
+    // start the background job that regularly deletes all temporary articles
+    setInterval(function () {
+        articleService.deleteTemporaryArticles();
+    }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000
+    );
+
+    // start the background job that regularly deletes all Article database entries without a content-html-file
+    setInterval(function () {
+        articleService.deleteEmptyArticles();
+    }, config.emptyArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000
+    );
+};
+
+module.exports.startIntervals();

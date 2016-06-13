@@ -77,7 +77,7 @@ articleService.getOldArticleContentAndTitle = function(articleId) {
             resolve('');
         });
     });
-}
+};
 
 articleService.deleteArticle = function(articleId){
     var promiseList = [
@@ -289,5 +289,19 @@ articleService.deleteEmptyArticles = function(){
             });
         });
 
+    });
+};
+
+
+articleService.deleteTemporaryArticles = function() {
+    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
+        articles.forEach(function (article) {
+            fileSystemConnector.deleteArticle(article._id).then(function () {
+                },
+                function (err) {
+                    console.log(err);
+                });
+        });
+        console.log(articles);
     });
 };

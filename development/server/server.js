@@ -2,11 +2,9 @@ var express = require('express');
 var logger = require('morgan');
 // var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
 var debug = require('debug')('server');
 var config = require('./lib/config/config');
 var path = require('path');
-var articleService = require('./lib/services/article_service');
 
 var upload = require('multer')({dest:  path.join(__dirname, config.temporaryUploadDir)});
 
@@ -14,8 +12,6 @@ var articles = require('./lib/routes/articles');
 
 var app = module.exports.app = express();
 var router = express.Router();
-
-mongoose.connect(config.dbConnectionString);
 
 app.set('port', config.port);
 
@@ -37,21 +33,21 @@ router.delete('/:articleId/documents/:filename', articles.onDocumentDeleteHandle
 
 app.use('/api/articles', router);
 
+var mongoConnection = null;
+
+module.exports.server = null;
+
+
 module.exports.listen = function () {
-    this.server = app.listen(app.get('port'), function(){
+    module.exports.server = app.listen(app.get('port'), function(){
+        mongoConnection = require('mongoose').connect(config.dbConnectionString);
         console.log('server listening on port ' + app.get('port') + '!');
     });
 };
+
 module.exports.close = function (callback) {
-    this.server.close(callback);
+    module.exports.server.close();
+    mongoConnection.disconnect(callback);
 };
 
 
-// start the background job that regularly deletes all temporary articles
-(function () {
-    setInterval(function() {
-        articleService.deleteTemporaryArticles();
-        articleService.deleteEmptyArticles();
-    }, config.oldTemporaryArticlesDeleteJobOptions.intervalTimeInHours * 60 * 60 * 1000
-    );
-})();

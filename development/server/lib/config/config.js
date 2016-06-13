@@ -23,6 +23,10 @@ module.exports =
         maxAgeInHours: 24
     },
 
+    emptyArticlesDeleteJobOptions: {
+        intervalTimeInHours: 24
+    },
+
     postBodyValidationValues: {
         maxArticleTitleLength: 1000,
         maxArticleAuthorEmailLength: 255,

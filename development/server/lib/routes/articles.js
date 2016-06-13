@@ -68,7 +68,7 @@ router.onArticleSearchHandler = function(req, res) {
             res.status(500).send(error);
         });
     } else {
-        res.status(404).send('404 - not found');
+        res.status(200).send([]);
     }
 };
 
