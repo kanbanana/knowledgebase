@@ -17,10 +17,10 @@ var ArticlesExample = require('./raml/examples/getArticles.json');
 
 describe('', function () {
     before(function () {
-        //TODO: We need to go the long road here because the server connect's to the database automatically :/
         // Drop the database
-        mongoose.connection.db.dropDatabase();
-        application.listen();
+        application.listen(function () {
+            mongoose.connection.db.dropDatabase();
+        });
     });
 
     after(function () {
@@ -41,13 +41,13 @@ describe('', function () {
             it('request with q=', function (done) {
                 request(application.app)
                     .get('/api/articles?q=')
-                    .expect(404, done);
+                    .expect(200, done);
             });
 
             it('request with unknown q', function (done) {
                 request(application.app)
                     .get('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                    .expect(404, done);
+                    .expect(200, done);
             });
         });
 
@@ -108,6 +108,20 @@ describe('', function () {
                         .expect(200, done);
                 });
 
+                it('search author with keyword', function (done) {
+                    request(application.app)
+                        .get('/api/articles?q=author:Max Lorem')
+                        .expect('Content-Type', /json/)
+                        .expect(200, done);
+                });
+
+                it('search author with spaces with keyword', function (done) {
+                    request(application.app)
+                        .get('/api/articles?q=author:"Max Mustermann" dummy')
+                        .expect('Content-Type', /json/)
+                        .expect(200, done);
+                });
+
                 it('search in file', function (done) {
                     request(application.app)
                         .get('/api/articles?q=Lorem')
@@ -149,14 +163,14 @@ describe('', function () {
                     request(application.app)
                         .get('/api/articles?ids=')
                         .expect('Content-Type', /json/)
-                        .expect(404, done);
+                        .expect(200, done);
                 });
 
                 it('request with ids=1,2,3', function (done) {
                     request(application.app)
                         .get('/api/articles?ids=1,2,3')
                         .expect('Content-Type', /json/)
-                        .expect(400, done);
+                        .expect(200, done);
                 });
             });
 
@@ -165,7 +179,7 @@ describe('', function () {
                     request(application.app)
                         .get('/api/articles/' + ArticleIds[0])
                         .expect('Content-Type', /json/)
-                        .expect(404, done);
+                        .expect(200, done);
                 });
             });
 
@@ -173,7 +187,8 @@ describe('', function () {
                 it('request the article just after creation', function (done) {
                     request(application.app)
                         .get('/api/articles/' + ArticleIds[0] + '?old=')
-                        .expect(404, done);
+                        .expect('Content-Type', /json/)
+                        .expect(200, done);
                 });
             });
         });
@@ -284,21 +299,21 @@ describe('', function () {
 
                 it('put with empty json', function (done) {
                     request(application.app)
-                        .put('/api/articles/0')
+                        .put('/api/articles/' + ArticleIds[0])
                         .send({})
                         .expect(400, done);
                 });
 
                 it('put with string as data', function (done) {
                     request(application.app)
-                        .put('/api/articles/0')
+                        .put('/api/articles/' + ArticleIds[0])
                         .send('d45f6ghs7j89kkhg6')
                         .expect(400, done);
                 });
 
                 it('put with invalid json as data', function (done) {
                     request(application.app)
-                        .put('/api/articles/0')
+                        .put('/api/articles/' + ArticleIds[0])
                         .send({asdf: "asdf"})
                         .expect(400, done);
                 });
