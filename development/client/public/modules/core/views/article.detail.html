@@ -162,7 +162,7 @@
                                                       ng-click="deleteFile($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
                                                 <span class="badge">{{file.filetype}}</span>
                                                 <a href="{{file.path}}" title="{{file.name}}" target="_blank" class="fileDownload">
-                                                    {{file.name | limitTo: 12}}
+                                                    {{file.name | limitTo: 10}}{{file.name.length > 12 ? '...' : ''}}
                                                 </a>
 
                                             </li>
