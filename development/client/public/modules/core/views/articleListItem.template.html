@@ -1,42 +1,40 @@
-<div class="list-group">
-    <div class="list-group-item" ng-repeat="tmb in articleTmbs">
-        <div class="row article-list-item">
-            <div class="col-sm-12">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h3 class="list-group-item-heading"><a href="#/article/{{tmb.id}}">{{tmb.title}}</a>
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <p class="list-group-item-text">{{tmb.text | limitTo: 300}}</p>
-                            </div>
-                        </div>
-                        <div class="row hidden-xs">
-                            <div class="col-sm-12">
-                                <b>Files: </b><span class="list-group-item-files"
-                                                    ng-repeat="file in tmb.files">{{file.name}}.{{file.type}},</span>
-                            </div>
+<div class="list-group-item">
+    <div class="row article-list-item">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="list-group-item-heading"><a href="#/article/{{item.id}}">{{item.title}}</a>
+                            </h3>
                         </div>
                     </div>
-                    <div class="col-sm-3 meta-information">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <span>Author: <a href="#">{{tmb.author.name}}</a></span>
-                            </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="list-group-item-text" ng-bind-html="sanatizedArticleText"></p>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <span>Last changed by: <a href="#">{{tmb.changedBy.name}}</a></span>
-                            </div>
+                    </div>
+                    <div class="row hidden-xs" ng-if="item.documents.length > 0">
+                        <div class="col-sm-12">
+                            <b>Files: </b><span class="list-group-item-files" ng-class="{'marked-file': document.containsSearchText}"
+                                                ng-repeat="document in item.documents">{{document.name}}.{{document.filetype}},</span>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <span>Last changed: <a href="#">{{tmb.lastChanged}}</a></span>
-                            </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 meta-information">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>Author: <a href="#/search?q=author:'{{item.author.name}}'">{{item.author.name}}</a></span>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="item.changedBy.name">
+                        <div class="col-sm-12">
+                            <span>Last changed by: <a href="#/search?q=author:'{{item.changedBy.name}}'">{{item.changedBy.name}}</a></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>Last changed: {{date}}</span>
                         </div>
                     </div>
                 </div>
@@ -44,4 +42,3 @@
         </div>
     </div>
 </div>
-

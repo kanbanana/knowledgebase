@@ -32,6 +32,17 @@ angular.module('core')
                     }
                 }
             })
+            .state("search",
+            {
+                parent: "root",
+                url: "/search?q",
+                views: {
+                    "": {
+                        controller: "SearchCtrl",
+                        templateUrl: "modules/core/views/search.html"
+                    }
+                }
+            })
             .state("articleDetail",
             {
                 parent: "root",

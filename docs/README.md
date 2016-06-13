@@ -1,1 +1,5 @@
-This directory is used for any kind of documentation including minutes of meetings.
+# Folder Structure
+
+- administration - Product management related documents
+- documentation - All other documents
+- presentation - Presentation slides

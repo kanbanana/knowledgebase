@@ -1,33 +1,43 @@
-var path = require('path');
-var fs = require('fs');
-var extend = require('extend');
+module.exports =
+{
+    port: process.env.PORT || 3000,
 
-var params = {};
-if (fs.existsSync(path.join(__dirname, 'params.json'))) {
-    params = require(__dirname + '/params.json');
-}
+    dbConnectionString: process.env.MONGODB || 'mongodb://' + (process.env.DATABASE_ADDR || 'localhost') + ':' + (process.env.DATABASE_PORT || '27017') + '/knowledgebase',
 
-module.exports = extend(
-    {
-        port: 3000,
+    fileLinkPrefixPerm: '/files/articles/',
+    fileLinkPrefixTemp: '/files/articles_tmp/',
+    uploadDirPerm: 'uploads/articles',
+    uploadDirTmp: 'uploads/articles_tmp',
+    uploadDirOld: 'uploads/articles_old',
 
-        dbConnectionString: process.env.MONGODB || 'mongodb://' + (process.env.DATABASE_ADDR || 'localhost') + ':' + (process.env.DATABASE_PORT || '27017') + '/knowledgebase',
+    temporaryUploadDir: 'uploads_temp/',
+    whitelistWithDocumentMimeTypes: [
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf',
+        'text/plain'],
 
-        fileLinkPrefix: "/server/",
-        uploadDirPerm: 'uploads/articles',
-        uploadDirTmp: 'uploads/articles_tmp',
-        uploadDirOld: 'uploads/articles_old',
+    articleContentFileName: 'article.html',
 
-        articleContentFileName: 'article.html',
+    oldTemporaryArticlesDeleteJobOptions: {
+        intervalTimeInHours: 24,
+        maxAgeInHours: 24
+    },
 
-        oldTemporaryArticlesDeleteJobOptions: {
-            intervalTimeInHours: 24,
-            maxAgeInHours: 24
-        },
+    emptyArticlesDeleteJobOptions: {
+        intervalTimeInHours: 24
+    },
 
-        postBodyValidationValues: {
-            maxArticleTitleLength: 1000,
-            maxArticleAuthorEmailLength: 255,
-            maxArticleAuthorNameLength: 1000,
-        }
-    }, params);
+    postBodyValidationValues: {
+        maxArticleTitleLength: 1000,
+        maxArticleAuthorEmailLength: 255,
+        maxArticleAuthorNameLength: 1000
+    },
+
+    oss: {
+        hostname: (process.env.OSS_ADDR || 'localhost'),
+        port: (process.env.OSS_PORT || 9090),
+        protocol: 'http',
+        indexName: 'file_index',
+        queryName: 'search'
+    }
+};

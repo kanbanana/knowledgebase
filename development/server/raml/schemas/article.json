@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "string"
     },
     "author": {
       "type": "object",
@@ -44,25 +44,25 @@
     "text": {
       "type": "string"
     },
-    "files": {
+    "documents": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "type": {
+          "filetype": {
             "type": "string"
           },
           "name": {
             "type": "string"
           },
-          "url": {
+          "path": {
             "type": "string"
           }
         },
         "required": [
-          "type",
+          "filetype",
           "name",
-          "url"
+          "path"
         ]
       }
     }
@@ -74,6 +74,6 @@
     "lastChanged",
     "title",
     "text",
-    "files"
+    "documents"
   ]
 }

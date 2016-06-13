@@ -1,9 +1,18 @@
+"use strict";
 
 angular.module('core', [])
-    .run(['$rootScope','$location', function($rootScope,$location) {
+    .run(['$rootScope','$location', function($rootScope, $location) {
         $rootScope.bodyClass = 'loading';
+        //var url = $location.path();
         var url = $location.absUrl();
-        //url = "http://141.19.153.86:3000/#/";
-        var cutUrl = url.substring(0, url.indexOf('/#/') );
+        //var url = $location.host();
+        //var url = "http://141.19.158.68:3000/#/";
+        if (url.indexOf('/#/') > -1) {
+            var cutUrl = url.substring(0, url.indexOf('/#/'));
+        } else {
+            var cutUrl = url;
+        }
+
+        //var cutUrl = "https://danielweidle.de"
         $rootScope.baseUrl = cutUrl;
     }]);
