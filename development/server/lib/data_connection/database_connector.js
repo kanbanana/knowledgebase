@@ -45,10 +45,10 @@ databaseConnector.saveArticle = function (article) {
 };
 
 databaseConnector.findArticleById = function (id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         Article.findById(id).exec(function (err, result) {
             if (err) {
-                return reject(err);
+                resolve(null);
             }
             resolve(result);
         });

@@ -13,12 +13,12 @@
   "lastChanged": "2016-05-15",
   "title": "Knowledge",
   "text": "This is some <b>important</b> Knowledge",
-  "files":
+  "documents":
   [
     {
-      "type": "pdf",
+      "filetype": "pdf",
       "name": "some knowledge",
-      "url": "/this/is/some knowledge.pdf"
+      "path": "/this/is/some knowledge.pdf"
     }
   ]
 }
