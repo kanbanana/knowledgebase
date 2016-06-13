@@ -1,5 +1,9 @@
 # knowledgebase
 
+# Folder Structure
+- development : Source Code
+- docs : Documentation
+- provision : Deployment related files
 
 # Development
 This repository uses git flow branching model! Information can be found at https://danielkummer.github.io/git-flow-cheatsheet/
