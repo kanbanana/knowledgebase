@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$cookies', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $cookies) {
+angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$window', '$timeout', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $window, $timeout) {
     $scope.article = {
         text: ''
     };
@@ -128,14 +128,16 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
         var dragTimer;
 
+        var uploadedFiles = [];
+        var filesToDelete = [];
         $scope.isSaving = false;
         $scope.isOverridePageLock = false;
         $scope.isDragging = false;
         $scope.isEditing = false;
         $scope.changeTo = "";
 
-        var d = new Date($scope.article.lastChanged);
-        $scope.date = (d.getHours()+":"+ d.getMinutes()+ ":"+d.getSeconds()+", "+ d.getDate() + "-" + (d.getMonth()+1) +  "-" + d.getFullYear());
+
+        $scope.date = (new Date($scope.article.lastChanged)).toISOString().slice(0,10) + ", " + (new Date($scope.article.lastChanged)).toISOString().slice(11,19);
 
         $scope.$watch("article.text", function () {
             $scope.sanatizedArticleText = $sce.trustAsHtml($scope.article.text);
@@ -165,11 +167,16 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                         $scope.isDragging = false;
                     });
                 }, 1000);
-            })
-            .on('drop', function (e) {
-                var droppedFiles = e.originalEvent.dataTransfer.files;
-                $scope.uploadFile(droppedFiles);
             });
+        $("#dropzone").on('drop', function (e) {
+            var droppedFiles = e.originalEvent.dataTransfer.files;
+            console.log(droppedFiles)
+            var uniqueFiles = _.uniq(droppedFiles, function (item, key, a) {
+                return item.name;
+            });
+
+            $scope.uploadFile(uniqueFiles);
+        });
 
         $scope.startEditing = function () {
             $location.path('article/' + $scope.article.id).search('e', 'true');
@@ -187,16 +194,16 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
 
             xhr.open('POST', uploadUrl);
             xhr.send(fd);
-            console.log(xhr)
             $scope.isUploading = true;
 
 
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     $scope.isUploading = false;
                     var json = JSON.parse(xhr.responseText);
-                    json.forEach(function(file) {
+                    json.forEach(function (file) {
                         $scope.article.documents.push(file);
+                        uploadedFiles.push(file.name + "." + file.filetype)
                     });
                     $scope.isUploading = false;
                     $scope.$emit("makeToast", {type: "success", message: 'File successfully uploaded'});
@@ -207,39 +214,52 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         var uploadProgress = function (e) {
             if (e.lengthComputable) {
                 var percent = Math.round(e.loaded * 100 / e.total);
-                $scope.$apply(function() {
+                $scope.$apply(function () {
                     $scope.uploadProgress = percent;
                 });
 
             }
         };
 
+
         $scope.saveArticle = function () {
-            if($scope.article.title && $scope.article.title !==  "") {
+            if ($scope.article.title && $scope.article.title !== "") {
                 $scope.isSaving = true;
                 if ($scope.article.isTemporary === true) {
                     $scope.article.lastChangedBy = $scope.article.author;
                 } else {
                     if ($scope.lastChangedBy) {
                         $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
-                        $scope.article.lastChangedBy.email = $scope.lastChangedBy.email;
+                        if($scope.lastChangedBy.email && !isEmail($scope.lastChangedBy.email)) {
+                            $scope.$emit("makeToast", {type: "warning", message: 'Invalid e-mail'});
+                            return;
+                        } else {
+                                $scope.article.lastChangedBy.email = $scope.lastChangedBy.email;
+                        }
                     } else {
                         $scope.article.lastChangedBy.name = "";
                         $scope.article.lastChangedBy.email = "";
                     }
 
                 }
-                ArticleService.saveArticle($scope.articleId, $scope.article).then(function (response) {
-                    $scope.$emit("makeToast", {type: "success", message: 'Article has been saved'});
-                    $location.path('article/' + $scope.article.id).search('e', 'false');
+                batchDeleteFiles(filesToDelete, function () {
+                    ArticleService.saveArticle($scope.articleId, $scope.article).then(function (response) {
+                        $scope.$emit("makeToast", {type: "success", message: 'Article has been saved'});
+                        $location.path('article/' + $scope.article.id).search('e', 'false');
+                    });
                 });
+
             } else {
                 $scope.$emit("makeToast", {type: "warning", message: 'Save failed! Article needs a title!'});
             }
         };
 
+        var isEmail = function(strToTest) {
+            var emailPattern = new RegExp(/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i)
+            return emailPattern.test(strToTest);
+        }
+
         $scope.cancelEditing = function () {
-            $scope.article = $scope.articleServerVer;
             if ($scope.article.isTemporary === false) {
                 $location.path('article/' + $scope.article.id).search('e', 'false');
             } else {
@@ -248,42 +268,66 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         };
 
         $scope.deleteFile = function (index) {
-            ArticleService.deleteDocument($scope.articleId, this.file.name +"."+ this.file.filetype).then(function() {
-                $scope.article.documents.splice(index, 1);
-            });
+            filesToDelete.push(this.file.name + "." + this.file.filetype)
+            $scope.article.documents.splice(index, 1);
         };
 
-        $scope.deleteArticle = function() {
-            $scope.$broadcast("callModal", {title: "Delete Article?", text: "If you confirm this article will be deleted!", onConfirmation:"deleteArticle"});
+        var batchDeleteFiles = function (files, callback) {
+            var n = 0;
+            if (files.length === 0) {
+                callback();
+            } else {
+                for (var i = 0; i < files.length; i++) {
+                    ArticleService.deleteDocument($scope.articleId, files[i]).then(function () {
+                        n++;
+                        if (n === files.length) {
+                            callback();
+                        }
+                    });
+                }
+            }
+        };
 
-        }
+        $scope.deleteArticle = function () {
+            $scope.$broadcast("callModal", {
+                title: "Delete Article?",
+                text: "If you confirm this article will be deleted!",
+                onConfirmation: "deleteArticle"
+            });
+        };
 
         $scope.$on('$locationChangeStart', function (event, next) {
             if ($scope.isEditing === true && $scope.isSaving === false && $scope.isOverridePageLock === false) {
                 event.preventDefault();
                 $scope.changeTo = next;
-                $scope.$broadcast("callModal", {title: "Discard changes?", text: "If you confirm your changes will be discarded!", onConfirmation:"discardChanges"});
+                $scope.$broadcast("callModal", {
+                    title: "Discard changes?",
+                    text: "If you confirm your changes will be discarded!",
+                    onConfirmation: "discardChanges"
+                });
             }
         });
 
-        $scope.$on('deleteArticle', function() {
+        $scope.$on('deleteArticle', function () {
             $scope.changeTo = '/';
-            ArticleService.deleteArticle($scope.articleId).then(function() {
+            ArticleService.deleteArticle($scope.articleId).then(function () {
                 $scope.$emit("makeToast", {type: "success", message: 'Article deleted!'});
                 $scope.changeRoute();
             });
         });
 
-        $scope.$on('discardChanges', function() {
-            $scope.$emit("makeToast", {type: "success", message: 'Changes discarded!'});
-            $scope.changeRoute();
+        $scope.$on('discardChanges', function () {
+            $scope.article = $scope.articleServerVer;
+            batchDeleteFiles(uploadedFiles, function () {
+                $scope.$emit("makeToast", {type: "success", message: 'Changes discarded!'});
+                $scope.changeRoute();
+            });
         });
 
-        $scope.changeRoute = function() {
+        $scope.changeRoute = function () {
             $scope.isOverridePageLock = true;
-            $location.path($scope.changeTo).search();
+            $window.location.href = $scope.changeTo;
         };
-
 
         if ($stateParams.e == 'true') {
             $scope.toggleEditing();

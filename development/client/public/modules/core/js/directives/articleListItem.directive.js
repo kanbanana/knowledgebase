@@ -13,9 +13,7 @@ angular.module('core').directive('articleListItemDirective', [function () {
             function htmlToPlaintext(text) {
                 return text ? String(text).replace(/<(?!\/?b\s*\/?)[^>]+>/gm, '') : '';
             }
-            var d = new Date($scope.item.lastChanged);
-            $scope.date = (d.getHours()+":"+ d.getMinutes()+ ":"+d.getSeconds()+", "+ d.getDate() + "-" + (d.getMonth()+1) +  "-" + d.getFullYear());
-            console.log($scope.item)
+            $scope.date = (new Date($scope.item.lastChanged)).toISOString().slice(0,10) + ", " + (new Date($scope.item.lastChanged)).toISOString().slice(11,19);
             if ($scope.sanatizeTags == "true") {
                 $scope.sanatizedArticleText = $sce.trustAsHtml(htmlToPlaintext($scope.item.text));
             } else {
