@@ -17,6 +17,8 @@ services:
   mongo:
     image: mongo
     restart: always
+    volumes: 
+     - datavolume:/data
   nginx:
     build:
      context: nginx/
