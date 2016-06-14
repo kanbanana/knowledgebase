@@ -1,6 +1,5 @@
 var express = require('express');
 var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('server');
 var config = require('./lib/config/config');
@@ -19,7 +18,6 @@ app.set('port', config.port);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-// app.use(cookieParser());
 
 // Define Routes
 router.all('/:articleId*',articles.middlewareRetrieveArticle);
