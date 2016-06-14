@@ -21,7 +21,8 @@ services:
      - datavolume:/data
   nginx:
     build:
-     context: nginx/
+     context: ../
+     dockerfile: provision/nginx/Dockerfile
     links:
       - node
     volumes:
