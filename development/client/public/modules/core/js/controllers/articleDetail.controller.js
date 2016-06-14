@@ -5,8 +5,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         text: ''
     };
     $scope.isUploading = false;
-
-    /*
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
             editor.windowManager.open({
@@ -121,7 +119,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         menubar: false,
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | table link bdesk_photo reference_manager'
     };
-*/
+
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
         if(response.status === 404) {
             $scope.$emit("makeToast", {type: "warning", message: response.data});
@@ -233,11 +231,17 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             if ($scope.article.title && $scope.article.title !== "") {
                 $scope.isSaving = true;
                 if ($scope.article.isTemporary === true) {
+                    if($scope.article.author.email && !isEmail($scope.article.author.email)) {
+                        $scope.isSaving = false;
+                        $scope.$emit("makeToast", {type: "warning", message: 'Invalid e-mail'});
+                        return;
+                    }
                     $scope.article.lastChangedBy = $scope.article.author;
                 } else {
                     if ($scope.lastChangedBy) {
                         $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
                         if($scope.lastChangedBy.email && !isEmail($scope.lastChangedBy.email)) {
+                            $scope.isSaving = false;
                             $scope.$emit("makeToast", {type: "warning", message: 'Invalid e-mail'});
                             return;
                         } else {
