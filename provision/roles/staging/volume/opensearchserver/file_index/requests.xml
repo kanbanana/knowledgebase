@@ -12,7 +12,7 @@
 <snippet>
 <field name="title" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="NoFragmenter" timeLimit="0"/>
 <field name="fileName" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="NoFragmenter" timeLimit="0"/>
-<field name="content" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="NoFragmenter" timeLimit="0"/>
+<field name="content" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="SentenceFragmenter" timeLimit="0"/>
 </snippet>
 <facetFields>
 <facetField name="fileExtension" minCount="1" multivalued="no" postCollapsing="no"/>

@@ -4,7 +4,7 @@
 <query>
 <searchField field="title" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
 <searchField field="content" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
-<searchField field="fileName" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
+<searchField field="fileName" mode="PATTERN" boost="10.0" phraseBoost="10.0"/>
 </query>
 <returnFields>
 <field name="url"/>
