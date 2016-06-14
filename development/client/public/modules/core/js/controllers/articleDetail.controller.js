@@ -5,7 +5,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         text: ''
     };
     $scope.isUploading = false;
-
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
             editor.windowManager.open({
@@ -122,6 +121,11 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
     };
 
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
+        if(response.status === 404) {
+            $scope.$emit("makeToast", {type: "warning", message: response.data});
+            return
+        }
+
         $scope.article = response.data;
         $scope.articleServerVer = $scope.article;
         $scope.articleId = $stateParams.articleId;
@@ -181,6 +185,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.startEditing = function () {
             $location.path('article/' + $scope.article.id).search('e', 'true');
         };
+
         $scope.uploadFile = function (files) {
 
             var fd = new FormData();
@@ -226,11 +231,17 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             if ($scope.article.title && $scope.article.title !== "") {
                 $scope.isSaving = true;
                 if ($scope.article.isTemporary === true) {
+                    if($scope.article.author.email && !isEmail($scope.article.author.email)) {
+                        $scope.isSaving = false;
+                        $scope.$emit("makeToast", {type: "warning", message: 'Invalid e-mail'});
+                        return;
+                    }
                     $scope.article.lastChangedBy = $scope.article.author;
                 } else {
                     if ($scope.lastChangedBy) {
                         $scope.article.lastChangedBy.name = $scope.lastChangedBy.name;
                         if($scope.lastChangedBy.email && !isEmail($scope.lastChangedBy.email)) {
+                            $scope.isSaving = false;
                             $scope.$emit("makeToast", {type: "warning", message: 'Invalid e-mail'});
                             return;
                         } else {
@@ -309,7 +320,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         });
 
         $scope.$on('deleteArticle', function () {
-            $scope.changeTo = '/';
+            $scope.changeTo = $rootScope.baseUrl;
             ArticleService.deleteArticle($scope.articleId).then(function () {
                 $scope.$emit("makeToast", {type: "success", message: 'Article deleted!'});
                 $scope.changeRoute();
