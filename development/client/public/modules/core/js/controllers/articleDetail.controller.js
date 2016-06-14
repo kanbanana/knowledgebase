@@ -6,6 +6,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
     };
     $scope.isUploading = false;
 
+    /*
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
             editor.windowManager.open({
@@ -120,8 +121,13 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         menubar: false,
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | table link bdesk_photo reference_manager'
     };
-
+*/
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
+        if(response.status === 404) {
+            $scope.$emit("makeToast", {type: "warning", message: response.data});
+            return
+        }
+
         $scope.article = response.data;
         $scope.articleServerVer = $scope.article;
         $scope.articleId = $stateParams.articleId;
@@ -181,6 +187,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         $scope.startEditing = function () {
             $location.path('article/' + $scope.article.id).search('e', 'true');
         };
+
         $scope.uploadFile = function (files) {
 
             var fd = new FormData();
@@ -309,7 +316,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         });
 
         $scope.$on('deleteArticle', function () {
-            $scope.changeTo = '/';
+            $scope.changeTo = $rootScope.baseUrl;
             ArticleService.deleteArticle($scope.articleId).then(function () {
                 $scope.$emit("makeToast", {type: "success", message: 'Article deleted!'});
                 $scope.changeRoute();

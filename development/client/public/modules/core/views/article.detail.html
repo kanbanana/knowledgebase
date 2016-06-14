@@ -7,7 +7,7 @@
                 <!-- buttons for mobile version -->
                 <div class="row visible-xs">
                     <div class="col-xs-6">
-                        <a href="mailto:{{article.author.email}}" ng-hide="isEditing"
+                        <a href="mailto:{{article.author.email}}?subject={{article.title}}" ng-hide="isEditing"
                            ng-disabled="article.lastChangedBy.email === ''" class="btn btn-default btn-block">
                             <i class="fa fa-bell-o" aria-hidden="true"></i> Alert
                         </a>
@@ -161,7 +161,7 @@
                                                 <span class="file-delete-button" ng-show="isEditing"
                                                       ng-click="deleteFile($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
                                                 <span class="badge">{{file.filetype}}</span>
-                                                <a href="{{file.path}}" title="{{file.name}}" target="_blank" class="fileDownload">
+                                                <a href="{{baseUrl}}{{file.path}}" title="{{file.name}}" target="_blank" class="fileDownload">
                                                     {{file.name | limitTo: 10}}{{file.name.length > 12 ? '...' : ''}}
                                                 </a>
 
