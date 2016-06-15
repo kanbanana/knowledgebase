@@ -1,10 +1,13 @@
 /**
  * Created by Wlad on 03.06.2016.
  */
-//var async = require('async');
+
+'use strict';
+
 var config = require(__dirname + '/../config/config');
 var request = require('request');
 var path = require('path');
+var PromiseLib = require("promise");
 
 var uri = config.oss.protocol + '://' + config.oss.hostname + ':' + config.oss.port;
 
@@ -27,7 +30,7 @@ searchEngineConnector.updateIndex = function () {
 
 //Searches articles by key words
 searchEngineConnector.searchArticles = function (q) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         var apiUrl = uri + '/services/rest/index/' + config.oss.indexName + '/search/field/' + config.oss.queryName;
         var requestData = {
             "query": q
