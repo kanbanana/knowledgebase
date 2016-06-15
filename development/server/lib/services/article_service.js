@@ -140,7 +140,7 @@ function removeFileFromArticle(article, filename) {
     var hasFound = false;
     article.documents.forEach(function(document, idx) {
         var tempFilename = document.name + "." + document.filetype;
-        if(filename == tempFilename) {
+        if(filename === tempFilename) {
             hasFound = document;
             var tempDocument = article.documents.pop();
             if(idx !== article.documents.length) {
@@ -301,7 +301,7 @@ articleService.deleteEmptyArticles = function(){
 
 
 articleService.deleteTemporaryArticles = function() {
-    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
+    return databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
         articles.forEach(function (article) {
             fileSystemConnector.deleteArticle(article._id).then(function () {
                 },

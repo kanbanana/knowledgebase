@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
@@ -36,11 +38,16 @@ var mongoConnection = null;
 module.exports.server = null;
 
 
-module.exports.listen = function () {
-    module.exports.server = app.listen(app.get('port'), function(){
-        mongoConnection = require('mongoose').connect(config.dbConnectionString);
-        console.log('server listening on port ' + app.get('port') + '!');
+module.exports.listen = function (cb) {
+    mongoConnection = require('mongoose').connect(config.dbConnectionString, function(){
+        module.exports.server = app.listen(app.get('port'), function(){
+            console.log('server listening on port ' + app.get('port') + '!');
+            if(cb) {
+                cb();
+            }
+        });
     });
+
 };
 
 module.exports.close = function (callback) {
