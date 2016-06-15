@@ -1,9 +1,13 @@
+
+'use strict';
+
 var asyncLib = require('async');
 var fileSystemConnector = require('../data_connection/file_system_connector');
 var databaseConnector = require('../data_connection/database_connector');
 var searchEngineConnector = require('../data_connection/search_engine_connector');
 var config = require('../config/config');
 var path = require('path');
+var PromiseLib = require("promise");
 
 var articleService = module.exports = {};
 
@@ -12,7 +16,7 @@ articleService.createArticle = function () {
 };
 
 articleService.saveArticle = function (article, title, content, author) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         var authorName = '';
         var authorMail = '';
         if (author) {
@@ -34,7 +38,7 @@ articleService.findArticleById = function (id) {
 };
 
 articleService.saveDocument = function (article, document) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
             databaseConnector.addDocumentToArticle(article, storageInfo).then(resolve, reject);
             searchEngineConnector.updateIndex();
@@ -44,7 +48,7 @@ articleService.saveDocument = function (article, document) {
 
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         asyncLib.eachSeries(documents, function (item, cb) {
             articleService.saveDocument(article, item).then(function (storageInfo) {
                 storageInfoList.push(storageInfo);
@@ -60,7 +64,7 @@ articleService.saveDocuments = function (article, documents) {
 };
 
 articleService.getArticleContent = function (articleId) {
-    return new Promise(function(resolve) {
+    return new PromiseLib(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
             resolve(content);
         }, function() {
@@ -70,7 +74,7 @@ articleService.getArticleContent = function (articleId) {
 };
 
 articleService.getOldArticleContentAndTitle = function(articleId) {
-    return new Promise(function(resolve) {
+    return new PromiseLib(function(resolve) {
         fileSystemConnector.readOldArticleContentAndTitle(articleId).then(function(contentAndTitle) {
             resolve(contentAndTitle);
         }, function() {
@@ -85,7 +89,7 @@ articleService.deleteArticle = function(articleId){
         databaseConnector.deleteArticles(articleId)
     ];
 
-    return Promise.all(promiseList).then(function () {
+    return PromiseLib.all(promiseList).then(function () {
         searchEngineConnector.updateIndex();
     });
 };
@@ -93,7 +97,7 @@ articleService.deleteArticle = function(articleId){
 articleService.deleteDocument = function(article, filename){
     var document = removeFileFromArticle(article, filename);
     if (!document) {
-        return Promise.reject(new Error('Document not found'));
+        return PromiseLib.reject(new Error('Document not found'));
     }
     var docPath = fileSystemConnector.getPathToDocumentUnsafe(article, document);
 
@@ -102,7 +106,7 @@ articleService.deleteDocument = function(article, filename){
         databaseConnector.saveArticle(article)
     ];
 
-    return Promise.all(promiseList).then(function () {
+    return PromiseLib.all(promiseList).then(function () {
         searchEngineConnector.updateIndex();
     });
 };
@@ -165,7 +169,7 @@ articleService.searchArticles = function (q) {
         author = author[1].replace(/["']/g, '');
     }
 
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         if (!onlyAuthor) {
             searchEngineConnector.searchArticles(search).then(function (searchResults) {
                 if (searchResults.length === 0) {
@@ -227,7 +231,7 @@ articleService.searchArticles = function (q) {
                     });
 
                     if (promiseList.length > 0) {
-                        Promise.all(promiseList).then(function (result) {
+                        PromiseLib.all(promiseList).then(function (result) {
                             resolve(articles);
                         });
                     } else {
@@ -246,7 +250,7 @@ articleService.searchArticles = function (q) {
                 });
 
                 if (promiseList.length > 0) {
-                    Promise.all(promiseList).then(function (result) {
+                    PromiseLib.all(promiseList).then(function (result) {
                         resolve(articles);
                     });
                 } else {
@@ -258,7 +262,7 @@ articleService.searchArticles = function (q) {
 };
 
 articleService.getArticlesByIds = function (ids) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         databaseConnector.findArticlesByIds(ids).then(function (articles) {
             var promiseList = [];
 
@@ -269,7 +273,7 @@ articleService.getArticlesByIds = function (ids) {
             });
 
             if (promiseList.length > 0) {
-                Promise.all(promiseList).then(function (result) {
+                PromiseLib.all(promiseList).then(function (result) {
                     resolve(articles);
                 });
             } else {

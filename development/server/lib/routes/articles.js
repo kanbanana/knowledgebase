@@ -1,3 +1,6 @@
+
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var models = require('../data_connection/models');
@@ -12,6 +15,17 @@ var router = module.exports = {};
 
 // ********************* Route Handlers *********************  //
 
+/**
+ * "onArticleCreateHandler" is a HTTP Request Handler. It handles the article create request.
+ * On success the handler will send the new article id.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onArticleCreateHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onArticleCreateHandler = function (req, res) {
     articleService.createArticle().then(function (article) {
         res.send(article._id);
@@ -20,14 +34,37 @@ router.onArticleCreateHandler = function (req, res) {
     });
 };
 
+/**
+ * "onDocumentUploadHandler" is a HTTP Request Handler. It handles the upload fo documents.
+ * On success the handler will send the new document information as JSON.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onDocumentUploadHandler
+ * @static
+ *
+ * @send {}
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onDocumentUploadHandler = function (req, res) {
     articleService.saveDocuments(req.article, req.files).then(function (storageInfoList) {
         res.send(storageInfoList);
     }, function (error) {
         res.send(500, error);
-    })
+    });
 };
 
+/**
+ * "onArticleSaveHandler" is a HTTP Request Handler. It handles the article save request on an existing article.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onArticleSaveHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onArticleSaveHandler = function (req, res) {
     if(  req.params)
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function (article) {
@@ -41,6 +78,16 @@ router.onArticleSaveHandler = function (req, res) {
     });
 };
 
+/**
+ * "onArticleGetHandler" is a HTTP Request Handler. It sends the article object.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onArticleGetHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onArticleGetHandler = function (req, res) {
     if (req.query.old === '') {
         return articleService.getOldArticleContentAndTitle(req.article._id).then(function (contentAndTitle) {
@@ -56,6 +103,17 @@ router.onArticleGetHandler = function (req, res) {
     });
 };
 
+/**
+ * "onArticleSearchHandler" is a HTTP Request Handler. It handles the article search request.
+ * "onArticleSearchHandler" expects the "GET" parameter "q".
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onArticleSearchHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onArticleSearchHandler = function(req, res) {
     if (req.query.q) {
         articleService.searchArticles(req.query.q).then(function (searchResults) {
@@ -78,6 +136,16 @@ router.onArticleSearchHandler = function(req, res) {
     }
 };
 
+/**
+ * "onArticleDeleteHandler" is a HTTP Request Handler. It handles the article delete request.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onArticleDeleteHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onArticleDeleteHandler = function (req, res) {
     articleService.deleteArticle(req.article._id).then(function () {
         res.send(true);
@@ -86,6 +154,16 @@ router.onArticleDeleteHandler = function (req, res) {
     });
 };
 
+/**
+ * "onDocumentDeleteHandler" is a HTTP Request Handler. It handles the document delete request.
+ * On error the handler will send the Error-Code 500 and the error to the client.
+ *
+ * @function onDocumentDeleteHandler
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ */
 router.onDocumentDeleteHandler = function (req, res) {
     articleService.deleteDocument(req.article, req.params.filename).then(function () {
         res.send(true);
@@ -106,7 +184,7 @@ router.middlewareRetrieveArticle = function (req, res, next) {
 
         next();
     }, function (err) {
-        res.send(500, error);
+        res.send(500, err);
     });
 };
 
