@@ -178,6 +178,13 @@ describe('', function () {
                         .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
+
+                it('request with valid invalid ids mixed', function (done) {
+                    request(application.app)
+                        .get('/api/articles?ids=1,2,3' + ArticleIds.join(',') + '')
+                        .expect('Content-Type', /json/)
+                        .expect(200, done);
+                });
             });
 
             describe('/api/articles/:ArticleId', function () {
@@ -475,6 +482,18 @@ describe('', function () {
                         .del('/api/articles/' + ArticleId + '/documents/dummy.txt')
                         .expect(200, done);
                 });
+
+                it('delete article.html', function (done) {
+                    request(application.app)
+                        .del('/api/articles/' + ArticleId + '/documents/article.html')
+                        .expect(500, done);
+                });
+
+                it('delete server.js', function (done) {
+                    request(application.app)
+                        .del('/api/articles/' + ArticleId + '/documents/..%2F..%2F..%2Fserver.js')
+                        .expect(500, done);
+                });
             });
 
             describe('/:articleId/documents/:filename', function () {
@@ -531,7 +550,7 @@ describe('', function () {
         });
     });
 
-    describe('file_system_connector test', function () {
+    describe('file_system_connector', function () {
         describe('test extract html title content', function () {
             it('should pass', function () {
                 assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('<title>foo bar</title>'));
