@@ -61,6 +61,10 @@ databaseConnector.saveArticle = function (article) {
 
 databaseConnector.findArticleById = function (id) {
     return new PromiseLib(function (resolve) {
+        if (!ObjectId.isValid(id)) {
+            resolve(null);
+        }
+
         Article.findById(id).exec(function (err, result) {
             resolve(result);
         });
@@ -71,13 +75,15 @@ databaseConnector.findArticlesByIds = function (ids) {
     return new PromiseLib(function (resolve, reject) {
         var inIds = [];
         ids.forEach(function (id) {
-            inIds.push(new ObjectId(id));
+            if (ObjectId.isValid(id)) {
+                inIds.push(id);
+            }
         });
 
-        var queryOptions = { _id: { $in: inIds }};
-        Article.find(queryOptions, function (findErr, result) {
-            if (findErr) {
-                return reject(findErr);
+        var queryOptions = {_id: {$exists: true, $in: inIds}};
+        Article.find(queryOptions, function (err, result) {
+            if (err) {
+                return reject(err);
             }
             resolve(result);
         });
@@ -86,13 +92,15 @@ databaseConnector.findArticlesByIds = function (ids) {
 
 databaseConnector.findArticlesByAuthor = function (author) {
     return new PromiseLib(function (resolve, reject) {
-        var queryOptions = {$or: [
-            {'author.name': new RegExp('.*' + author + '.*', 'i')},
-            {'lastChangedBy.name': new RegExp('.*' + author + '.*', 'i')}
-        ]};
-        Article.find(queryOptions, function (findErr, result) {
-            if (findErr) {
-                return reject(findErr);
+        var queryOptions = {
+            $or: [
+                {'author.name': new RegExp('.*' + author + '.*', 'i')},
+                {'lastChangedBy.name': new RegExp('.*' + author + '.*', 'i')}
+            ]
+        };
+        Article.find(queryOptions, function (err, result) {
+            if (err) {
+                return reject(err);
             }
             resolve(result);
         });
@@ -108,8 +116,8 @@ databaseConnector.findAllPermArticleIds = function () {
 
             var idArray = [];
 
-            result.forEach(function(item) {
-                idArray.push(item._id+'');
+            result.forEach(function (item) {
+                idArray.push(item._id + '');
             });
 
             resolve(idArray);
@@ -118,6 +126,10 @@ databaseConnector.findAllPermArticleIds = function () {
 };
 
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
+    if (ageInHours <= 0) {
+        return PromiseLib.reject(new Error("ageInHours must be higher than 0"));
+    }
+
     var date = new Date();
     date.setHours(date.getHours() - ageInHours);
 

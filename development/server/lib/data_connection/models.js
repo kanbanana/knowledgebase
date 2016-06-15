@@ -73,12 +73,7 @@ ArticleSchema.pre('save', function (next) {
  * @returns {ArticleSchema} - striped articleSchema
  */
 var articleSchemaToResponseArticle = function (articleSchema) {
-    var responseArticle;
-    if(articleSchema.hasOwnProperty("toJSON")) {
-        responseArticle = articleSchema.toJSON();
-    } else {
-        responseArticle = articleSchema;
-    }
+    var responseArticle = articleSchema.toJSON();
 
     responseArticle.id = responseArticle._id;
     delete responseArticle._id;
