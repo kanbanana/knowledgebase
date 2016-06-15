@@ -1,6 +1,5 @@
 var express = require('express');
 var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('server');
 var config = require('./lib/config/config');
@@ -19,13 +18,12 @@ app.set('port', config.port);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-// app.use(cookieParser());
 
 // Define Routes
 router.all('/:articleId*',articles.middlewareRetrieveArticle);
 router.get('/:articleId', articles.onArticleGetHandler);
 router.get('/', articles.onArticleSearchHandler);
-router.put('/:articleId', articles.middlewareCheckAutherMail, articles.middlewareCheckAutherName, articles.middlewareCheckTitle, articles.onArticleSaveHandler);
+router.put('/:articleId', articles.middlewareValidateArticle, articles.onArticleSaveHandler);
 router.post('/:articleId/documents', upload.array('documents'), articles.onDocumentUploadHandler);
 router.post('/', articles.onArticleCreateHandler);
 router.delete('/:articleId', articles.onArticleDeleteHandler);

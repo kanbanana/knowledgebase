@@ -10,15 +10,15 @@
     "name": "Martin Mustermann",
     "email": "martin@mustermann.com"
   },
-  "lastChanged": "2016-05-15",
+  "lastChanged": 1465827418001,
   "title": "Knowledge",
   "text": "This is some <b>important</b> Knowledge",
-  "files":
+  "documents":
   [
     {
-      "type": "pdf",
+      "filetype": "pdf",
       "name": "some knowledge",
-      "url": "/this/is/some knowledge.pdf"
+      "path": "/this/is/some knowledge.pdf"
     }
   ]
 }

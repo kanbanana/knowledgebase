@@ -14,4 +14,8 @@ angular.module('core').controller('NavCtrl', ['$scope','$location','ArticleServi
             $location.path('search').search('q', searchText);
         }
     };
+
+    $scope.closeNavbar = function() {
+        $('.navbar-toggle').click();
+    }
 }]);

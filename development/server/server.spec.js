@@ -7,7 +7,7 @@ var assert = require('assert');
 var config = require('./lib/config/config');
 var databaseConnector = require('./lib/data_connection/database_connector');
 var articleService = require('./lib/services/article_service');
-var fileSystemConnector = require('./lib/data_connection/file_system_connector')
+var fileSystemConnector = require('./lib/data_connection/file_system_connector');
 
 var application = require('./server.js');
 
@@ -61,15 +61,17 @@ describe('', function () {
                 var numberOfArticlesToCreate = 10;
                 var counter = 0;
 
-                for (var i = 0; i < numberOfArticlesToCreate; i++)
+                for (var i = 0; i < numberOfArticlesToCreate; i++) {
                     request(application.app)
                         .post('/api/articles/')
                         .end(function (err, res) {
                             if (err) return done(err);
                             ArticleIds.push(res.body);
+                            var data = JSON.parse(JSON.stringify(ArticleExample));
+                            data.id = res.body;
                             request(application.app)
                                 .put('/api/articles/' + res.body)
-                                .send(ArticleExample)
+                                .send(data)
                                 .end(function () {
                                     request(application.app)
                                         .post('/api/articles/' + res.body + '/documents')
@@ -79,6 +81,7 @@ describe('', function () {
                                         });
                                 });
                         });
+                }
             });
 
 
@@ -287,9 +290,13 @@ describe('', function () {
 
             describe('/api/articles/:ArticleId', function () {
                 it('put with valid data', function (done) {
+                    var data = JSON.parse(JSON.stringify(ArticleExample));
+
+                    data.id = ArticleIds[0];
+
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
-                        .send(ArticleExample)
+                        .send(data)
                         .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
@@ -325,6 +332,7 @@ describe('', function () {
                     it('invalid', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '4d5f6g7hjkjhugzf65d4f5g6h7j8k';
 
                         request(application.app)
@@ -336,6 +344,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength + 1; i++)
@@ -355,6 +364,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorNameLength + 1; i++)
@@ -372,6 +382,7 @@ describe('', function () {
                     it('to long', function (done) {
                         var data = JSON.parse(JSON.stringify(ArticleExample));
 
+                        data.id = ArticleIds[0];
                         data.author.email = '';
 
                         for (var i = 0; i < config.postBodyValidationValues.maxArticleTitleLength + 1; i++)
@@ -492,21 +503,18 @@ describe('', function () {
         });
 
         it('should fail for values equal 0', function (done) {
-            databaseConnector.deleteTemporaryArticlesOlderThan(0).then(function (data) {
-                throw new Error('fail!');
+            databaseConnector.deleteTemporaryArticlesOlderThan(0).then(function () {
+                done("fail!");
+            }, function () {
                 done();
-            }).catch(function (err) {
-                done(err);
             });
         });
 
         it('should fail for values less 0', function (done) {
-            databaseConnector.deleteTemporaryArticlesOlderThan(-1).then(function (data) {
-                throw new Error('fail!');
+            databaseConnector.deleteTemporaryArticlesOlderThan(-1).then(function () {
+                done("fail!");
+            }, function () {
                 done();
-            }).catch(function (err) {
-                console.log(err);
-                done(err);
             });
         });
     });
@@ -526,39 +534,39 @@ describe('', function () {
     describe('file_system_connector test', function () {
         describe('test extract html title content', function () {
             it('should pass', function () {
-                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('<title>foo bar</title>'))
+                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('<title>foo bar</title>'));
             });
 
             it('should pass with empty title', function () {
-                assert.equal('', fileSystemConnector.extractHTMLTitleContent('<title></title>'))
+                assert.equal('', fileSystemConnector.extractHTMLTitleContent('<title></title>'));
             });
 
             it('should pass with empty title immediately closed tag', function () {
-                assert.equal('', fileSystemConnector.extractHTMLTitleContent('</title>'))
+                assert.equal('', fileSystemConnector.extractHTMLTitleContent('</title>'));
             });
 
             it('should pass with nested tags', function () {
-                assert.equal('<title>foo bar</title>', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title></title>'))
+                assert.equal('<title>foo bar</title>', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title></title>'));
             });
 
             it('should pass with malformed tags', function () {
-                assert.equal('<titlefoo bar</title>', fileSystemConnector.extractHTMLTitleContent('<titlefoo bar</title>'))
+                assert.equal('<titlefoo bar</title>', fileSystemConnector.extractHTMLTitleContent('<titlefoo bar</title>'));
             });
 
             it('should pass with malformed tags', function () {
-                assert.equal('>foo bar', fileSystemConnector.extractHTMLTitleContent('<title>>foo bar</title>'))
+                assert.equal('>foo bar', fileSystemConnector.extractHTMLTitleContent('<title>>foo bar</title>'));
             });
 
             it('should pass without tags', function () {
-                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('foo bar'))
+                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('foo bar'));
             });
 
             it('should pass two opening one closing tag', function () {
-                assert.equal('<title>foo bar', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title>'))
+                assert.equal('<title>foo bar', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title>'));
             });
 
             it('should pass new line', function () {
-                assert.equal('foobar', fileSystemConnector.extractHTMLTitleContent("<title>foo<br>bar</title>"))
+                assert.equal('foobar', fileSystemConnector.extractHTMLTitleContent("<title>foo<br>bar</title>"));
             });
         });
 
@@ -591,9 +599,9 @@ describe('', function () {
             });
 
             it('should pass with newline', function () {
-                assert.equal('foo\n bar', fileSystemConnector.extractHTMLBodyContent('<body>foo\n bar</body>'))
+                assert.equal('foo\n bar', fileSystemConnector.extractHTMLBodyContent('<body>foo\n bar</body>'));
             });
-        })
+        });
 
         describe('test wrap content in html', function () {
             it('should pass', function () {
@@ -611,6 +619,6 @@ describe('', function () {
             it('should pass both params whitespace', function () {
                 assert.equal('<html><head><title>\n\n</title></head><body> </body></html>', fileSystemConnector.wrapContentInHTMLBody('\n\n', ''));
             });
-        })
+        });
     });
 });

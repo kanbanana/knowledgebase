@@ -23,6 +23,7 @@ var databaseConnector = module.exports = {};
 databaseConnector.createArticle = function () {
     return new PromiseLib(function (resolve, reject) {
         var newArticle = new Article();
+        //newArticle.documents = [];
         newArticle.save(function (err) {
             if (!err) {
                 resolve(newArticle);
@@ -59,11 +60,8 @@ databaseConnector.saveArticle = function (article) {
 };
 
 databaseConnector.findArticleById = function (id) {
-    return new PromiseLib(function (resolve, reject) {
+    return new PromiseLib(function (resolve) {
         Article.findById(id).exec(function (err, result) {
-            if (err) {
-                return reject(err);
-            }
             resolve(result);
         });
     });

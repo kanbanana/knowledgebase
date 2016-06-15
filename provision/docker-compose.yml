@@ -1,31 +1,33 @@
 version: '2'
 services:
-  nodeserver:
+  node:
     build:
       context: ../development/server/
     environment:
       - DATABASE_ADDR=mongo
-      - OSS_ADDR=ossserver
+      - OSS_ADDR=oss
     links:
       - mongo
-      - ossserver
+      - oss
     depends_on:
       - mongo
-      - ossserver
+      - oss
     volumes:
       - datavolume:/usr/src/app/uploads
   mongo:
     image: mongo
     restart: always
+    volumes: 
+     - datavolume:/data
   nginx:
     build:
      context: nginx/
     links:
-      - nodeserver
+      - node
     volumes:
       - datavolume:/usr/share/nginx/files
     restart: always
-  ossserver:
+  oss:
     build:
      context: .
      dockerfile: oss/Dockerfile

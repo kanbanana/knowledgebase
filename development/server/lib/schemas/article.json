@@ -36,7 +36,7 @@
       ]
     },
     "lastChanged": {
-      "type": "string"
+      "type": "integer"
     },
     "title": {
       "type": "string"

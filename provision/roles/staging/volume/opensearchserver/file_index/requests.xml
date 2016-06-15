@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><requests>
-<request name="search" type="SearchFieldRequest" phraseSlop="2" defaultOperator="AND" start="0" rows="1000" lang="en" collapseMode="off" collapseType="optimized" collapseMax="0" emptyReturnsAll="yes">
+<request name="search" type="SearchFieldRequest" phraseSlop="2" defaultOperator="AND" start="0" rows="10" lang="en" collapseMode="off" collapseType="optimized" collapseMax="0" emptyReturnsAll="yes">
 <geoParameters coordUnit="DEGREES" latitude="0.0" longitude="0.0" distanceReturn="NO_DISTANCE"/>
 <query>
 <searchField field="title" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
-<searchField field="titleExact" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
-<searchField field="titlePhonetic" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
 <searchField field="content" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
-<searchField field="contentExact" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
-<searchField field="contentPhonetic" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
+<searchField field="fileName" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
 </query>
 <returnFields>
 <field name="url"/>
 </returnFields>
 <snippet>
+<field name="title" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="NoFragmenter" timeLimit="0"/>
+<field name="fileName" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="NoFragmenter" timeLimit="0"/>
 <field name="content" tag="b" separator="..." maxSnippetSize="200" maxSnippetNumber="1" fragmenterClass="SentenceFragmenter" timeLimit="0"/>
 </snippet>
+<facetFields>
+<facetField name="fileExtension" minCount="1" multivalued="no" postCollapsing="no"/>
+<facetField name="fileType" minCount="1" multivalued="no" postCollapsing="no"/>
+</facetFields>
 </request>
 </requests>

@@ -6,8 +6,12 @@ var path = require('path');
 var models = require('../data_connection/models');
 var articleService = require('../services/article_service');
 var config = require('../config/config');
+var validate = require('jsonschema').validate;
+var articleGlobalSchema = require('../schemas/article.json');
+var articlesGlobalSchema = require('../schemas/articles.json');
 
 var router = module.exports = {};
+
 
 // ********************* Route Handlers *********************  //
 
@@ -62,6 +66,7 @@ router.onDocumentUploadHandler = function (req, res) {
  * @param {object} res - Expressjs Response Object
  */
 router.onArticleSaveHandler = function (req, res) {
+    if(  req.params)
     articleService.saveArticle(req.article, req.body.title, req.body.text, req.body.lastChangedBy).then(function (article) {
         articleService.getArticleContent(article._id).then(function (articleContent) {
             var responseArticle = models.articleSchemaToResponseArticle(article);
@@ -84,9 +89,6 @@ router.onArticleSaveHandler = function (req, res) {
  * @param {object} res - Expressjs Response Object
  */
 router.onArticleGetHandler = function (req, res) {
-    if (!req.article) {
-        return res.status(404).send('Article not found');
-    }
     if (req.query.old === '') {
         return articleService.getOldArticleContentAndTitle(req.article._id).then(function (contentAndTitle) {
             res.send(contentAndTitle);
@@ -120,7 +122,11 @@ router.onArticleSearchHandler = function(req, res) {
             res.status(500).send(error);
         });
     } else if (req.query.ids) {
-        articleService.getArticlesByIds(req.query.ids.split(',')).then(function (articles) {
+        var ids = req.query.ids.split(',');
+        if(ids.length === 0) {
+            res.status(200).send([]);
+        }
+        articleService.getArticlesByIds(ids).then(function (articles) {
             res.send(models.multipleArticleSchemaToResponseArticles(articles));
         }, function (error) {
             res.status(500).send(error);
@@ -171,34 +177,36 @@ router.onDocumentDeleteHandler = function (req, res) {
 router.middlewareRetrieveArticle = function (req, res, next) {
     articleService.findArticleById(req.params.articleId).then(function (article) {
         req.article = article;
+
+        if(!req.article) {
+            return res.status(404).send('Article not found');
+        }
+
         next();
     }, function (err) {
         res.send(500, err);
     });
 };
 
-router.middlewareCheckTitle = function (req, res, next) {
-    if (req.body.title && req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
+router.middlewareValidateArticle = function(req, res, next) {
+    var validationResult = validate(req.body, articleGlobalSchema);
+    if(validationResult.errors.length > 0) {
+        return res.status(400).send('Invalid input: ' + validationResult.errors[0]);
+    }
+
+    if (req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
         return res.status(400).send('Invalid title length (max. ' + config.postBodyValidationValues.maxArticleTitleLength + ' characters).');
     }
 
-    next();
-};
-
-router.middlewareCheckAutherName = function (req, res, next) {
-    if (req.body.author && req.body.author.name && req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
-        req.body.lastChangedBy && req.body.lastChangedBy.name && req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+    if (req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
+        req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
         return res.status(400).send('Invalid author name length (max. ' + config.postBodyValidationValues.maxArticleAuthorNameLength + ' characters).');
     }
 
-    next();
-};
-
-router.middlewareCheckAutherMail = function (req, res, next) {
-    if (req.body.author && req.body.author.email && req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
-        req.body.lastChangedBy && req.body.lastChangedBy.email && req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
+    if (req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
+        req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
         return res.status(400).send('Invalid author email address length (max. ' + config.postBodyValidationValues.maxArticleAuthorEmailLength + ' characters).');
     }
 
-    next()
+    next();
 };

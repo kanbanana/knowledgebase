@@ -1,5 +1,8 @@
 /**
- * Created by Wlad on 03.06.2016.
+ * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine api directly.
+ *
+ * @module lib/search_engine_connector
+ * @author Vladislav Chumak
  */
 
 'use strict';
@@ -13,7 +16,12 @@ var uri = config.oss.protocol + '://' + config.oss.hostname + ':' + config.oss.p
 
 var searchEngineConnector = module.exports = {};
 
-//Push crawler in order to index current article contents which are resident on the file system
+/**
+ * Instructs the search engine to update its search index.
+ *
+ * @function updateIndex
+ * @static
+ */
 searchEngineConnector.updateIndex = function () {
     var apiUrl = uri + '/services/rest/crawler/file/run/once/' + config.oss.indexName + '/json';
     request(apiUrl, function (error, response, body) {
@@ -28,7 +36,23 @@ searchEngineConnector.updateIndex = function () {
     });
 };
 
-//Searches articles by key words
+/**
+ * Represents a single search result entry for a search query. The entry references a file on the file system which was matched to the search query by search engine.
+ *
+ * @typedef SearchResultEntry
+ * @property {number} id - ID of the article.
+ * @property {string} filename - Name of the file which matches the search query.
+ * @property {string} text - The snippet of the file content which contains the matched text for the search query. The matched key words are wrapped in &lt;b&gt;.
+ */
+
+/**
+ * Searches articles by key words.
+ *
+ * @function searchArticles
+ * @static
+ * @param {string} q - The search query which contains the key words.
+ * @returns {Promise<module:lib/search_engine_connector~SearchResultEntry|Error>} Search results
+ */
 searchEngineConnector.searchArticles = function (q) {
     return new PromiseLib(function (resolve, reject) {
         var apiUrl = uri + '/services/rest/index/' + config.oss.indexName + '/search/field/' + config.oss.queryName;

@@ -7,7 +7,12 @@ angular.module('core', [])
         var url = $location.absUrl();
         //var url = $location.host();
         //var url = "http://141.19.158.68:3000/#/";
-        var cutUrl = url.substring(0, url.indexOf('/#/') );
-        //var cutUrl = "https://danielweidle.de"
+        if (url.indexOf('/#/') > -1) {
+            var cutUrl = url.substring(0, url.indexOf('/#/'));
+        } else {
+            var cutUrl = url;
+        }
+
+        var cutUrl = url.substring(0, url.indexOf('/#/'));
         $rootScope.baseUrl = cutUrl;
     }]);
