@@ -60,22 +60,13 @@ PathContainer.prototype.loadPaths = function (cb) {
                 self.oldFolderPath = list[0];
                 self.permFolderPath = list[1];
                 self.tempFolderPath = list[2];
+                self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, self.articleId + config.articleContentFileName);
+                self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, self.articleId + config.articleContentFileName);
+
             }
 
             cb(err);
         });
-};
-
-/**
- * "loadPaths" loads all path to the article.html files asynchronously
- *
- * @param {errorCallback} cb
- */
-PathContainer.prototype.loadArticleContentFilePaths = function (cb) {
-    var self = this;
-    self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, config.articleContentFileName);
-    self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, config.articleContentFileName);
-    cb();
 };
 
 /**
@@ -139,7 +130,6 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 
     return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-            pathContainer.loadArticleContentFilePaths.bind(pathContainer),
             function (cb) {
                 fs.exists(pathContainer.fullNameOfOldArticleContentFile, function (exists) {
                     if (exists) {
@@ -230,9 +220,10 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
 
 fileSystemConnector.readArticleContent = function (articleId) {
     articleId += '';
+    var pathContainer = new PathContainer(articleId);
     return new PromiseLib(function (resolve, reject) {
-        getPermFolderForArticle(articleId, function (err, permFolder) {
-            var contentFilePath = path.join(permFolder, config.articleContentFileName);
+        pathContainer.loadPaths(function (err, permFolder) {
+            var contentFilePath = pathContainer.fullNameOfCurrentArticleContentFile;
             fs.readFile(contentFilePath, function (err, contentBuffer) {
                 if (err) {
                     return reject(err);
@@ -267,11 +258,13 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 fileSystemConnector.extractHTMLTitleContent = function (content) {
     var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
 
+    var regCleanUp = /<(\/)?\s*[^>]+\s*>/g;
+
     content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
-    return content;
+    return content.replace(regCleanUp, '');
 };
 
 
@@ -281,12 +274,13 @@ fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
 
 fileSystemConnector.extractHTMLBodyContent = function (content) {
     var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
+    var regCleanUp = /<(\/)?\s*body\s*>/g;
 
     content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
-    return content;
+    return content.replace(regCleanUp, '');
 };
 
 fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
@@ -317,7 +311,6 @@ fileSystemConnector.deleteArticle = function (articleId) {
 
     return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-                pathContainer.loadArticleContentFilePaths.bind(pathContainer),
                 pathContainer.removeOldFolder.bind(pathContainer),
                 pathContainer.removePermFolder.bind(pathContainer),
                 pathContainer.removeTempFolder.bind(pathContainer)],
@@ -337,7 +330,6 @@ fileSystemConnector.isArticleFileExists = function (articleId) {
     var isExists;
     return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-                pathContainer.loadArticleContentFilePaths.bind(pathContainer),
                 function(cb){
                     fs.exists(pathContainer.fullNameOfCurrentArticleContentFile, function(exists) {
                         isExists = exists;
