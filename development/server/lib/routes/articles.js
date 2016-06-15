@@ -119,7 +119,7 @@ router.onArticleSearchHandler = function(req, res) {
         articleService.searchArticles(req.query.q).then(function (searchResults) {
             res.send(models.multipleArticleSchemaToResponseArticles(searchResults));
         }, function (error) {
-            res.status(500).send(error);
+            res.status(400).send(error);
         });
     } else if (req.query.ids) {
         var ids = req.query.ids.split(',');
@@ -129,7 +129,7 @@ router.onArticleSearchHandler = function(req, res) {
         articleService.getArticlesByIds(ids).then(function (articles) {
             res.send(models.multipleArticleSchemaToResponseArticles(articles));
         }, function (error) {
-            res.status(500).send(error);
+            res.status(400).send(error);
         });
     } else {
         res.status(200).send([]);

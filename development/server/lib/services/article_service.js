@@ -159,18 +159,24 @@ function removeFileFromArticle(article, filename) {
 }
 
 articleService.searchArticles = function (q) {
-    // captures author:foobar and author:'foo bar'
-    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i);
-    var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
-    // remove author from search terms
-    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/ig, '');
-
-    if (author) {
-        author = author[1].replace(/["']/g, '');
-    }
-
     return new PromiseLib(function (resolve, reject) {
+        // captures author:foobar and author:'foo bar'
+        var author = q.match(/author:('.+?'|".+?"|[^\s'"]+)/i);
+        var onlyAuthor = q.trim().match(/^author:(?:'.+?'|".+?"|[^\s'"]+)$/i);
+        // remove author from search terms
+        var search = q.replace(/(author:(?:'.*?'|".*?"|[^\s'"]+))/ig, '').trim();
+
+        if (author) {
+            author = author[1].replace(/["']/g, '').trim();
+            if (author === '') {
+                return reject(new Error('Author may not be empty'));
+            }
+        }
+
         if (!onlyAuthor) {
+            if (search === '') {
+                return reject(new Error('Search query may not be empty'));
+            }
             searchEngineConnector.searchArticles(search).then(function (searchResults) {
                 if (searchResults.length === 0) {
                     return resolve(searchResults);
@@ -191,15 +197,12 @@ articleService.searchArticles = function (q) {
 
                     // filter articles by author
                     if (author) {
-                        var spliceIndexes = [];
-                        articles.forEach(function (author, id) {
-                            if (article.author !== author) {
-                                spliceIndexes.push(id);
+                        var authorRegExp = new RegExp('.*' + author + '.*', 'i');
+                        articles.forEach(function (article, id) {
+                            if (!article.author.name.match(authorRegExp) && !article.lastChangedBy.name.match(authorRegExp)) {
+                                articles.splice(id, 1);
                             }
                         });
-                        for (var i = spliceIndexes.length - 1; i >= 0; i--) {
-                            articles = articles.splice(spliceIndexes[i], 1);
-                        }
                     }
 
                     var promiseList = [];
