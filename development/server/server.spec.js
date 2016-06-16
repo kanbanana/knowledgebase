@@ -1,4 +1,5 @@
-var should = require('should');
+'use strict';
+
 var request = require('supertest');
 var mongoose = require('mongoose');
 var assert = require('assert');
@@ -13,19 +14,55 @@ var application = require('./server.js');
 
 // Schemas
 var ArticleSchema = require('./raml/schemas/article.json');
+var SearchQResponseSchema = require('./raml/schemas/search_q_response.json');
+var SearchIdsResponseSchema = require('./raml/schemas/search_ids_response.json');
+var PostArticleResponseSchema = require('./raml/schemas/post_article_response.json');
+var PostDocumentResponseSchema = require('./raml/schemas/post_document_response.json');
+
 var ArticlesSchema = require('./raml/schemas/article.json');
 // Data
 var ArticleExample = require('./raml/examples/getArticle.json');
 var ArticlesExample = require('./raml/examples/getArticles.json');
 
 function ValidateSchema(schema, done) {
-    return function(err, res) {
-        if(err) return done(err);
+    return function (err, res) {
+        if (err) return done(err);
 
         var validationResult = validate(res.body, schema);
 
-        if(validationResult.errors.length > 0) return done(validationResult.errors);
+        if (validationResult.errors.length > 0) return done(validationResult.errors);
         done();
+    };
+}
+
+function GetValidData(url, schema) {
+    return function (done) {
+        request(application.app)
+            .get(url)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(ValidateSchema(schema, done));
+    };
+}
+
+function PostValidData(url, schema) {
+    return function (done) {
+        request(application.app)
+            .post(url)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(ValidateSchema(schema, done));
+    };
+}
+
+function PutValidData(url, data, schema) {
+    return function (done) {
+        request(application.app)
+            .put(url)
+            .send(data)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(ValidateSchema(schema, done));
     };
 }
 
@@ -43,26 +80,9 @@ describe('', function () {
 
     describe('GET', function () {
         describe('/api/articles?q=test', function () {
-            it('request with q=test', function (done) {
-                request(application.app)
-                    .get('/api/articles?q=test')
-                    .expect('Content-Type', /json/)
-                    .expect(200, done);
-            });
-
-            it('request with q=', function (done) {
-                request(application.app)
-                    .get('/api/articles?q=')
-                    .expect('Content-Type', /json/)
-                    .expect(200, done);
-            });
-
-            it('request with unknown q', function (done) {
-                request(application.app)
-                    .get('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                    .expect('Content-Type', /json/)
-                    .expect(200, done);
-            });
+            it('request with q=test', GetValidData('/api/articles?q=test', ArticleSchema));
+            it('request with q=', GetValidData('/api/articles?q=', ArticleSchema));
+            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ArticleSchema));
         });
 
         describe('With Article:', function () {
@@ -71,58 +91,43 @@ describe('', function () {
             before(function (done) {
                 var numberOfArticlesToCreate = 10;
                 var counter = 0;
-
+                // create some articles save them twice and attach a file
                 for (var i = 0; i < numberOfArticlesToCreate; i++) {
-                    request(application.app)
+                    request(application.app) // create an article
                         .post('/api/articles/')
                         .end(function (err, res) {
                             if (err) return done(err);
                             ArticleIds.push(res.body);
                             var data = JSON.parse(JSON.stringify(ArticleExample));
                             data.id = res.body;
-                            request(application.app)
+                            request(application.app) // save the article
                                 .put('/api/articles/' + res.body)
                                 .send(data)
                                 .end(function () {
-                                    request(application.app)
-                                        .post('/api/articles/' + res.body + '/documents')
-                                        .attach('documents', './raml/examples/dummy.txt')
+                                    request(application.app) // save it again to get the old value
+                                        .put('/api/articles/' + res.body)
+                                        .send(data)
                                         .end(function () {
-                                            if (++counter === numberOfArticlesToCreate) done();
+                                            request(application.app) // attach a file
+                                                .post('/api/articles/' + res.body + '/documents')
+                                                .attach('documents', './raml/examples/dummy.txt')
+                                                .end(function () {
+                                                    if (++counter === numberOfArticlesToCreate) done();
+                                                });
                                         });
                                 });
                         });
                 }
             });
 
-
             describe('/api/articles?q=', function () {
-                it('search in article', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=important')
-                        .expect('Content-Type', /json/)
-                        .expect(200)
-                        .end(ValidateSchema(ArticleSchema, done));
-                });
-
-                it('search in title', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=Knowledge')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search author', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=author:Max')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
+                it('search in article', GetValidData('/api/articles?q=important', SearchQResponseSchema));
+                it('search in title', GetValidData('/api/articles?q=Knowledge', SearchQResponseSchema));
+                it('search author', GetValidData('/api/articles?q=author:Max', SearchQResponseSchema));
                 it('search author maxlength', function (done) {
                     var authorName = 'name';
 
-                    for(var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength; i++)
+                    for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength; i++)
                         authorName += 'a';
 
                     request(application.app)
@@ -130,102 +135,51 @@ describe('', function () {
                         .expect('Content-Type', /json/)
                         .expect(400, done);
                 });
-
-                it('search author with spaces', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=author:"Max Mustermann"')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search author with keyword', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=author:Max Lorem')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search author with spaces with keyword', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=author:"Max Mustermann" dummy')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search in file', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=Lorem')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search filename', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=dummy')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('search filename with extension', function (done) {
-                    request(application.app)
-                        .get('/api/articles?q=dummy.txt')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
+                it('search author with spaces', GetValidData('/api/articles?q=author:"Max Mustermann"', SearchQResponseSchema));
+                it('search author with keyword', GetValidData('/api/articles?q=author:Max Lorem', SearchQResponseSchema));
+                it('search author with spaces with keyword', GetValidData('/api/articles?q=author:"Max Mustermann" dummy', SearchQResponseSchema));
+                it('search in file', GetValidData('/api/articles?q=Lorem', SearchQResponseSchema));
+                it('search filename', GetValidData('/api/articles?q=dummy', SearchQResponseSchema));
+                it('search filename with extension', GetValidData('/api/articles?q=dummy.txt', SearchQResponseSchema));
             });
 
             describe('/api/articles?ids=', function () {
-                it('request with ids=ArticleIds[0]', function (done) {
-                    request(application.app)
-                        .get('/api/articles?ids=' + ArticleIds[0])
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('request with ids=[ArticleIds]', function (done) {
-                    request(application.app)
-                        .get('/api/articles?ids=' + ArticleIds.join(','))
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('request with ids=', function (done) {
-                    request(application.app)
-                        .get('/api/articles?ids=')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('request with ids=1,2,3', function (done) {
-                    request(application.app)
-                        .get('/api/articles?ids=1,2,3')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
-
-                it('request with valid invalid ids mixed', function (done) {
-                    request(application.app)
-                        .get('/api/articles?ids=1,2,3' + ArticleIds.join(',') + '')
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
-                });
+                it('request with ids=ArticleIds[0]', GetValidData('/api/articles?ids=' + ArticleIds[0], SearchIdsResponseSchema));
+                it('request with ids=[ArticleIds]', GetValidData('/api/articles?ids=' + ArticleIds.join(','), SearchIdsResponseSchema));
+                it('request with ids=', GetValidData('/api/articles?ids=', SearchIdsResponseSchema));
+                it('request with ids=1,2,3', GetValidData('/api/articles?ids=1,2,3', SearchIdsResponseSchema));
+                it('request with valid invalid ids mixed', GetValidData('/api/articles?ids=1,2,3' + ArticleIds.join(','), SearchIdsResponseSchema));
             });
 
             describe('/api/articles/:ArticleId', function () {
-                it('request the article just after creation', function (done) {
-                    request(application.app)
-                        .get('/api/articles/' + ArticleIds[0])
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
+                it('request the articles just after save', function (done) {
+                    var error = null;
+                    var counter = 0;
+
+                    ArticleIds.forEach(function (id) {
+                        request(application.app)
+                            .get('/api/articles/' + id)
+                            .expect('Content-Type', /json/)
+                            .expect(200)
+                            .end(function (err, res) {
+                                if (err) error = err;
+
+                                if (++counter === ArticleIds.length) return done(error);
+                            });
+                    });
                 });
             });
 
             describe('/api/articles/:ArticleId?old=', function () {
+                it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old=', ArticleSchema));
+            });
+
+            describe('acticle saved', function () {
                 it('request the article just after creation', function (done) {
                     request(application.app)
                         .get('/api/articles/' + ArticleIds[0] + '?old=')
                         .expect('Content-Type', /json/)
-                        .expect(200, done);
+                        .expect(404, done);
                 });
             });
         });
@@ -234,22 +188,7 @@ describe('', function () {
     describe('POST', function () {
         describe('/api/articles/', function () {
             it('request with all valid information', function (done) {
-                request(application.app)
-                    .post('/api/articles/')
-                    .expect('Content-Type', /json/)
-                    .expect(200, done);
-            });
-
-            it('check if request body is a string', function (done) {
-                request(application.app)
-                    .post('/api/articles/')
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function (err, res) {
-                        assert('string', typeof res.body);
-                        if(err) return done(err);
-                        done();
-                    });
+                PostValidData('/api/articles/', PostArticleResponseSchema);
             });
         });
 
@@ -277,7 +216,8 @@ describe('', function () {
                         .post('/api/articles/' + ArticleIds[0] + '/documents')
                         .attach('documents', './raml/examples/dummy.txt')
                         .expect('Content-Type', /json/)
-                        .expect(200, done);
+                        .expect(200)
+                        .end(ValidateSchema(PostDocumentResponseSchema, done));
                 });
             });
 
@@ -292,7 +232,8 @@ describe('', function () {
                             .post('/api/articles/' + ArticleIds[0] + '/documents')
                             .attach('documents', './raml/examples/dummy.txt')
                             .expect('Content-Type', /json/)
-                            .expect(200, function (err) {
+                            .expect(200)
+                            .end(ValidateSchema(PostDocumentResponseSchema, function (err) {
                                 if (err) error = err;
 
                                 if (++counter === numberOfFileToUpload)
@@ -328,11 +269,7 @@ describe('', function () {
 
                     data.id = ArticleIds[0];
 
-                    request(application.app)
-                        .put('/api/articles/' + ArticleIds[0])
-                        .send(data)
-                        .expect('Content-Type', /json/)
-                        .expect(200, done);
+                    PutValidData('/api/articles/' + ArticleIds[0], data, ArticleSchema)(done);
                 });
 
                 it('put without data', function (done) {
@@ -645,7 +582,7 @@ describe('', function () {
             });
 
             it('should pass missing opening tag', function () {
-                assert.equal('foo bar', fileSystemConnector.extractHTMLBodyContent('foo bar</body>'));
+                assert.equal('foo bar</body>', fileSystemConnector.extractHTMLBodyContent('foo bar</body>'));
             });
 
             it('should pass missing tags', function () {
@@ -653,7 +590,7 @@ describe('', function () {
             });
 
             it('should pass with escaped tags', function () {
-                assert.equal('foo bar', fileSystemConnector.extractHTMLBodyContent('&lt;body&gt;foo bar</body>'));
+                assert.equal('&lt;body&gt;foo bar</body>', fileSystemConnector.extractHTMLBodyContent('&lt;body&gt;foo bar</body>'));
             });
 
             it('should pass with newline', function () {
