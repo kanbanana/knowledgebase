@@ -32,6 +32,9 @@ angular.module('core').controller('NavCtrl', ['$scope','$location','ArticleServi
     }
 
     $scope.closeNavbar = function() {
-        $('.navbar-toggle').click();
+        if($('.navbar-toggle').css('display') !== 'none') {
+            $('.navbar-toggle').click();
+        }
+
     }
 }]);
