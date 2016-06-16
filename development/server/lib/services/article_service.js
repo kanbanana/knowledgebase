@@ -388,28 +388,29 @@ articleService.getArticlesByIds = function (ids) {
 };
 
 /**
- * "deleteEmptyArticles" deletes all articles in the db if file dose not exists.
+ * "deleteEmptyArticles" deletes all articles in the db if no corresponding file exists (not even an article.html). This
+ * is done in order to get rid of old articles that still exist if somebody deletes the files from disk.
  *
  * @function "deleteEmptyArticles"
  * @static
  *
  * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the findAllPermArticleIds Promise
  */
-articleService.deleteEmptyArticles = function(){
+articleService.deleteEmptyArticles = function(cb){
     databaseConnector.findAllPermArticleIds().then(function (articleIds) {
         articleIds.forEach(function (articleId) {
             fileSystemConnector.isArticleFileExists(articleId).then(function(exists){
                 if(!exists) {
-                    return databaseConnector.deleteArticles(articleId);
+                    databaseConnector.deleteArticles(articleId);
                 }
             });
         });
-
+        cb();
     });
 };
 
 /**
- * "deleteTemporaryArticles" deletes all old temp articles. Max age gets set in the config.
+ * "deleteTemporaryArticles" deletes all old temporary articles. Max age gets set in the config.
  *
  * @function "deleteTemporaryArticles"
  * @static
