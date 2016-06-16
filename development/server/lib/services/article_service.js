@@ -1,3 +1,9 @@
+/**
+ * This module is the main article services. It servas all actions tho the db and file connector.
+ *
+ * @module lib/router/article
+ * @author Martin Starman, Vladislav Chumak
+ */
 
 'use strict';
 
@@ -11,10 +17,29 @@ var PromiseLib = require("promise");
 
 var articleService = module.exports = {};
 
+/**
+ * "createArticle" creates an empty article document in the mongodb
+ *
+ * @function createArticle
+ * @static
+ *
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty Article
+ */
 articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
 
+/**
+ * "saveArticle" saves the content article in the file and ith the DB. The content gets wraps the actual text in
+ * a HTML body and puts the title in the HTML head. If the article is temporary the files get copied from
+ * the temp folder to the active folder.
+ *
+ * @param {module:lib/data_connector/models~ArticleSchema} article - current mongoDB object
+ * @param {string} content - text of the article as html
+ * @param {string} title - article content
+ * @param {object} author - last changing author
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ */
 articleService.saveArticle = function (article, title, content, author) {
     return new PromiseLib(function (resolve, reject) {
         var authorName = '';
@@ -33,10 +58,29 @@ articleService.saveArticle = function (article, title, content, author) {
     });
 };
 
+/**
+ * "findArticleById" finds an article in the mongo db by the mongo _id
+ *
+ * @function findArticleById
+ * @static
+ *
+ * @param {string} id -  mongoDB _id
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} found article
+ */
 articleService.findArticleById = function (id) {
     return databaseConnector.findArticleById(id);
 };
 
+/**
+ * "saveDocument" saves the uploaded file to the article.
+ *
+ * @function saveDocument
+ * @static
+ *
+ * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
+ * @param {module:lib/data_connector/models~ArticleSchema} article
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ */
 articleService.saveDocument = function (article, document) {
     return new PromiseLib(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
@@ -46,6 +90,16 @@ articleService.saveDocument = function (article, document) {
     });
 };
 
+/**
+ * "saveDocuments" saves the uploaded files to the article.
+ *
+ * @function saveDocuments
+ * @static
+ *
+ * @param {module:lib/data_connector/models~uploadDocument[]} documents - text of the article as html
+ * @param {module:lib/data_connector/models~ArticleSchema} article
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ */
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
     return new PromiseLib(function (resolve, reject) {
@@ -63,6 +117,15 @@ articleService.saveDocuments = function (article, documents) {
     });
 };
 
+/**
+ * "getArticleContent" reads an article file and returns the extracted body content
+ *
+ * @function getArticleContent
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<String|Error>} Returns an error or null
+ */
 articleService.getArticleContent = function (articleId) {
     return new PromiseLib(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
@@ -73,6 +136,15 @@ articleService.getArticleContent = function (articleId) {
     });
 };
 
+/**
+ * "getOldArticleContentAndTitle" reads an old article file and returns the extracted body content
+ *
+ * @function getOldArticleContentAndTitle
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} Returns an error or null
+ */
 articleService.getOldArticleContentAndTitle = function(articleId) {
     return new PromiseLib(function(resolve) {
         fileSystemConnector.readOldArticleContentAndTitle(articleId).then(function(contentAndTitle) {
@@ -83,6 +155,15 @@ articleService.getOldArticleContentAndTitle = function(articleId) {
     });
 };
 
+/**
+ * "deleteArticles" deletes an article
+ *
+ * @function deleteArticles
+ * @static
+ *
+ * @param {string} articleId - mongo DB id
+ * @returns {*|exports|module.exports}
+ */
 articleService.deleteArticle = function(articleId){
     var promiseList = [
         fileSystemConnector.deleteArticle(articleId),
@@ -94,6 +175,16 @@ articleService.deleteArticle = function(articleId){
     });
 };
 
+/**
+ * "deleteDocument" removes a document form the filesystem and from the db.
+ *
+ * @function deleteDocument
+ * @static
+ *
+ * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @param {string} filename
+ * @returns {Promise<Boolean|Error>} Returns an error or true
+ */
 articleService.deleteDocument = function(article, filename){
     var document = removeFileFromArticle(article, filename);
     if (!document) {
@@ -111,14 +202,6 @@ articleService.deleteDocument = function(article, filename){
     });
 };
 
-/**
- * updateArticle sets the lastChangedBy JSON and the author iff empty.
- *
- * @param article
- * @param title
- * @param authorName
- * @param authorMail
- */
 function updateArticle(article, title, authorName, authorMail) {
         article.title = title;
         if (!article.author.name && !article.author.email) {
@@ -158,6 +241,15 @@ function removeFileFromArticle(article, filename) {
     return hasFound;
 }
 
+/**
+ * "searchArticles" sends an query to the OSS and sends response.
+ *
+ * @function searchArticles
+ * @static
+ *
+ * @param {string} q - search query
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
+ */
 articleService.searchArticles = function (q) {
     return new PromiseLib(function (resolve, reject) {
         // captures author:foobar and author:'foo bar'
@@ -264,6 +356,15 @@ articleService.searchArticles = function (q) {
     });
 };
 
+/**
+ * "getArticlesByIds" finds a list of articles in the mongo db by the mongo _id
+ *
+ * @function getArticlesByIds
+ * @static
+ *
+ * @param {string[]} ids -  mongoDB _id list
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
+ */
 articleService.getArticlesByIds = function (ids) {
     return new PromiseLib(function (resolve, reject) {
         databaseConnector.findArticlesByIds(ids).then(function (articles) {
@@ -286,6 +387,14 @@ articleService.getArticlesByIds = function (ids) {
     });
 };
 
+/**
+ * "deleteEmptyArticles" deletes all articles in the db if file dose not exists.
+ *
+ * @function "deleteEmptyArticles"
+ * @static
+ *
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the findAllPermArticleIds Promise
+ */
 articleService.deleteEmptyArticles = function(){
     databaseConnector.findAllPermArticleIds().then(function (articleIds) {
         articleIds.forEach(function (articleId) {
@@ -299,7 +408,14 @@ articleService.deleteEmptyArticles = function(){
     });
 };
 
-
+/**
+ * "deleteTemporaryArticles" deletes all old temp articles. Max age gets set in the config.
+ *
+ * @function "deleteTemporaryArticles"
+ * @static
+ *
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
+ */
 articleService.deleteTemporaryArticles = function() {
     return databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
         articles.forEach(function (article) {

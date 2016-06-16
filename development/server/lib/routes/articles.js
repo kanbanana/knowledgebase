@@ -1,3 +1,9 @@
+/**
+ * This module handles the routing of the article services
+ *
+ * @module lib/router/article
+ * @author Martin Starman, Vladislav Chumak
+ */
 
 'use strict';
 
@@ -177,6 +183,20 @@ router.onDocumentDeleteHandler = function (req, res) {
 
 // ********************* Middlewares *********************  //
 
+/**
+ * "middlewareRetrieveArticle" is a HTTP middleware. It checks if the articleId in the route
+ * is a valid ID.
+ *
+ * On Success the article get set as attribute to the req Object.
+ * On error Error-Code 500 send to client
+ *
+ * @function middlewareRetrieveArticle
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ * @param {function} next - Expressjs next callback
+ */
 router.middlewareRetrieveArticle = function (req, res, next) {
     articleService.findArticleById(req.params.articleId).then(function (article) {
         req.article = article;
@@ -191,6 +211,19 @@ router.middlewareRetrieveArticle = function (req, res, next) {
     });
 };
 
+/**
+ * "middlewareValidateArticle" is a HTTP middleware. It checks if the article post body contains only valid values.
+ *
+ * On Success the article get set as attribute to the req Object.
+ * On error Error-Code 500 send to client
+ *
+ * @function middlewareValidateArticle
+ * @static
+ *
+ * @param {object} req - Expressjs Request Object
+ * @param {object} res - Expressjs Response Object
+ * @param {function} next - Expressjs next callback
+ */
 router.middlewareValidateArticle = function(req, res, next) {
     var validationResult = validate(req.body, articleGlobalSchema);
     if(validationResult.errors.length > 0) {

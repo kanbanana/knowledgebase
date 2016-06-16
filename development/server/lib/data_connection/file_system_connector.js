@@ -12,6 +12,20 @@
  * @param {Error} error - The error of the search operation.
  */
 
+/**
+ * Callback for file and error handling.
+ *
+ * @callback fileErrorCallback
+ * @param {Error} error - The error of the search operation.
+ * @param {string} currentFilename - The path plus file name to a file.
+ */
+
+/**
+ * Callback for file handling.
+ *
+ * @callback fileCallback
+ * @param {string} currentFilename - The path plus file name to a file.
+ */
 
 'use strict';
 
@@ -170,7 +184,7 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 };
 
 /**
- * "saveDocument" saves the the uploaded file to the .
+ * "saveDocument" saves the the uploaded file to the Aricle.
  *
  * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
  * @param {string| Object} articleId - MongoDB _id
@@ -218,6 +232,15 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     });
 };
 
+/**
+ * "readArticleContent" reads an article file and returns the extracted body content
+ *
+ * @function readArticleContent
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<String|Error>} Returns an error or null
+ */
 fileSystemConnector.readArticleContent = function (articleId) {
     articleId += '';
     var pathContainer = new PathContainer(articleId);
@@ -234,6 +257,15 @@ fileSystemConnector.readArticleContent = function (articleId) {
     });
 };
 
+/**
+ * "readOldArticleContentAndTitle" reads an old article file and returns the extracted body content
+ *
+ * @function readOldArticleContentAndTitle
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} Returns an error or null
+ */
 fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
     return new PromiseLib(function (resolve, reject) {
@@ -255,6 +287,15 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     });
 };
 
+/**
+ * "extractHTMLTitleContent" extracts the content of the title tag
+ *
+ * @function extractHTMLTitleContent
+ * @static
+ *
+ * @param {string} content - HTML content
+ * @returns {string} Returns the HTML page title
+ */
 fileSystemConnector.extractHTMLTitleContent = function (content) {
     var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
 
@@ -267,11 +308,29 @@ fileSystemConnector.extractHTMLTitleContent = function (content) {
     return content.replace(regCleanUp, '');
 };
 
-
+/**
+ * "wrapContentInHTMLBody" wraps a string in a HTML body and a title in the head.title tag
+ *
+ * @function wrapContentInHTMLBody
+ * @static
+ *
+ * @param {string} content - HTML body content
+ * @param {string} title - HTML title
+ * @returns {string} Returns the HTML page
+ */
 fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
     return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
 };
 
+/**
+ * "extractHTMLBodyContent" extracts the content of the body tag.
+ *
+ * @function extractHTMLBodyContent
+ * @static
+ *
+ * @param {string} content - HTML content
+ * @returns {string} Returns the HTML page body content
+ */
 fileSystemConnector.extractHTMLBodyContent = function (content) {
     var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
     var regCleanUp = /<(\/)?\s*body\s*>/g;
@@ -283,6 +342,16 @@ fileSystemConnector.extractHTMLBodyContent = function (content) {
     return content.replace(regCleanUp, '');
 };
 
+/**
+ * "getPathToDocumentUnsafe" returns the path to an document will not create folder if not exists.
+ *
+ * @function getPathToDocumentUnsafe
+ * @static
+ *
+ * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @param {module:lib/search_engine_connector~uploadDocument} document
+ * @returns {string} Returns absolute path to an article document
+ */
 fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
     var filePath;
     if (article.isTemporary) {
@@ -294,6 +363,15 @@ fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
     return path.join(filePath, document.name + '.' + document.filetype);
 };
 
+/**
+ * "deleteDocument" removes any file by a given path
+ *
+ * @function deleteDocument
+ * @static
+ *
+ * @param {string} filePath - path to file
+ * @returns {Promise<Boolean|Error>} Returns an error or true
+ */
 fileSystemConnector.deleteDocument = function (filePath) {
     return new PromiseLib(function (resolve, reject) {
         fs.remove(filePath, function (err) {
@@ -306,6 +384,15 @@ fileSystemConnector.deleteDocument = function (filePath) {
     });
 };
 
+/**
+ * "deleteArticle" deletes all files belonging to an article
+ *
+ * @function deleteArticle
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<Error>} Returns an error or null
+ */
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
 
@@ -325,6 +412,15 @@ fileSystemConnector.deleteArticle = function (articleId) {
 
 };
 
+/**
+ * "isArticleFileExists" checks if an article HTML file exists
+ *
+ * @function isArticleFileExists
+ * @static
+ *
+ * @param {string} articleId - mongoDB id
+ * @returns {Promise<boolean|Error>} Returns true if file exists of false if not. Error.
+ */
 fileSystemConnector.isArticleFileExists = function (articleId) {
     var pathContainer = new PathContainer(articleId);
     var isExists;
@@ -349,6 +445,12 @@ fileSystemConnector.isArticleFileExists = function (articleId) {
 
 };
 
+/**
+ * "getFilenameLike" checks if file already exists. If file exists adds an number on the end of the file
+ *
+ * @param {string} pathToFile - origin file path with name
+ * @param {fileCallback} cb
+ */
 function getFilenameLike(pathToFile, cb) {
     var extension = path.extname(pathToFile);
     var filenameWithoutExtension = path.basename(pathToFile, extension);
@@ -376,18 +478,51 @@ function getFilenameLike(pathToFile, cb) {
     );
 }
 
+/**
+ * "getPermFolderForArticle" returns the path to the perm folder of an article. If folder not exists it will create the folder.
+ *
+ * @param {string} articleId - mongoDB id
+ * @param {fileErrorCallback} cb
+ *
+ * @return {string} Path to perm folder of article
+ */
 function getPermFolderForArticle(articleId, cb) {
     return getFolderForArticle(articleId, config.uploadDirPerm, cb);
 }
 
+/**
+ * "getPermFolderForArticle" returns the path to the temp folder of an article. If folder not exists it will create the folder.
+ *
+ * @param {string} articleId - mongoDB id
+ * @param {fileErrorCallback} cb
+ *
+ * @return {string} Path to temp folder of article
+ */
 function getTempFolderForArticle(articleId, cb) {
     return getFolderForArticle(articleId, config.uploadDirTmp, cb);
 }
 
+/**
+ * "getPermFolderForArticle" returns the path to the old folder of an article. If folder not exists it will create the folder.
+ *
+ * @param {string} articleId - mongoDB id
+ * @param {fileErrorCallback} cb
+ *
+ * @return {string} Path to old folder of article
+ */
 function getOldFolderForArticle(articleId, cb) {
     return getFolderForArticle(articleId, config.uploadDirOld, cb);
 }
 
+/**
+ * "getPermFolderForArticle" returns the path to a folder of an article. If folder not exists it will create the folder.
+ *
+ * @param {string} articleId - mongoDB id
+ * @param {string} uploadDir - upload dir snippet
+ * @param {fileErrorCallback} cb
+ *
+ * @return {string} Path to the folder of article
+ */
 function getFolderForArticle(articleId, uploadDir, cb) {
     articleId = articleId + '';
     var uploadPath = path.join(__dirname, '..', '..', uploadDir) + '/';

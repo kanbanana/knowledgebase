@@ -35,9 +35,10 @@ var uploadDocument = {
  * @property  {object} lastChangedBy - Last person who has changed the article
  * @property  {string} lastChangedBy.name - Name of last person who has changed the article
  * @property  {string} lastChangedBy.email - E-mai last person who has changed the article
- * @property {uploadDocument} documents - list of all linked files
+ * @property {uploadDocument[]} documents - list of all linked files
  * @property {Date} lastChangedBy - Last save date
  * @property {string} title - Title of the article
+ * @property {string} text - Text/Content of the article
  * @property {boolean} isTemporary - true after first save
  */
 var ArticleSchema = new Schema({

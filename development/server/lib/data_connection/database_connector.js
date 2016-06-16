@@ -15,10 +15,12 @@ var PromiseLib = require("promise");
 var databaseConnector = module.exports = {};
 
 /**
+ * "createArticle" creates an empty article document in the mongodb
+ *
  * @function createArticle
  * @static
  *
- * @returns {*|exports|module.exports}
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty Article
  */
 databaseConnector.createArticle = function () {
     return new PromiseLib(function (resolve, reject) {
@@ -34,6 +36,16 @@ databaseConnector.createArticle = function () {
     });
 };
 
+/**
+ * "addDocumentToArticle" gets storeage info of a document and pushs it to the article document list
+ *
+ * @function addDocumentToArticle
+ * @static
+ *
+ * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @param {module:lib/search_engine_connector~uploadDocument} storageInfo
+ * @returns {Promise<module:lib/search_engine_connector~uploadDocument|Error>} upload Document
+ */
 databaseConnector.addDocumentToArticle = function (article, storageInfo) {
     return new PromiseLib(function (resolve, reject) {
         article.documents.push(storageInfo);
@@ -47,6 +59,15 @@ databaseConnector.addDocumentToArticle = function (article, storageInfo) {
     });
 };
 
+/**
+ * "saveArticle" saves a article to te mongo db
+ *
+ * @function saveArticle
+ * @static
+ *
+ * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} upload Document
+ */
 databaseConnector.saveArticle = function (article) {
     return new PromiseLib(function (resolve, reject) {
         article.save(function (error) {
@@ -59,6 +80,15 @@ databaseConnector.saveArticle = function (article) {
 
 };
 
+/**
+ * "findArticleById" finds an article in the mongo db by the mongo _id
+ *
+ * @function findArticleById
+ * @static
+ *
+ * @param {string} id -  mongoDB _id
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} found article
+ */
 databaseConnector.findArticleById = function (id) {
     return new PromiseLib(function (resolve) {
         if (!ObjectId.isValid(id)) {
@@ -71,6 +101,15 @@ databaseConnector.findArticleById = function (id) {
     });
 };
 
+/**
+ * "findArticleByIds" finds a list of articles in the mongo db by the mongo _id
+ *
+ * @function findArticleByIds
+ * @static
+ *
+ * @param {string[]} ids -  mongoDB _id list
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
+ */
 databaseConnector.findArticlesByIds = function (ids) {
     return new PromiseLib(function (resolve, reject) {
         var inIds = [];
@@ -90,6 +129,16 @@ databaseConnector.findArticlesByIds = function (ids) {
     });
 };
 
+/**
+ * "findArticlesByAuthor" finds an article in the mongo db by the author- or lastChangedBy-name.
+ * The name gets matched by a regex ".*[author.name].*"
+ *
+ * @function findArticlesByAuthor
+ * @static
+ *
+ * @param {string} author -  author name
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found article
+ */
 databaseConnector.findArticlesByAuthor = function (author) {
     return new PromiseLib(function (resolve, reject) {
         var queryOptions = {
@@ -107,6 +156,14 @@ databaseConnector.findArticlesByAuthor = function (author) {
     });
 };
 
+/**
+ * "findAllPermArticleIds" finds all not temp articles and returns there ids
+ *
+ * @function findAllPermArticleIds
+ * @static
+ *
+ * @returns {Promise<string[]|Error>} found articles ids
+ */
 databaseConnector.findAllPermArticleIds = function () {
     return new PromiseLib(function (resolve, reject) {
         Article.find({isTemporary: false}, function (findErr, result) {
@@ -125,6 +182,15 @@ databaseConnector.findAllPermArticleIds = function () {
     });
 };
 
+/**
+ * "deleteTemporaryArticlesOlderThan" deletes all old temp articles in the mongo db
+ *
+ * @function deleteTemporaryArticlesOlderThan
+ * @static
+ *
+ * @param {Number} ageInHours - min age of articles
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} deleted articles ids
+ */
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     if (ageInHours <= 0) {
         return PromiseLib.reject(new Error("ageInHours must be higher than 0"));
@@ -151,6 +217,15 @@ databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     });
 };
 
+/**
+ * "deleteArticles" deletes an article
+ *
+ * @function deleteArticles
+ * @static
+ *
+ * @param {string} articleId - mongo DB id
+ * @returns {*|exports|module.exports}
+ */
 databaseConnector.deleteArticles = function (articleId) {
     return new PromiseLib(function (resolve, reject) {
         var queryOptions = {_id: articleId};
