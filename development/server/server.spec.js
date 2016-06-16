@@ -5,7 +5,6 @@ var mongoose = require('mongoose');
 var assert = require('assert');
 var validate = require('jsonschema').validate;
 
-var config = require('./lib/config/config');
 var databaseConnector = require('./lib/data_connection/database_connector');
 var articleService = require('./lib/services/article_service');
 var fileSystemConnector = require('./lib/data_connection/file_system_connector');
@@ -80,9 +79,9 @@ describe('', function () {
 
     describe('GET', function () {
         describe('/api/articles?q=test', function () {
-            it('request with q=test', GetValidData('/api/articles?q=test', ArticleSchema));
-            it('request with q=', GetValidData('/api/articles?q=', ArticleSchema));
-            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ArticleSchema));
+            it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
+            it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
+            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', SearchQResponseSchema));
         });
 
         describe('With Article:', function () {
@@ -127,7 +126,7 @@ describe('', function () {
                 it('search author maxlength', function (done) {
                     var authorName = 'name';
 
-                    for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength; i++)
+                    for (var i = 0; i < 1001; i++)
                         authorName += 'a';
 
                     request(application.app)
@@ -316,24 +315,6 @@ describe('', function () {
                             .expect('Content-Type', /json/)
                             .expect(400, done);
                     });
-
-                    it('to long', function (done) {
-                        var data = JSON.parse(JSON.stringify(ArticleExample));
-
-                        data.id = ArticleIds[0];
-                        data.author.email = '';
-
-                        for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength + 1; i++)
-                            data.author.email += 'a';
-
-                        data.author.email += '@test.de';
-
-                        request(application.app)
-                            .put('/api/articles/' + ArticleIds[0])
-                            .send(data)
-                            .expect('Content-Type', /json/)
-                            .expect(400, done);
-                    });
                 });
 
                 describe('author', function () {
@@ -343,7 +324,7 @@ describe('', function () {
                         data.id = ArticleIds[0];
                         data.author.email = '';
 
-                        for (var i = 0; i < config.postBodyValidationValues.maxArticleAuthorNameLength + 1; i++)
+                        for (var i = 0; i < 1001; i++)
                             data.author.name += 'a';
 
                         request(application.app)
@@ -361,7 +342,7 @@ describe('', function () {
                         data.id = ArticleIds[0];
                         data.author.email = '';
 
-                        for (var i = 0; i < config.postBodyValidationValues.maxArticleTitleLength + 1; i++)
+                        for (var i = 0; i < 1001; i++)
                             data.title += 'a';
 
                         request(application.app)

@@ -221,7 +221,7 @@ articleService.searchArticles = function (q) {
 
         if (author) {
             author = author[1].replace(/["']/g, '').trim();
-            if (author === '' || author.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+            if (author === '' || author.length > 1000) {
                 return reject(new Error('Invalid author length'));
             }
         }

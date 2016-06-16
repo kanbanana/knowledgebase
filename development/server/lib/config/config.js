@@ -27,12 +27,6 @@ module.exports =
         intervalTimeInHours: 24
     },
 
-    postBodyValidationValues: {
-        maxArticleTitleLength: 1000,
-        maxArticleAuthorEmailLength: 255,
-        maxArticleAuthorNameLength: 1000
-    },
-
     oss: {
         uri: 'http' + '://' + (process.env.OSS_ADDR || 'localhost') + ':' + (process.env.OSS_PORT || 9090),
         indexName: 'file_index',
