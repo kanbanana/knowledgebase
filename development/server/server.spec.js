@@ -238,7 +238,7 @@ describe('', function () {
 
                                 if (++counter === numberOfFileToUpload)
                                     if (error) return done(error);
-                            });
+                            }));
                 });
             });
         });

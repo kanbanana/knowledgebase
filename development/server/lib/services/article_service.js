@@ -168,8 +168,8 @@ articleService.searchArticles = function (q) {
 
         if (author) {
             author = author[1].replace(/["']/g, '').trim();
-            if (author === '') {
-                return reject(new Error('Author may not be empty'));
+            if (author === '' || author.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+                return reject(new Error('Invalid author length'));
             }
         }
 
