@@ -16,6 +16,6 @@ angular.module('core', [])
             var cutUrl = url;
         }
 
-        var cutUrl = url.substring(0, url.indexOf('/#/'));
+        //var cutUrl = url.substring(0, url.indexOf('/#/'));
         $rootScope.baseUrl = cutUrl;
     }]);
