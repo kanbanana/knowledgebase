@@ -41,12 +41,14 @@ describe('', function () {
             it('request with q=', function (done) {
                 request(application.app)
                     .get('/api/articles?q=')
+                    .expect('Content-Type', /json/)
                     .expect(200, done);
             });
 
             it('request with unknown q', function (done) {
                 request(application.app)
                     .get('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                    .expect('Content-Type', /json/)
                     .expect(200, done);
             });
         });
@@ -261,6 +263,7 @@ describe('', function () {
                     request(application.app)
                         .post('/api/articles/' + ArticleIds[0] + '/documents')
                         .attach('documents', './raml/examples/dummy.txt')
+                        .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
             });
@@ -275,6 +278,7 @@ describe('', function () {
                         request(application.app)
                             .post('/api/articles/' + ArticleIds[0] + '/documents')
                             .attach('documents', './raml/examples/dummy.txt')
+                            .expect('Content-Type', /json/)
                             .expect(200, function (err) {
                                 if (err) error = err;
 
@@ -321,6 +325,7 @@ describe('', function () {
                 it('put without data', function (done) {
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
+                        .expect('Content-Type', /json/)
                         .expect(400, done);
                 });
 
@@ -328,6 +333,7 @@ describe('', function () {
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
                         .send({})
+                        .expect('Content-Type', /json/)
                         .expect(400, done);
                 });
 
@@ -335,6 +341,7 @@ describe('', function () {
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
                         .send('d45f6ghs7j89kkhg6')
+                        .expect('Content-Type', /json/)
                         .expect(400, done);
                 });
 
@@ -342,6 +349,7 @@ describe('', function () {
                     request(application.app)
                         .put('/api/articles/' + ArticleIds[0])
                         .send({asdf: "asdf"})
+                        .expect('Content-Type', /json/)
                         .expect(400, done);
                 });
 
@@ -355,6 +363,7 @@ describe('', function () {
                         request(application.app)
                             .put('/api/articles/' + ArticleIds[0])
                             .send(data)
+                            .expect('Content-Type', /json/)
                             .expect(400, done);
                     });
 
@@ -434,6 +443,7 @@ describe('', function () {
                 it('delete existing article without files', function (done) {
                     request(application.app)
                         .del('/api/articles/' + ArticleId)
+                        .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
             });
@@ -458,6 +468,7 @@ describe('', function () {
                 it('delete existing article with files', function (done) {
                     request(application.app)
                         .del('/api/articles/' + ArticleId)
+                        .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
             });
@@ -466,6 +477,7 @@ describe('', function () {
                 it('delete not existing article', function (done) {
                     request(application.app)
                         .del('/api/articles/0')
+                        .expect('Content-Type', /json/)
                         .expect(404, done);
                 });
             });
@@ -490,18 +502,21 @@ describe('', function () {
                 it('delete file from existing article', function (done) {
                     request(application.app)
                         .del('/api/articles/' + ArticleId + '/documents/dummy.txt')
+                        .expect('Content-Type', /json/)
                         .expect(200, done);
                 });
 
                 it('delete article.html', function (done) {
                     request(application.app)
                         .del('/api/articles/' + ArticleId + '/documents/article.html')
+                        .expect('Content-Type', /json/)
                         .expect(500, done);
                 });
 
                 it('delete server.js', function (done) {
                     request(application.app)
                         .del('/api/articles/' + ArticleId + '/documents/..%2F..%2F..%2Fserver.js')
+                        .expect('Content-Type', /json/)
                         .expect(500, done);
                 });
             });
@@ -510,6 +525,7 @@ describe('', function () {
                 it('delete file from not existing article', function (done) {
                     request(application.app)
                         .del('/api/articles/0/documents/dummy.txt')
+                        .expect('Content-Type', /json/)
                         .expect(404, done);
                 });
             });
