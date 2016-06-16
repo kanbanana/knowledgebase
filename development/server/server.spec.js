@@ -66,7 +66,8 @@ function PutValidData(url, data, schema) {
 
 describe('', function () {
     before(function (done) {
-        application.listen(done);
+        this.timeout(10000);
+        application.listen(setTimeout(done, 5000));
     });
 
     after(function (done) {
