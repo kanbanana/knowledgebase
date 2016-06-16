@@ -38,11 +38,9 @@ var PromiseLib = require("promise");
 var fileSystemConnector = {};
 
 /**
- * "saveContent" saves the content article in the file. The content gets wraps the actual text in
- * a HTML body and puts the title in the HTML head. If the article is temporary the files get copied from
- * the temp folder to the active folder.
+ * Saves the article content in the file. The content wraps the actual text in a HTML body and puts the title in the HTML head. If the article is temporary the files get copied from the temp folder to the perm folder.
  *
- * @param {string| Object} articleId - MongoDB _id
+ * @param {string| Object} articleId
  * @param {string} content - text of the article as html
  * @param {boolean} isTemporary - Is true if the article is still temporary
  * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
@@ -93,13 +91,13 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 };
 
 /**
- * "readArticleContent" reads an article file and returns the extracted body content
+ * "readArticleContent" reads the content file of the article with the given ID and returns the extracted body content
  *
  * @function readArticleContent
  * @static
  *
- * @param {string} articleId - mongoDB id
- * @returns {Promise<String|Error>} Returns an error or null
+ * @param {string} articleId
+ * @returns {Promise<String|Error>}
  */
 fileSystemConnector.readArticleContent = function (articleId) {
     articleId += '';
@@ -118,13 +116,13 @@ fileSystemConnector.readArticleContent = function (articleId) {
 };
 
 /**
- * "readOldArticleContentAndTitle" reads an old article file and returns the extracted body content
+ * Reads the archived (old) version of the content of the article with the given ID. The result contains the content extracted from the HTML.
  *
  * @function readOldArticleContentAndTitle
  * @static
  *
- * @param {string} articleId - mongoDB id
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} Returns an error or null
+ * @param {string} articleId
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>}
  */
 fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
@@ -148,10 +146,10 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 };
 
 /**
- * "saveDocument" saves the the uploaded file to the Aricle.
+ * Saves the the uploaded file to the article.
  *
  * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
- * @param {string| Object} articleId - MongoDB _id
+ * @param {string| Object} articleId
  * @param {boolean} isTemp - Is true if the article is still temporary
  * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
  */
@@ -197,7 +195,7 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
 };
 
 /**
- * "deleteDocument" removes any file by a given path
+ * Deletes the document at the given path.
  *
  * @function deleteDocument
  * @static
@@ -218,13 +216,13 @@ fileSystemConnector.deleteDocument = function (filePath) {
 };
 
 /**
- * "deleteArticle" deletes all files belonging to an article
+ * Deletes all files belonging to the article with the given ID.
  *
  * @function deleteArticle
  * @static
  *
- * @param {string} articleId - mongoDB id
- * @returns {Promise<Error>} Returns an error or null
+ * @param {string} articleId
+ * @returns {Promise<Error>}
  */
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
@@ -246,7 +244,7 @@ fileSystemConnector.deleteArticle = function (articleId) {
 };
 
 /**
- * "wrapContentInHTMLBody" wraps a string in a HTML body and a title in the head.title tag
+ * Wraps a string in a HTML body and a title in the head.title tag.
  *
  * @function wrapContentInHTMLBody
  * @static
@@ -260,7 +258,7 @@ fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
 };
 
 /**
- * "extractHTMLTitleContent" extracts the content of the title tag
+ * Extracts the content of the title tag
  *
  * @function extractHTMLTitleContent
  * @static
@@ -281,7 +279,7 @@ fileSystemConnector.extractHTMLTitleContent = function (content) {
 };
 
 /**
- * "extractHTMLBodyContent" extracts the content of the body tag.
+ * Extracts the content of the body tag.
  *
  * @function extractHTMLBodyContent
  * @static
@@ -301,7 +299,7 @@ fileSystemConnector.extractHTMLBodyContent = function (content) {
 };
 
 /**
- * "getPathToDocumentUnsafe" returns the path to an document will not create folder if not exists.
+ * Returns the path to a document. Will not create the folder if not exists.
  *
  * @function getPathToDocumentUnsafe
  * @static
@@ -322,12 +320,12 @@ fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
 };
 
 /**
- * "isArticleFileExists" checks if an article HTML file exists
+ * Checks if there is an article HTML file for the article with the given ID.
  *
  * @function isArticleFileExists
  * @static
  *
- * @param {string} articleId - mongoDB id
+ * @param {string} articleId
  * @returns {Promise<boolean|Error>} Returns true if file exists of false if not. Error.
  */
 fileSystemConnector.isArticleFileExists = function (articleId) {
@@ -355,9 +353,10 @@ fileSystemConnector.isArticleFileExists = function (articleId) {
 };
 
 /**
- * "getFilenameLike" checks if file already exists. If file exists adds an number on the end of the file
+ * Checks if the file with the given name already exists. If it does, it adds a number to the end of the file.
+ * e.g. if there is already a file with the name "example.txt", this method returns "example (1).txt"
  *
- * @param {string} pathToFile - origin file path with name
+ * @param {string} pathToFile - original file path with name
  * @param {fileCallback} cb
  */
 function getFilenameLike(pathToFile, cb) {
@@ -388,7 +387,7 @@ function getFilenameLike(pathToFile, cb) {
 }
 
 /**
- * "getPermFolderForArticle" returns the path to the perm folder of an article. If folder not exists it will create the folder.
+ * Returns the path to the perm folder of an article. If the folder doesn't exist, the folder will be created.
  *
  * @param {string} articleId - mongoDB id
  * @param {fileErrorCallback} cb
@@ -400,7 +399,7 @@ function getPermFolderForArticle(articleId, cb) {
 }
 
 /**
- * "getPermFolderForArticle" returns the path to the temp folder of an article. If folder not exists it will create the folder.
+ * Returns the path to the temp folder of an article. If the folder doesn't exist, the folder will be created.
  *
  * @param {string} articleId - mongoDB id
  * @param {fileErrorCallback} cb
@@ -412,7 +411,7 @@ function getTempFolderForArticle(articleId, cb) {
 }
 
 /**
- * "getPermFolderForArticle" returns the path to the old folder of an article. If folder not exists it will create the folder.
+ * Returns the path to the archive folder of an article. If the folder doesn't exist, the folder will be created.
  *
  * @param {string} articleId - mongoDB id
  * @param {fileErrorCallback} cb
@@ -424,7 +423,7 @@ function getOldFolderForArticle(articleId, cb) {
 }
 
 /**
- * "getPermFolderForArticle" returns the path to a folder of an article. If folder not exists it will create the folder.
+ * Returns the path to a folder of an article. If the folder doesn't exist, the folder will be created.
  *
  * @param {string} articleId - mongoDB id
  * @param {string} uploadDir - upload dir snippet
@@ -447,10 +446,10 @@ function getFolderForArticle(articleId, uploadDir, cb) {
 
 /**
  * PathContainer is the constructor of a private object.
- * The PathContainer object has all the path to the article folders.
- * The folder paths have to be loaded asyc
+ * The PathContainer object has all the paths to the different folders of the article with the given ID.
+ * The folder paths have to be loaded asynchronous.
  *
- * @param {string|Object} articleId - A MongoDB article id (_id)
+ * @param {string|Object} articleId
  * @constructor
  */
 function PathContainer(articleId) {
@@ -463,7 +462,7 @@ function PathContainer(articleId) {
 }
 
 /**
- * "loadPaths" loads all path to the directories asynchronously
+ * Loads all path to the directories asynchronously
  *
  * @param {errorCallback} cb
  */
@@ -494,7 +493,7 @@ PathContainer.prototype.loadPaths = function (cb) {
 };
 
 /**
- * "removeTempFolder" removes the temp folder asynchronously
+ * Removes the temp folder asynchronously.
  *
  * @param {errorCallback} cb
  */
@@ -503,7 +502,7 @@ PathContainer.prototype.removeTempFolder = function (cb) {
 };
 
 /**
- * "removePermFolder" removes the current version folder asynchronously
+ * Removes the current version folder asynchronously.
  *
  * @param {errorCallback} cb
  */
@@ -512,7 +511,7 @@ PathContainer.prototype.removePermFolder = function (cb) {
 };
 
 /**
- * "removeOldFolder" removes the old version folder asynchronously
+ * Removes the archive folder asynchronously.
  *
  * @param {errorCallback} cb
  */
@@ -521,7 +520,7 @@ PathContainer.prototype.removeOldFolder = function (cb) {
 };
 
 /**
- * "removeFolder" removes a folder asynchronously
+ * Removes a folder asynchronously
  *
  * @param {string} pathToFolder - path to target directory
  * @param {errorCallback} cb

@@ -1,5 +1,5 @@
 /**
- * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine api directly.
+ * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine API directly.
  *
  * @module lib/search_engine_connector
  * @author Vladislav Chumak
