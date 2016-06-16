@@ -387,7 +387,7 @@ articleService.deleteTemporaryArticles = function() {
                     console.log(err);
                 });
         });
-        console.log(articles);
+        //console.log(articles);
     });
 };
 

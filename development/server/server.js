@@ -15,7 +15,7 @@ var router = express.Router();
 app.set('port', config.port);
 
 // Define Middleware
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 

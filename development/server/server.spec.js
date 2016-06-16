@@ -18,10 +18,9 @@ var SearchIdsResponseSchema = require('./raml/schemas/search_ids_response.json')
 var PostArticleResponseSchema = require('./raml/schemas/post_article_response.json');
 var PostDocumentResponseSchema = require('./raml/schemas/post_document_response.json');
 
-var ArticlesSchema = require('./raml/schemas/article.json');
 // Data
 var ArticleExample = require('./raml/examples/getArticle.json');
-var ArticlesExample = require('./raml/examples/getArticles.json');
+var ApacheExample = require('./raml/examples/apache.json');
 
 function ValidateSchema(schema, done) {
     return function (err, res) {
@@ -66,10 +65,10 @@ function PutValidData(url, data, schema) {
 }
 
 describe('', function () {
-    before(function () {
-        // Drop the database
+    before(function (done) {
         application.listen(function () {
-            mongoose.connection.db.dropDatabase();
+            // Drop the database
+            mongoose.connection.db.dropDatabase(done);
         });
     });
 
@@ -78,11 +77,9 @@ describe('', function () {
     });
 
     describe('GET', function () {
-        describe('/api/articles?q=test', function () {
-            it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
-            it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
-            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', SearchQResponseSchema));
-        });
+
+        it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
+        it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
 
         describe('With Article:', function () {
             var ArticleIds = [];
@@ -90,6 +87,7 @@ describe('', function () {
             before(function (done) {
                 var numberOfArticlesToCreate = 10;
                 var counter = 0;
+                var counterArticleSwap = 0;
                 // create some articles save them twice and attach a file
                 for (var i = 0; i < numberOfArticlesToCreate; i++) {
                     request(application.app) // create an article
@@ -97,18 +95,19 @@ describe('', function () {
                         .end(function (err, res) {
                             if (err) return done(err);
                             ArticleIds.push(res.body);
-                            var data = JSON.parse(JSON.stringify(ArticleExample));
+                            var data = JSON.parse(JSON.stringify((++counterArticleSwap < numberOfArticlesToCreate / 2) ? ArticleExample : ApacheExample));
                             data.id = res.body;
                             request(application.app) // save the article
-                                .put('/api/articles/' + res.body)
+                                .put('/api/articles/' + data.id)
                                 .send(data)
                                 .end(function () {
+                                    data.text += 'version 2';
                                     request(application.app) // save it again to get the old value
-                                        .put('/api/articles/' + res.body)
+                                        .put('/api/articles/' + data.id)
                                         .send(data)
                                         .end(function () {
                                             request(application.app) // attach a file
-                                                .post('/api/articles/' + res.body + '/documents')
+                                                .post('/api/articles/' + data.id + '/documents')
                                                 .attach('documents', './raml/examples/dummy.txt')
                                                 .end(function () {
                                                     if (++counter === numberOfArticlesToCreate) done();
@@ -119,76 +118,87 @@ describe('', function () {
                 }
             });
 
-            describe('/api/articles?q=', function () {
-                it('search in article', GetValidData('/api/articles?q=important', SearchQResponseSchema));
-                it('search in title', GetValidData('/api/articles?q=Knowledge', SearchQResponseSchema));
-                it('search author', GetValidData('/api/articles?q=author:Max', SearchQResponseSchema));
-                it('search author maxlength', function (done) {
-                    var authorName = 'name';
+            //delay 15 sec for oss to index files, just to be sure
+            describe('', function () {
 
-                    for (var i = 0; i < 1001; i++)
-                        authorName += 'a';
-
-                    request(application.app)
-                        .get('/api/articles?q=author:"' + authorName + '"')
-                        .expect('Content-Type', /json/)
-                        .expect(400, done);
+                before(function (done) {
+                    this.timeout(20000);
+                    setTimeout(done, 15000);
                 });
-                it('search author with spaces', GetValidData('/api/articles?q=author:"Max Mustermann"', SearchQResponseSchema));
-                it('search author with keyword', GetValidData('/api/articles?q=author:Max Lorem', SearchQResponseSchema));
-                it('search author with spaces with keyword', GetValidData('/api/articles?q=author:"Max Mustermann" dummy', SearchQResponseSchema));
-                it('search in file', GetValidData('/api/articles?q=Lorem', SearchQResponseSchema));
-                it('search filename', GetValidData('/api/articles?q=dummy', SearchQResponseSchema));
-                it('search filename with extension', GetValidData('/api/articles?q=dummy.txt', SearchQResponseSchema));
-            });
 
-            describe('/api/articles?ids=', function () {
-                it('request with ids=ArticleIds[0]', GetValidData('/api/articles?ids=' + ArticleIds[0], SearchIdsResponseSchema));
-                it('request with ids=[ArticleIds]', GetValidData('/api/articles?ids=' + ArticleIds.join(','), SearchIdsResponseSchema));
-                it('request with ids=', GetValidData('/api/articles?ids=', SearchIdsResponseSchema));
-                it('request with ids=1,2,3', GetValidData('/api/articles?ids=1,2,3', SearchIdsResponseSchema));
-                it('request with valid invalid ids mixed', GetValidData('/api/articles?ids=1,2,3' + ArticleIds.join(','), SearchIdsResponseSchema));
-            });
+                describe('/api/articles?q=', function () {
+                    it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
+                    it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
+                    it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', SearchQResponseSchema));
+                    it('search in article', GetValidData('/api/articles?q=important', SearchQResponseSchema));
+                    it('search in title', GetValidData('/api/articles?q=Knowledge', SearchQResponseSchema));
+                    it('search author', GetValidData('/api/articles?q=author:Max', SearchQResponseSchema));
+                    it('search author maxlength', function (done) {
+                        var authorName = 'name';
 
-            describe('/api/articles/:ArticleId', function () {
-                it('request the articles just after save', function (done) {
-                    var error = null;
-                    var counter = 0;
+                        for (var i = 0; i < 1001; i++)
+                            authorName += 'a';
 
-                    ArticleIds.forEach(function (id) {
                         request(application.app)
-                            .get('/api/articles/' + id)
+                            .get('/api/articles?q=author:"' + authorName + '"')
                             .expect('Content-Type', /json/)
-                            .expect(200)
-                            .end(function (err, res) {
-                                if (err) error = err;
+                            .expect(400, done);
+                    });
+                    it('search author with spaces', GetValidData('/api/articles?q=author:"Max Mustermann"', SearchQResponseSchema));
+                    it('search author with keyword', GetValidData('/api/articles?q=author:Max Lorem', SearchQResponseSchema));
+                    it('search author with spaces with keyword', GetValidData('/api/articles?q=author:"Max Mustermann" dummy', SearchQResponseSchema));
+                    it('search in file', GetValidData('/api/articles?q=Lorem', SearchQResponseSchema));
+                    it('search filename', GetValidData('/api/articles?q=dummy', SearchQResponseSchema));
+                    it('search filename with extension', GetValidData('/api/articles?q=dummy.txt', SearchQResponseSchema));
+                });
 
-                                if (++counter === ArticleIds.length) return done(error);
-                            });
+                describe('/api/articles?ids=', function () {
+                    it('request with ids=ArticleIds[0]', GetValidData('/api/articles?ids=' + ArticleIds[0], SearchIdsResponseSchema));
+                    it('request with ids=[ArticleIds]', GetValidData('/api/articles?ids=' + ArticleIds.join(','), SearchIdsResponseSchema));
+                    it('request with ids=', GetValidData('/api/articles?ids=', SearchIdsResponseSchema));
+                    it('request with ids=1,2,3', GetValidData('/api/articles?ids=1,2,3', SearchIdsResponseSchema));
+                    it('request with valid invalid ids mixed', GetValidData('/api/articles?ids=1,2,3' + ArticleIds.join(','), SearchIdsResponseSchema));
+                });
+
+                describe('/api/articles/:ArticleId', function () {
+                    it('request the articles just after save', function (done) {
+                        var error = null;
+                        var counter = 0;
+
+                        ArticleIds.forEach(function (id) {
+                            request(application.app)
+                                .get('/api/articles/' + id)
+                                .expect('Content-Type', /json/)
+                                .expect(200)
+                                .end(function (err, res) {
+                                    if (err) error = err;
+
+                                    if (++counter === ArticleIds.length) return done(error);
+                                });
+                        });
                     });
                 });
-            });
 
-            describe('/api/articles/:ArticleId?old=', function () {
-                it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old=', ArticleSchema));
-            });
+                describe('/api/articles/:ArticleId?old=', function () {
+                    it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old=', ArticleSchema));
+                });
 
-            describe('acticle saved', function () {
-                it('request the article just after creation', function (done) {
-                    request(application.app)
-                        .get('/api/articles/' + ArticleIds[0] + '?old=')
-                        .expect('Content-Type', /json/)
-                        .expect(404, done);
+                describe('acticle saved', function () {
+                    it('request the article just after creation', function (done) {
+                        request(application.app)
+                            .get('/api/articles/' + ArticleIds[0] + '?old=')
+                            .expect('Content-Type', /json/)
+                            .expect(404, done);
+                    });
                 });
             });
         });
     });
 
+
     describe('POST', function () {
         describe('/api/articles/', function () {
-            it('request with all valid information', function (done) {
-                PostValidData('/api/articles/', PostArticleResponseSchema);
-            });
+            it('request with all valid information', PostValidData('/api/articles/', PostArticleResponseSchema));
         });
 
         describe('With Article:', function () {
@@ -496,7 +506,7 @@ describe('', function () {
     });
 
     describe('Filesystem', function () {
-        this.timeout(10000)
+        this.timeout(10000);
         it('deleteEmptyArticles', function (done) {
             articleService.deleteEmptyArticles(); //  TODO: async needs callback within function
             setTimeout(done, 2000);
@@ -522,11 +532,11 @@ describe('', function () {
             });
 
             it('should pass with nested tags', function () {
-                assert.equal('<title>foo bar</title>', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title></title>'));
+                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title></title>'));
             });
 
             it('should pass with malformed tags', function () {
-                assert.equal('<titlefoo bar</title>', fileSystemConnector.extractHTMLTitleContent('<titlefoo bar</title>'));
+                assert.equal('', fileSystemConnector.extractHTMLTitleContent('<titlefoo bar</title>'));
             });
 
             it('should pass with malformed tags', function () {
@@ -538,7 +548,7 @@ describe('', function () {
             });
 
             it('should pass two opening one closing tag', function () {
-                assert.equal('<title>foo bar', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title>'));
+                assert.equal('foo bar', fileSystemConnector.extractHTMLTitleContent('<title><title>foo bar</title>'));
             });
 
             it('should pass new line', function () {
@@ -563,7 +573,7 @@ describe('', function () {
             });
 
             it('should pass missing opening tag', function () {
-                assert.equal('foo bar</body>', fileSystemConnector.extractHTMLBodyContent('foo bar</body>'));
+                assert.equal('foo bar', fileSystemConnector.extractHTMLBodyContent('foo bar</body>'));
             });
 
             it('should pass missing tags', function () {
@@ -571,7 +581,7 @@ describe('', function () {
             });
 
             it('should pass with escaped tags', function () {
-                assert.equal('&lt;body&gt;foo bar</body>', fileSystemConnector.extractHTMLBodyContent('&lt;body&gt;foo bar</body>'));
+                assert.equal('&lt;body&gt;foo bar', fileSystemConnector.extractHTMLBodyContent('&lt;body&gt;foo bar</body>'));
             });
 
             it('should pass with newline', function () {
@@ -593,7 +603,7 @@ describe('', function () {
             });
 
             it('should pass both params whitespace', function () {
-                assert.equal('<html><head><title>\n\n</title></head><body> </body></html>', fileSystemConnector.wrapContentInHTMLBody('\n\n', ''));
+                assert.equal('<html><head><title>\n\n</title></head><body></body></html>', fileSystemConnector.wrapContentInHTMLBody('', '\n\n'));
             });
         });
     });
