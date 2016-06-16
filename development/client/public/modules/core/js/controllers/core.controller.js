@@ -1,15 +1,25 @@
 'use strict';
 
+/**
+ * @module controllers/core.controller.js
+ * @description The core controller is used on the index page. Displays and manages the last seen articles
+ * @param {Dependency} $cookies - Service for managing the cookies
+ * @param {Dependency} ArticleService - The ArticleService provides the rest calls to retrieve article information
+ */
+
 angular.module('core')
-    .controller("CoreCtrl", ['$scope', 'ScrollSmooth','ArticleService','$cookies', function ($scope, ScrollSmooth, ArticleService, $cookies) {
+    .controller("CoreCtrl", ['$scope','ArticleService','$cookies', function ($scope, ArticleService, $cookies) {
+        // is set true for as long as the server retrieves the last seen articles
         $scope.isLoading = true;
+
+        // relays all toast message calls to the toast directive - DO NOT CHANGE
         $scope.$on("makeToast", function (e, toast) {
             setTimeout(function() {
                 $scope.$broadcast("makeToastRelay", toast);
             },100);
         });
 
-
+        // If no lastSeenArticles cookie is set create the cookie
         if(!($cookies.get("lastSeenArticles"))) {
             $cookies.put("lastSeenArticles", "");
         }
@@ -24,16 +34,4 @@ angular.module('core')
         } else {
             $scope.isLoading = false;
         }
-
-
-
-
-        
-        $scope.scrollSmoothToElementId = function (elementId) {
-            ScrollSmooth.toElementId(elementId);
-        };
-
-        $scope.scrollSmoothToTop = function () {
-            ScrollSmooth.toTop();
-        };
     }]);
