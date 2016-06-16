@@ -34,9 +34,7 @@ module.exports =
     },
 
     oss: {
-        hostname: (process.env.OSS_ADDR || 'localhost'),
-        port: (process.env.OSS_PORT || 9090),
-        protocol: 'http',
+        uri: 'http' + '://' + (process.env.OSS_ADDR || 'localhost') + ':' + (process.env.OSS_PORT || 9090),
         indexName: 'file_index',
         queryName: 'search'
     }

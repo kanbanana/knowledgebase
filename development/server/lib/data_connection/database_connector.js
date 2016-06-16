@@ -12,7 +12,7 @@ var config = require('./../config/config');
 var ObjectId = require('mongoose').Types.ObjectId;
 var PromiseLib = require("promise");
 
-var databaseConnector = module.exports = {};
+var databaseConnector = {};
 
 /**
  * "createArticle" creates an empty article document in the mongodb
@@ -238,3 +238,5 @@ databaseConnector.deleteArticles = function (articleId) {
         });
     });
 };
+
+module.exports = databaseConnector;

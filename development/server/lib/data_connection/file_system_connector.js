@@ -35,98 +35,7 @@ var asyncLib = require('async');
 var config = require('../config/config');
 var PromiseLib = require("promise");
 
-/**
- * PathContainer is the constructor of a private object.
- * The PathContainer object has all the path to the article folders.
- * The folder paths have to be loaded asyc
- *
- * @param {string|Object} articleId - A MongoDB article id (_id)
- * @constructor
- */
-function PathContainer(articleId) {
-    this.articleId = articleId + '';
-    this.oldFolderPath = null;
-    this.permFolderPath = null;
-    this.tempFolderPath = null;
-    this.fullNameOfOldArticleContentFile = null;
-    this.fullNameOfCurrentArticleContentFile = null;
-}
-
-/**
- * "loadPaths" loads all path to the directories asynchronously
- *
- * @param {errorCallback} cb
- */
-PathContainer.prototype.loadPaths = function (cb) {
-    var self = this;
-    var list = [];
-    asyncLib.eachSeries([getOldFolderForArticle, getPermFolderForArticle, getTempFolderForArticle],
-        function (handler, callback) {
-            handler(self.articleId, function (err, result) {
-                if (!err) {
-                    list.push(result);
-                }
-
-                callback(err);
-            });
-        }, function (err) {
-            if (!err) {
-                self.oldFolderPath = list[0];
-                self.permFolderPath = list[1];
-                self.tempFolderPath = list[2];
-                self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, self.articleId + config.articleContentFileName);
-                self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, self.articleId + config.articleContentFileName);
-
-            }
-
-            cb(err);
-        });
-};
-
-/**
- * "removeTempFolder" removes the temp folder asynchronously
- *
- * @param {errorCallback} cb
- */
-PathContainer.prototype.removeTempFolder = function (cb) {
-    this.removeFolder(this.tempFolderPath, cb);
-};
-
-/**
- * "removePermFolder" removes the current version folder asynchronously
- *
- * @param {errorCallback} cb
- */
-PathContainer.prototype.removePermFolder = function (cb) {
-    this.removeFolder(this.permFolderPath, cb);
-};
-
-/**
- * "removeOldFolder" removes the old version folder asynchronously
- *
- * @param {errorCallback} cb
- */
-PathContainer.prototype.removeOldFolder = function (cb) {
-    this.removeFolder(this.oldFolderPath, cb);
-};
-
-/**
- * "removeFolder" removes a folder asynchronously
- *
- * @param {string} pathToFolder - path to target directory
- * @param {errorCallback} cb
- */
-PathContainer.prototype.removeFolder = function (pathToFolder, cb) {
-    fs.exists(pathToFolder, function (exists) {
-        if (exists) {
-            return fs.remove(pathToFolder, cb);
-        }
-
-        cb();
-    });
-};
-
-var fileSystemConnector = module.exports = {};
+var fileSystemConnector = {};
 
 /**
  * "saveContent" saves the content article in the file. The content gets wraps the actual text in
@@ -180,55 +89,6 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
             resolve(err);
         });
 
-    });
-};
-
-/**
- * "saveDocument" saves the the uploaded file to the Aricle.
- *
- * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
- * @param {string| Object} articleId - MongoDB _id
- * @param {boolean} isTemp - Is true if the article is still temporary
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
- */
-fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
-    articleId += '';
-    return new PromiseLib(function (resolve, reject) {
-        var fileLinkPrefix;
-        var saveDocumentHandler = function (err, targetDirectory) {
-            if (err) {
-                return reject(err);
-            }
-            var filenameWithExtension = document.originalname;
-            var targetFilePath = path.join(targetDirectory, filenameWithExtension);
-
-            getFilenameLike(targetFilePath, function (newTargetFilePath) {
-                targetFilePath = newTargetFilePath;
-
-                fs.move(document.path, targetFilePath, function (err) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    var fileExt = path.extname(document.originalname);
-                    var fileName = path.basename(targetFilePath, fileExt);
-                    resolve({
-                        filetype: fileExt.replace('.', ''),
-                        path: path.join(fileLinkPrefix, fileName + fileExt).replace(/[\\]/g, '/'),
-                        name: fileName
-                    });
-                });
-
-            });
-        };
-
-
-        if (isTemp) {
-            fileLinkPrefix = config.fileLinkPrefixTemp + articleId;
-            getTempFolderForArticle(articleId, saveDocumentHandler);
-        } else {
-            fileLinkPrefix = config.fileLinkPrefixPerm + articleId;
-            getPermFolderForArticle(articleId, saveDocumentHandler);
-        }
     });
 };
 
@@ -288,79 +148,52 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 };
 
 /**
- * "extractHTMLTitleContent" extracts the content of the title tag
+ * "saveDocument" saves the the uploaded file to the Aricle.
  *
- * @function extractHTMLTitleContent
- * @static
- *
- * @param {string} content - HTML content
- * @returns {string} Returns the HTML page title
+ * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
+ * @param {string| Object} articleId - MongoDB _id
+ * @param {boolean} isTemp - Is true if the article is still temporary
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
  */
-fileSystemConnector.extractHTMLTitleContent = function (content) {
-    var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
+fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
+    articleId += '';
+    return new PromiseLib(function (resolve, reject) {
+        var fileLinkPrefix;
+        var saveDocumentHandler = function (err, targetDirectory) {
+            if (err) {
+                return reject(err);
+            }
+            var filenameWithExtension = document.originalname;
+            var targetFilePath = path.join(targetDirectory, filenameWithExtension);
 
-    var regCleanUp = /<(\/)?\s*[^>]+\s*>/g;
+            getFilenameLike(targetFilePath, function (newTargetFilePath) {
+                targetFilePath = newTargetFilePath;
 
-    content.replace(reg, function (match, bodyStartTag, bodyContent) {
-        content = bodyContent;
+                fs.move(document.path, targetFilePath, function (err) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    var fileExt = path.extname(document.originalname);
+                    var fileName = path.basename(targetFilePath, fileExt);
+                    resolve({
+                        filetype: fileExt.replace('.', ''),
+                        path: path.join(fileLinkPrefix, fileName + fileExt).replace(/[\\]/g, '/'),
+                        name: fileName
+                    });
+                });
+
+            });
+        };
+
+
+        if (isTemp) {
+            fileLinkPrefix = config.fileLinkPrefixTemp + articleId;
+            getTempFolderForArticle(articleId, saveDocumentHandler);
+        } else {
+            fileLinkPrefix = config.fileLinkPrefixPerm + articleId;
+            getPermFolderForArticle(articleId, saveDocumentHandler);
+        }
     });
-
-    return content.replace(regCleanUp, '');
-};
-
-/**
- * "wrapContentInHTMLBody" wraps a string in a HTML body and a title in the head.title tag
- *
- * @function wrapContentInHTMLBody
- * @static
- *
- * @param {string} content - HTML body content
- * @param {string} title - HTML title
- * @returns {string} Returns the HTML page
- */
-fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
-    return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
-};
-
-/**
- * "extractHTMLBodyContent" extracts the content of the body tag.
- *
- * @function extractHTMLBodyContent
- * @static
- *
- * @param {string} content - HTML content
- * @returns {string} Returns the HTML page body content
- */
-fileSystemConnector.extractHTMLBodyContent = function (content) {
-    var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
-    var regCleanUp = /<(\/)?\s*body\s*>/g;
-
-    content.replace(reg, function (match, bodyStartTag, bodyContent) {
-        content = bodyContent;
-    });
-
-    return content.replace(regCleanUp, '');
-};
-
-/**
- * "getPathToDocumentUnsafe" returns the path to an document will not create folder if not exists.
- *
- * @function getPathToDocumentUnsafe
- * @static
- *
- * @param {module:lib/search_engine_connector~ArticleSchema} article
- * @param {module:lib/search_engine_connector~uploadDocument} document
- * @returns {string} Returns absolute path to an article document
- */
-fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
-    var filePath;
-    if (article.isTemporary) {
-        filePath = getTempFolderForArticle(article._id);
-    } else {
-        filePath = getPermFolderForArticle(article._id);
-    }
-
-    return path.join(filePath, document.name + '.' + document.filetype);
 };
 
 /**
@@ -410,6 +243,82 @@ fileSystemConnector.deleteArticle = function (articleId) {
 
     });
 
+};
+
+/**
+ * "wrapContentInHTMLBody" wraps a string in a HTML body and a title in the head.title tag
+ *
+ * @function wrapContentInHTMLBody
+ * @static
+ *
+ * @param {string} content - HTML body content
+ * @param {string} title - HTML title
+ * @returns {string} Returns the HTML page
+ */
+fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
+    return "<html><head><title>" + title + "</title></head><body>" + content + "</body></html>";
+};
+
+/**
+ * "extractHTMLTitleContent" extracts the content of the title tag
+ *
+ * @function extractHTMLTitleContent
+ * @static
+ *
+ * @param {string} content - HTML content
+ * @returns {string} Returns the HTML page title
+ */
+fileSystemConnector.extractHTMLTitleContent = function (content) {
+    var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
+
+    var regCleanUp = /<(\/)?\s*[^>]+\s*>/g;
+
+    content.replace(reg, function (match, bodyStartTag, bodyContent) {
+        content = bodyContent;
+    });
+
+    return content.replace(regCleanUp, '');
+};
+
+/**
+ * "extractHTMLBodyContent" extracts the content of the body tag.
+ *
+ * @function extractHTMLBodyContent
+ * @static
+ *
+ * @param {string} content - HTML content
+ * @returns {string} Returns the HTML page body content
+ */
+fileSystemConnector.extractHTMLBodyContent = function (content) {
+    var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
+    var regCleanUp = /<(\/)?\s*body\s*>/g;
+
+    content.replace(reg, function (match, bodyStartTag, bodyContent) {
+        content = bodyContent;
+    });
+
+    return content.replace(regCleanUp, '');
+};
+
+/**
+ * "getPathToDocumentUnsafe" returns the path to an document will not create folder if not exists.
+ *
+ * @function getPathToDocumentUnsafe
+ * @static
+ *
+ * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @param {module:lib/search_engine_connector~uploadDocument} document
+ * @returns {string} Returns absolute path to an article document
+ */
+fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
+    var filePath;
+    if (article.isTemporary) {
+        filePath = getTempFolderForArticle(article._id);
+    } else {
+        filePath = getPermFolderForArticle(article._id);
+    }
+
+    return path.join(filePath, document.name + '.' + document.filetype);
 };
 
 /**
@@ -535,3 +444,96 @@ function getFolderForArticle(articleId, uploadDir, cb) {
 
     return targetFilePath;
 }
+
+/**
+ * PathContainer is the constructor of a private object.
+ * The PathContainer object has all the path to the article folders.
+ * The folder paths have to be loaded asyc
+ *
+ * @param {string|Object} articleId - A MongoDB article id (_id)
+ * @constructor
+ */
+function PathContainer(articleId) {
+    this.articleId = articleId + '';
+    this.oldFolderPath = null;
+    this.permFolderPath = null;
+    this.tempFolderPath = null;
+    this.fullNameOfOldArticleContentFile = null;
+    this.fullNameOfCurrentArticleContentFile = null;
+}
+
+/**
+ * "loadPaths" loads all path to the directories asynchronously
+ *
+ * @param {errorCallback} cb
+ */
+PathContainer.prototype.loadPaths = function (cb) {
+    var self = this;
+    var list = [];
+    asyncLib.eachSeries([getOldFolderForArticle, getPermFolderForArticle, getTempFolderForArticle],
+        function (handler, callback) {
+            handler(self.articleId, function (err, result) {
+                if (!err) {
+                    list.push(result);
+                }
+
+                callback(err);
+            });
+        }, function (err) {
+            if (!err) {
+                self.oldFolderPath = list[0];
+                self.permFolderPath = list[1];
+                self.tempFolderPath = list[2];
+                self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, self.articleId + config.articleContentFileName);
+                self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, self.articleId + config.articleContentFileName);
+
+            }
+
+            cb(err);
+        });
+};
+
+/**
+ * "removeTempFolder" removes the temp folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
+PathContainer.prototype.removeTempFolder = function (cb) {
+    this.removeFolder(this.tempFolderPath, cb);
+};
+
+/**
+ * "removePermFolder" removes the current version folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
+PathContainer.prototype.removePermFolder = function (cb) {
+    this.removeFolder(this.permFolderPath, cb);
+};
+
+/**
+ * "removeOldFolder" removes the old version folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
+PathContainer.prototype.removeOldFolder = function (cb) {
+    this.removeFolder(this.oldFolderPath, cb);
+};
+
+/**
+ * "removeFolder" removes a folder asynchronously
+ *
+ * @param {string} pathToFolder - path to target directory
+ * @param {errorCallback} cb
+ */
+PathContainer.prototype.removeFolder = function (pathToFolder, cb) {
+    fs.exists(pathToFolder, function (exists) {
+        if (exists) {
+            return fs.remove(pathToFolder, cb);
+        }
+
+        cb();
+    });
+};
+
+module.exports = fileSystemConnector;

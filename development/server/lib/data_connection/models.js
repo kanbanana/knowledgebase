@@ -8,7 +8,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+
 
 /**
  * @typedef uploadDocument
@@ -41,7 +41,7 @@ var uploadDocument = {
  * @property {string} text - Text/Content of the article
  * @property {boolean} isTemporary - true after first save
  */
-var ArticleSchema = new Schema({
+var ArticleSchema = new mongoose.Schema({
     author: {
         name: {type: String, default: ''},
         email: {type: String, default: ''}

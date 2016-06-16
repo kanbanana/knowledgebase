@@ -14,9 +14,8 @@ var articleService = require('../services/article_service');
 var config = require('../config/config');
 var validate = require('jsonschema').validate;
 var articleGlobalSchema = require('../schemas/article.json');
-var articlesGlobalSchema = require('../schemas/articles.json');
 
-var router = module.exports = {};
+var router = {};
 
 
 // ********************* Route Handlers *********************  //
@@ -247,3 +246,5 @@ router.middlewareValidateArticle = function(req, res, next) {
 
     next();
 };
+
+module.exports = router;

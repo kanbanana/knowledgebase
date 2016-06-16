@@ -15,7 +15,7 @@ var config = require('../config/config');
 var path = require('path');
 var PromiseLib = require("promise");
 
-var articleService = module.exports = {};
+var articleService = {};
 
 /**
  * "createArticle" creates an empty article document in the mongodb
@@ -202,45 +202,6 @@ articleService.deleteDocument = function(article, filename){
     });
 };
 
-function updateArticle(article, title, authorName, authorMail) {
-        article.title = title;
-        if (!article.author.name && !article.author.email) {
-            article.author.name = authorName;
-            article.author.email = authorMail;
-        }
-
-        article.lastChangedBy.name = authorName;
-        article.lastChangedBy.email = authorMail;
-        if(article.isTemporary) {
-            article.isTemporary = false;
-            article.documents.forEach(function (document) {
-                document.path = path.join(config.fileLinkPrefixPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
-            });
-        }
-}
-
-function removeFileFromArticle(article, filename) {
-    var hasFound = false;
-    article.documents.forEach(function(document, idx) {
-        var tempFilename = document.name + "." + document.filetype;
-        if(filename === tempFilename) {
-            hasFound = document;
-            var tempDocument = article.documents.pop();
-            if(idx !== article.documents.length) {
-                article.documents[idx] = tempDocument;
-            }
-
-            return false;
-        }
-    });
-
-    if(hasFound && article.hasOwnProperty("markModified")) {
-        article.markModified('documents');
-    }
-
-    return hasFound;
-}
-
 /**
  * "searchArticles" sends an query to the OSS and sends response.
  *
@@ -269,7 +230,7 @@ articleService.searchArticles = function (q) {
             if (search === '') {
                 return reject(new Error('Search query may not be empty'));
             }
-            searchEngineConnector.searchArticles(search).then(function (searchResults) {
+                searchEngineConnector.searchArticles(search).then(function (searchResults) {
                 if (searchResults.length === 0) {
                     return resolve(searchResults);
                 }
@@ -429,3 +390,44 @@ articleService.deleteTemporaryArticles = function() {
         console.log(articles);
     });
 };
+
+function updateArticle(article, title, authorName, authorMail) {
+    article.title = title;
+    if (!article.author.name && !article.author.email) {
+        article.author.name = authorName;
+        article.author.email = authorMail;
+    }
+
+    article.lastChangedBy.name = authorName;
+    article.lastChangedBy.email = authorMail;
+    if(article.isTemporary) {
+        article.isTemporary = false;
+        article.documents.forEach(function (document) {
+            document.path = path.join(config.fileLinkPrefixPerm, article._id + '', document.name + '.' + document.filetype).replace(/[\\]/g, '/');
+        });
+    }
+}
+
+function removeFileFromArticle(article, filename) {
+    var hasFound = false;
+    article.documents.forEach(function(document, idx) {
+        var tempFilename = document.name + "." + document.filetype;
+        if(filename === tempFilename) {
+            hasFound = document;
+            var tempDocument = article.documents.pop();
+            if(idx !== article.documents.length) {
+                article.documents[idx] = tempDocument;
+            }
+
+            return false;
+        }
+    });
+
+    if(hasFound && article.hasOwnProperty("markModified")) {
+        article.markModified('documents');
+    }
+
+    return hasFound;
+}
+
+module.exports = articleService;
