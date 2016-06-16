@@ -1,10 +1,26 @@
 'use strict';
 
-angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$window', '$timeout', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $window, $timeout) {
+/**
+ * @module controllers/articleDetail.controller.js
+ * @description This controller manages all data expressed in the articleDetail view.
+ * @param {Dependency} $stateParams - Service that reads out the URL and helps deciding if the user is in editing/viewing mode by reading from the 'e' option in the URL.
+ * @param {Dependency} ArticleService - The ArticleService provides the rest calls to retrieve article information
+ * @param {Dependency} $sce - Service used to sanatize the article text
+ * @param {Dependency} $location - Service used to change the url location (f.e. switching between modes)
+ * @oaram {Dependency} $window - Service forces browser reload on changing the route
+ *
+ */
+
+angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams', 'ArticleService', '$sce', '$location', '$rootScope', '$window', function ($scope, $stateParams, ArticleService, $sce, $location, $rootScope, $window) {
+
+    // article text has to be initialised before retrieved from the back-end
     $scope.article = {
         text: ''
     };
-    $scope.isUploading = false;
+
+
+
+    // Tinymce plugin to insert pictures in base64 into the editor. Move to global folder if needed in different view
     tinymce.PluginManager.add("bdesk_photo", function (editor, f) {
         editor.addCommand("bdesk_photo", function () {
             editor.windowManager.open({
@@ -74,36 +90,6 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         });
     });
 
-    tinymce.PluginManager.add("reference_manager", function (editor, f) {
-        editor.addCommand("reference_manager", function () {
-            editor.windowManager.open({
-                title: "Insert file reference",
-                width: 450,
-                height: 80,
-                html: '<ul class="list-group"> <li ng-repeat="file in article.documents" class="list-group-item"> <span class="badge">{{article}}</span>{{file.name}}</li></ul>',
-                buttons: [{
-                    text: "Ok",
-                    subtype: "primary",
-                    onclick: function () {
-
-                    }
-                }, {
-                    text: "Cancel",
-                    onclick: function () {
-                        (this).parent().parent().close();
-                    }
-                }]
-            });
-        });
-
-        editor.addButton("reference_manager", {
-            icon: "anchor",
-            context: "insert",
-            title: "Insert file reference",
-            cmd: "reference_manager"
-        });
-    });
-
     $scope.tinymceOptions = {
         selector: 'textarea',
         height: 500,
@@ -120,20 +106,22 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | table link bdesk_photo reference_manager'
     };
 
+
     ArticleService.getArticle($stateParams.articleId).then(function (response) {
         if(response.status === 404) {
-            $scope.$emit("makeToast", {type: "warning", message: response.data});
+            $scope.$emit("makeToast", {type: "warning", message: "Article not found!"});
             return
         }
+
+        var dragTimer;
+        var uploadedFiles = [];
+        var filesToDelete = [];
 
         $scope.article = response.data;
         $scope.articleServerVer = $scope.article;
         $scope.articleId = $stateParams.articleId;
 
-        var dragTimer;
-
-        var uploadedFiles = [];
-        var filesToDelete = [];
+        $scope.isUploading = false;
         $scope.isSaving = false;
         $scope.isOverridePageLock = false;
         $scope.isDragging = false;
@@ -155,6 +143,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             }
         };
 
+        //Code used to make the drag and drop upload of files possible
         $(document).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -182,12 +171,13 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
             $scope.uploadFile(uniqueFiles);
         });
 
+        // Changes route when the user starts editing the article
+        // The page will be reloaded and the article retrieved anew -> bypasses problem with inconsistent state if article has been deleted
         $scope.startEditing = function () {
             $location.path('article/' + $scope.article.id).search('e', 'true');
         };
 
         $scope.uploadFile = function (files) {
-
             var fd = new FormData();
             for (var i = 0; i < files.length; i++) {
                 fd.append("documents", files[i]);
@@ -227,6 +217,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         };
 
 
+        // saves article and checks if the user has entered a title and the validity of the email
         $scope.saveArticle = function () {
             if ($scope.article.title && $scope.article.title !== "") {
                 $scope.isSaving = true;
@@ -253,6 +244,9 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                     }
 
                 }
+
+                //batch deletes all files the user has deleted during his editing session
+                //This way the files will be untouched if the user decides to cancel his editing session
                 batchDeleteFiles(filesToDelete, function () {
                     ArticleService.saveArticle($scope.articleId, $scope.article).then(function (response) {
                         $scope.$emit("makeToast", {type: "success", message: 'Article has been saved'});
@@ -279,7 +273,7 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
         };
 
         $scope.deleteFile = function (index) {
-            filesToDelete.push(this.file.name + "." + this.file.filetype)
+            filesToDelete.push(this.file.name + "." + this.file.filetype);
             $scope.article.documents.splice(index, 1);
         };
 
@@ -298,6 +292,9 @@ angular.module('core').controller('ArticleDetailCtrl', ['$scope', '$stateParams'
                 }
             }
         };
+
+        //Following functions describe all scenarios where the user should be prompted if he wants to continue
+        //with his actions
 
         $scope.deleteArticle = function () {
             $scope.$broadcast("callModal", {
