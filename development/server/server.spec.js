@@ -79,9 +79,9 @@ describe('', function () {
 
     describe('GET', function () {
         describe('/api/articles?q=test', function () {
-            it('request with q=test', GetValidData('/api/articles?q=test', ArticleSchema));
-            it('request with q=', GetValidData('/api/articles?q=', ArticleSchema));
-            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ArticleSchema));
+            it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
+            it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
+            it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', SearchQResponseSchema));
         });
 
         describe('With Article:', function () {
