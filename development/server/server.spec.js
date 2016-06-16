@@ -107,6 +107,18 @@ describe('', function () {
                         .expect(200, done);
                 });
 
+                it('search author maxlength', function (done) {
+                    var authorName = 'name';
+
+                    for(var i = 0; i < config.postBodyValidationValues.maxArticleAuthorEmailLength; i++)
+                        authorName += 'a';
+
+                    request(application.app)
+                        .get('/api/articles?q=author:"' + authorName + '"')
+                        .expect('Content-Type', /json/)
+                        .expect(400, done);
+                });
+
                 it('search author with spaces', function (done) {
                     request(application.app)
                         .get('/api/articles?q=author:"Max Mustermann"')
@@ -215,7 +227,8 @@ describe('', function () {
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function (err, res) {
-                        res.body.should.be.type('string');
+                        assert('string', typeof res.body);
+                        if(err) return done(err);
                         done();
                     });
             });
