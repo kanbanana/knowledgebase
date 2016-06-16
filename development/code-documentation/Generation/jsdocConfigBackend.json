@@ -13,8 +13,8 @@
     "cleverLinks": false,
     "monospaceLinks": true,
     "systemName": "Knownana",
-    "footer": "Created by Kanbanana Team",
-    "copyright": "2016",
+    "footer": "",
+    "copyright": "Knownana Backend (Version 1.0) - 2016 - Created by Kanbanana Backend Team",
     "navType": "vertical",
     "theme": "spacelab",
     "linenums": true
@@ -23,6 +23,7 @@
     "template": "node_modules/ink-docstrap/template",
     "encoding": "utf8",
     "destination": "../Documentation-Backend",
+	"readme": "readmeBackend.md",
     "recurse": true,
     "private": true
   }

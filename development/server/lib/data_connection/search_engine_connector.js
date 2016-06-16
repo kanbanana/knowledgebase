@@ -46,12 +46,12 @@ searchEngineConnector.updateIndex = function () {
  */
 
 /**
- * Searches articles by key words.
+ * Searches article contents and article attachments by key words.
  *
  * @function searchArticles
  * @static
  * @param {string} q - The search query which contains the key words.
- * @returns {Promise<module:lib/search_engine_connector~SearchResultEntry|Error>} Search results
+ * @returns {Promise<module:lib/search_engine_connector~SearchResultEntry|Error>} Search result entries for each matched file.
  */
 searchEngineConnector.searchArticles = function (q) {
     return new PromiseLib(function (resolve, reject) {
@@ -104,7 +104,7 @@ searchEngineConnector.searchArticles = function (q) {
                             reject('Search query could not be processed: json schema of the result is unsupported');
                         } else {
                             searchResult[i] = {
-                                id: filterArticleIdFromFilePath(filepath),
+                                id: extractArticleIdFromFilePath(filepath),
                                 filename: decodeURI(path.basename(filepath)),
                                 text: textSnippet
                             };
@@ -117,7 +117,13 @@ searchEngineConnector.searchArticles = function (q) {
     });
 };
 
-function filterArticleIdFromFilePath(filepath) {
+/**
+ * Extracts the article id from the given file path.
+ *
+ * @param {string} filepath - The path of the file which corresponds to an article.
+ * @returns {string} The extracted article id.
+ */
+function extractArticleIdFromFilePath(filepath) {
     var documentDir = path.dirname(filepath);
     var lastIndexOfSlash = documentDir.lastIndexOf('/');
     var lastIndexOfBackslash = documentDir.lastIndexOf('\\');
