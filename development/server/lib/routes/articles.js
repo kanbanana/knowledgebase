@@ -230,24 +230,20 @@ router.middlewareValidateArticle = function(req, res, next) {
         return res.status(400).contentType('application/json').send();
     }
 
-    if (req.body.title.length > config.postBodyValidationValues.maxArticleTitleLength) {
-        return res.status(400).contentType('application/json').send();
-    }
+    // if (req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
+    //     req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+    //     return res.status(400).contentType('application/json').send();
+    // }
+    //
+    // if (req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
+    //     req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
+    //     return res.status(400).contentType('application/json').send();
+    // }
 
-    if (req.body.author.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength ||
-        req.body.lastChangedBy.name.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
-        return res.status(400).contentType('application/json').send();
-    }
-
-    if (req.body.author.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength ||
-        req.body.lastChangedBy.email.length > config.postBodyValidationValues.maxArticleAuthorEmailLength) {
-        return res.status(400).contentType('application/json').send();
-    }
-
-    var emailRegexp = /^.+\@.+\..+$/;
-    if (!req.body.author.email.match(emailRegexp) || !req.body.lastChangedBy.email.match(emailRegexp)){
-        return res.status(400).contentType('application/json').send();
-    }
+    // var emailRegexp = /^.+\@.+\..+$/;
+    // if (!req.body.author.email.match(emailRegexp) || !req.body.lastChangedBy.email.match(emailRegexp)){
+    //     return res.status(400).contentType('application/json').send();
+    // }
 
     next();
 };

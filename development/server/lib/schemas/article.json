@@ -5,14 +5,18 @@
     "id": {
       "type": "string"
     },
+
     "author": {
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "format": "email"
         }
       },
       "required": [
@@ -24,10 +28,13 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "format": "email"
         }
       },
       "required": [
@@ -39,7 +46,9 @@
       "type": "integer"
     },
     "title": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
     },
     "text": {
       "type": "string"
