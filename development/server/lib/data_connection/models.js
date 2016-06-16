@@ -25,7 +25,7 @@ var uploadDocument = {
 
 
 /**
- * MongoDb Article schema holds all necessary information of a article.
+ * MongoDB Article schema holds all necessary information of an article.
  *
  * @typedef ArticleSchema
  *
@@ -33,8 +33,8 @@ var uploadDocument = {
  * @property  {string} author.name - author name
  * @property  {string} author.email - author e-mail
  * @property  {object} lastChangedBy - Last person who has changed the article
- * @property  {string} lastChangedBy.name - Name of last person who has changed the article
- * @property  {string} lastChangedBy.email - E-mai last person who has changed the article
+ * @property  {string} lastChangedBy.name - Name of the last person who has changed the article
+ * @property  {string} lastChangedBy.email - E-mail the last person who has changed the article
  * @property {uploadDocument[]} documents - list of all linked files
  * @property {Date} lastChangedBy - Last save date
  * @property {string} title - Title of the article
@@ -66,12 +66,12 @@ ArticleSchema.pre('save', function (next) {
 
 
 /**
+ * Receives an article object and strips all mongoDB-methods and mongoDB-tags like __v or _id.
  *
- * "articleSchemaToResponseArticle" gets an article mongoDb object and strips all mongo-methods and mongo-tags.
  * @static
  * @param {ArticleSchema} articleSchema
  *
- * @returns {ArticleSchema} - striped articleSchema
+ * @returns {ArticleSchema} - stripped articleSchema
  */
 var articleSchemaToResponseArticle = function (articleSchema) {
     var responseArticle = articleSchema.toJSON();
@@ -97,10 +97,9 @@ var articleSchemaToResponseArticle = function (articleSchema) {
 };
 
 /**
+ * Receives a list of article objects and strips all mongoDB-methods mongoDB-tags like __v or _id.
  *
- * "multipleArticleSchemaToResponseArticles" gets a list of article mongoDb objects and strips all mongo-methods and mongo-tags.
- *  @static
- *
+ * @static
  * @param {ArticleSchema[]} articleSchemas
  *
  * @returns {ArticleSchema[]} - striped list of articleSchema

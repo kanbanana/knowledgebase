@@ -1,5 +1,5 @@
 /**
- * Mongo-DB connector is a MongoDB facade
+ * database_connector is a MongoDB facade that grants access to the data from the database
  *
  * @module lib/data_connector/database_connector
  * @author  Martin Satrman, Vladislav Chumak
@@ -15,7 +15,7 @@ var PromiseLib = require("promise");
 var databaseConnector = {};
 
 /**
- * "createArticle" creates an empty article document in the mongodb
+ * Creates an empty article and saves it in the database.
  *
  * @function createArticle
  * @static
@@ -37,7 +37,7 @@ databaseConnector.createArticle = function () {
 };
 
 /**
- * "addDocumentToArticle" gets storeage info of a document and pushs it to the article document list
+ * Receives storage info of a document, pushs it to the list of documents of the passed article and saves the changes to the database.
  *
  * @function addDocumentToArticle
  * @static
@@ -60,7 +60,7 @@ databaseConnector.addDocumentToArticle = function (article, storageInfo) {
 };
 
 /**
- * "saveArticle" saves a article to te mongo db
+ * Saves the passed article to the database.
  *
  * @function saveArticle
  * @static
@@ -81,7 +81,7 @@ databaseConnector.saveArticle = function (article) {
 };
 
 /**
- * "findArticleById" finds an article in the mongo db by the mongo _id
+ * Tries to find the article with the given ID.
  *
  * @function findArticleById
  * @static
@@ -102,7 +102,7 @@ databaseConnector.findArticleById = function (id) {
 };
 
 /**
- * "findArticleByIds" finds a list of articles in the mongo db by the mongo _id
+ * Tries to find all articles with the given IDs. The result contains all found articles. If there's no article for one of the IDs, that one just doesn't appear in the result (the function doesn't fail because of that).
  *
  * @function findArticleByIds
  * @static
@@ -130,14 +130,14 @@ databaseConnector.findArticlesByIds = function (ids) {
 };
 
 /**
- * "findArticlesByAuthor" finds an article in the mongo db by the author- or lastChangedBy-name.
- * The name gets matched by a regex ".*[author.name].*"
+ * Gets all articles whose author- or last-changed-name is the one passed in as parameter.
+ * The name gets matched by the regex ".*[author.name].*"
  *
  * @function findArticlesByAuthor
  * @static
  *
  * @param {string} author -  author name
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found article
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
  */
 databaseConnector.findArticlesByAuthor = function (author) {
     return new PromiseLib(function (resolve, reject) {
@@ -157,12 +157,12 @@ databaseConnector.findArticlesByAuthor = function (author) {
 };
 
 /**
- * "findAllPermArticleIds" finds all not temp articles and returns there ids
+ * Finds all articles that are not marked with the temporary flag. The result contains their IDs.
  *
  * @function findAllPermArticleIds
  * @static
  *
- * @returns {Promise<string[]|Error>} found articles ids
+ * @returns {Promise<string[]|Error>} found articles IDs
  */
 databaseConnector.findAllPermArticleIds = function () {
     return new PromiseLib(function (resolve, reject) {
@@ -183,7 +183,7 @@ databaseConnector.findAllPermArticleIds = function () {
 };
 
 /**
- * "deleteTemporaryArticlesOlderThan" deletes all old temp articles in the mongo db
+ * Deletes all old temporary articles from the database.
  *
  * @function deleteTemporaryArticlesOlderThan
  * @static
@@ -218,12 +218,12 @@ databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
 };
 
 /**
- * "deleteArticles" deletes an article
+ * Deletes the article with the given ID.
  *
  * @function deleteArticles
  * @static
  *
- * @param {string} articleId - mongo DB id
+ * @param {string} articleId
  * @returns {*|exports|module.exports}
  */
 databaseConnector.deleteArticles = function (articleId) {

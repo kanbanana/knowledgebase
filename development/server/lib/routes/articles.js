@@ -21,9 +21,7 @@ var router = {};
 // ********************* Route Handlers *********************  //
 
 /**
- * "onArticleCreateHandler" is a HTTP Request Handler. It handles the article create request.
- * On success the handler will send the new article id.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles the article create request. On success the handler will send the new article id. In case of an error the handler will send the Error-Code to the client.
  *
  * @function onArticleCreateHandler
  * @static
@@ -40,9 +38,7 @@ router.onArticleCreateHandler = function (req, res) {
 };
 
 /**
- * "onDocumentUploadHandler" is a HTTP Request Handler. It handles the upload fo documents.
- * On success the handler will send the new document information as JSON.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles the upload of documents. On success the handler will send the new document information as JSON. In case of an error the handler will send the Error-Code 500 to the client.
  *
  * @function onDocumentUploadHandler
  * @static
@@ -61,8 +57,7 @@ router.onDocumentUploadHandler = function (req, res) {
 };
 
 /**
- * "onArticleSaveHandler" is a HTTP Request Handler. It handles the article save request on an existing article.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles the article save request on an existing article. On success the handler will send back the saved article. In case of an error the handler will send the Error-Code 500 to the client.
  *
  * @function onArticleSaveHandler
  * @static
@@ -83,8 +78,7 @@ router.onArticleSaveHandler = function (req, res) {
 };
 
 /**
- * "onArticleGetHandler" is a HTTP Request Handler. It sends the article object.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that sends the article object with the given ID. If the query param "old" is set, the archived version of the article will be sent. In case of an error the handler will send the Error-Code 500 to the client.
  *
  * @function onArticleGetHandler
  * @static
@@ -112,9 +106,10 @@ router.onArticleGetHandler = function (req, res) {
 };
 
 /**
- * "onArticleSearchHandler" is a HTTP Request Handler. It handles the article search request.
- * "onArticleSearchHandler" expects the "GET" parameter "q".
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles the article search request. There are two ways to call this route:
+ * a) With the query parameter "q" and the search text as value. In that case, all articles that contain the given search text will be sent to the client.
+ * b) With the query parameter "ids" and a comma separated list of IDs as value. In that case, the articles with the given IDs are returned.
+ * In case of an error the handler will send the Error-Code 500 to the client.
  *
  * @function onArticleSearchHandler
  * @static
@@ -145,8 +140,7 @@ router.onArticleSearchHandler = function(req, res) {
 };
 
 /**
- * "onArticleDeleteHandler" is a HTTP Request Handler. It handles the article delete request.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles handles the article delete request. In case of error the handler will send the Error-Code 500 to the client.
  *
  * @function onArticleDeleteHandler
  * @static
@@ -163,8 +157,7 @@ router.onArticleDeleteHandler = function (req, res) {
 };
 
 /**
- * "onDocumentDeleteHandler" is a HTTP Request Handler. It handles the document delete request.
- * On error the handler will send the Error-Code 500 and the error to the client.
+ * A HTTP Request Handler that handles the document delete request. In case of error the handler will send the Error-Code 500 the client.
  *
  * @function onDocumentDeleteHandler
  * @static
@@ -183,11 +176,7 @@ router.onDocumentDeleteHandler = function (req, res) {
 // ********************* Middlewares *********************  //
 
 /**
- * "middlewareRetrieveArticle" is a HTTP middleware. It checks if the articleId in the route
- * is a valid ID.
- *
- * On Success the article get set as attribute to the req Object.
- * On error Error-Code 500 send to client
+ * A HTTP middleware that checks if the articleId in the route is a valid ID. On Success the article gets set as attribute to the req object. In case of an error the Error-Code 500 will be sent to the client.
  *
  * @function middlewareRetrieveArticle
  * @static
@@ -211,10 +200,7 @@ router.middlewareRetrieveArticle = function (req, res, next) {
 };
 
 /**
- * "middlewareValidateArticle" is a HTTP middleware. It checks if the article post body contains only valid values.
- *
- * On Success the article get set as attribute to the req Object.
- * On error Error-Code 500 send to client
+ * A HTTP middleware that checks if the article post body contains only valid values. In case of invalid data, the Error-Code 500 will be sent to client.
  *
  * @function middlewareValidateArticle
  * @static

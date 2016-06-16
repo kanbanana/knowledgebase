@@ -1,5 +1,5 @@
 /**
- * This module is the main article services. It servas all actions tho the db and file connector.
+ * This module is the main article services. It distributes all actions to the database_connector and the file_system_connector.
  *
  * @module lib/router/article
  * @author Martin Starman, Vladislav Chumak
@@ -18,26 +18,24 @@ var PromiseLib = require("promise");
 var articleService = {};
 
 /**
- * "createArticle" creates an empty article document in the mongodb
+ * Creates an empty article.
  *
  * @function createArticle
  * @static
  *
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty Article
+ * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty article object
  */
 articleService.createArticle = function () {
     return databaseConnector.createArticle();
 };
 
 /**
- * "saveArticle" saves the content article in the file and ith the DB. The content gets wraps the actual text in
- * a HTML body and puts the title in the HTML head. If the article is temporary the files get copied from
- * the temp folder to the active folder.
+ * Saves the content of the article in the file and its metadata to the database.
  *
- * @param {module:lib/data_connector/models~ArticleSchema} article - current mongoDB object
- * @param {string} content - text of the article as html
- * @param {string} title - article content
- * @param {object} author - last changing author
+ * @param {module:lib/data_connector/models~ArticleSchema} article - the article to save
+ * @param {string} content - text of the article
+ * @param {string} title - article title
+ * @param {object} author - last changed author
  * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
  */
 articleService.saveArticle = function (article, title, content, author) {
@@ -59,12 +57,12 @@ articleService.saveArticle = function (article, title, content, author) {
 };
 
 /**
- * "findArticleById" finds an article in the mongo db by the mongo _id
+ * Tries to find the article with the given ID.
  *
  * @function findArticleById
  * @static
  *
- * @param {string} id -  mongoDB _id
+ * @param {string} id
  * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} found article
  */
 articleService.findArticleById = function (id) {
@@ -72,7 +70,7 @@ articleService.findArticleById = function (id) {
 };
 
 /**
- * "saveDocument" saves the uploaded file to the article.
+ * Saves the given document in the filesystem.
  *
  * @function saveDocument
  * @static
@@ -91,7 +89,7 @@ articleService.saveDocument = function (article, document) {
 };
 
 /**
- * "saveDocuments" saves the uploaded files to the article.
+ * Saves given documents to the filesystem.
  *
  * @function saveDocuments
  * @static
@@ -118,13 +116,13 @@ articleService.saveDocuments = function (article, documents) {
 };
 
 /**
- * "getArticleContent" reads an article file and returns the extracted body content
+ * Reads an article file and returns the extracted body content.
  *
  * @function getArticleContent
  * @static
  *
- * @param {string} articleId - mongoDB id
- * @returns {Promise<String|Error>} Returns an error or null
+ * @param {string} articleId
+ * @returns {Promise<String|Error>}
  */
 articleService.getArticleContent = function (articleId) {
     return new PromiseLib(function(resolve) {
@@ -137,12 +135,12 @@ articleService.getArticleContent = function (articleId) {
 };
 
 /**
- * "getOldArticleContentAndTitle" reads an old article file and returns the extracted body content
+ * Reads an old article file and returns the extracted body content
  *
  * @function getOldArticleContentAndTitle
  * @static
  *
- * @param {string} articleId - mongoDB id
+ * @param {string} articleId
  * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} Returns an error or null
  */
 articleService.getOldArticleContentAndTitle = function(articleId) {
@@ -156,12 +154,12 @@ articleService.getOldArticleContentAndTitle = function(articleId) {
 };
 
 /**
- * "deleteArticles" deletes an article
+ * Deletes an article from the filesystem and the database.
  *
  * @function deleteArticles
  * @static
  *
- * @param {string} articleId - mongo DB id
+ * @param {string} articleId
  * @returns {*|exports|module.exports}
  */
 articleService.deleteArticle = function(articleId){
@@ -176,7 +174,7 @@ articleService.deleteArticle = function(articleId){
 };
 
 /**
- * "deleteDocument" removes a document form the filesystem and from the db.
+ * Removes a document from the filesystem and from the db.
  *
  * @function deleteDocument
  * @static
@@ -203,7 +201,7 @@ articleService.deleteDocument = function(article, filename){
 };
 
 /**
- * "searchArticles" sends an query to the OSS and sends response.
+ * Sends a query to the OSS. The result contains all articles that contain the text given as parameter.
  *
  * @function searchArticles
  * @static
@@ -318,12 +316,12 @@ articleService.searchArticles = function (q) {
 };
 
 /**
- * "getArticlesByIds" finds a list of articles in the mongo db by the mongo _id
+ * Finds a list of articles in the mongo db by their ID
  *
  * @function getArticlesByIds
  * @static
  *
- * @param {string[]} ids -  mongoDB _id list
+ * @param {string[]} ids
  * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
  */
 articleService.getArticlesByIds = function (ids) {
@@ -349,7 +347,7 @@ articleService.getArticlesByIds = function (ids) {
 };
 
 /**
- * "deleteEmptyArticles" deletes all articles in the db if no corresponding file exists (not even an article.html). This
+ * Deletes all articles in the database if no corresponding file exists (not even an article.html). This
  * is done in order to get rid of old articles that still exist if somebody deletes the files from disk.
  *
  * @function "deleteEmptyArticles"
@@ -371,7 +369,7 @@ articleService.deleteEmptyArticles = function(cb){
 };
 
 /**
- * "deleteTemporaryArticles" deletes all old temporary articles. Max age gets set in the config.
+ * Deletes all old temporary articles. Max age gets set in the config.
  *
  * @function "deleteTemporaryArticles"
  * @static
