@@ -119,8 +119,8 @@ describe('', function () {
             describe('', function () {
 
                 before(function (done) {
-                    this.timeout(20000);
-                    setTimeout(done, 15000);
+                    this.timeout(21000);
+                    setTimeout(done, 20000);
                 });
 
                 describe('/api/articles?q=', function () {
