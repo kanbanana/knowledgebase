@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module services/article.service.js
+ * @description Contains all REST calls needed to GET,POST,PUT,DELETE articles and their files
+ */
 angular.module('core').factory('ArticleService', ['$q', '$http', '$rootScope', function ($q, $http, $rootScope) {
     return {
         searchArticles: function (query) {
