@@ -66,14 +66,11 @@ function PutValidData(url, data, schema) {
 
 describe('', function () {
     before(function (done) {
-        application.listen(function () {
-            // Drop the database
-            mongoose.connection.db.dropDatabase(done);
-        });
+        application.listen(done);
     });
 
-    after(function () {
-        application.close();
+    after(function (done) {
+        application.close(done);
     });
 
     describe('GET', function () {
