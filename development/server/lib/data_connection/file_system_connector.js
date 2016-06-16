@@ -1,8 +1,34 @@
+/**
+ * File system connector is a fs facade
+ *
+ * @module lib/data_connector/file_system_connector
+ * @author  Martin Satrman, Vladislav Chumak
+ */
+
+/**
+ * Callback for error handling.
+ *
+ * @callback errorCallback
+ * @param {Error} error - The error of the search operation.
+ */
+
+
+'use strict';
+
 var path = require('path');
 var fs = require('fs-extra');
 var asyncLib = require('async');
 var config = require('../config/config');
+var PromiseLib = require("promise");
 
+/**
+ * PathContainer is the constructor of a private object.
+ * The PathContainer object has all the path to the article folders.
+ * The folder paths have to be loaded asyc
+ *
+ * @param {string|Object} articleId - A MongoDB article id (_id)
+ * @constructor
+ */
 function PathContainer(articleId) {
     this.articleId = articleId + '';
     this.oldFolderPath = null;
@@ -12,6 +38,11 @@ function PathContainer(articleId) {
     this.fullNameOfCurrentArticleContentFile = null;
 }
 
+/**
+ * "loadPaths" loads all path to the directories asynchronously
+ *
+ * @param {errorCallback} cb
+ */
 PathContainer.prototype.loadPaths = function (cb) {
     var self = this;
     var list = [];
@@ -19,41 +50,58 @@ PathContainer.prototype.loadPaths = function (cb) {
         function (handler, callback) {
             handler(self.articleId, function (err, result) {
                 if (!err) {
-                    list.push(result)
+                    list.push(result);
                 }
 
-                callback(err)
-            })
+                callback(err);
+            });
         }, function (err) {
             if (!err) {
                 self.oldFolderPath = list[0];
                 self.permFolderPath = list[1];
                 self.tempFolderPath = list[2];
+                self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, self.articleId + config.articleContentFileName);
+                self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, self.articleId + config.articleContentFileName);
+
             }
 
-            cb(err)
+            cb(err);
         });
 };
 
-PathContainer.prototype.loadArticleContentFilePaths = function (cb) {
-    var self = this;
-    self.fullNameOfOldArticleContentFile = path.join(self.oldFolderPath, config.articleContentFileName);
-    self.fullNameOfCurrentArticleContentFile = path.join(self.permFolderPath, config.articleContentFileName);
-    cb();
-};
-
+/**
+ * "removeTempFolder" removes the temp folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
 PathContainer.prototype.removeTempFolder = function (cb) {
     this.removeFolder(this.tempFolderPath, cb);
 };
 
+/**
+ * "removePermFolder" removes the current version folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
 PathContainer.prototype.removePermFolder = function (cb) {
     this.removeFolder(this.permFolderPath, cb);
 };
 
+/**
+ * "removeOldFolder" removes the old version folder asynchronously
+ *
+ * @param {errorCallback} cb
+ */
 PathContainer.prototype.removeOldFolder = function (cb) {
     this.removeFolder(this.oldFolderPath, cb);
 };
 
+/**
+ * "removeFolder" removes a folder asynchronously
+ *
+ * @param {string} pathToFolder - path to target directory
+ * @param {errorCallback} cb
+ */
 PathContainer.prototype.removeFolder = function (pathToFolder, cb) {
     fs.exists(pathToFolder, function (exists) {
         if (exists) {
@@ -66,13 +114,22 @@ PathContainer.prototype.removeFolder = function (pathToFolder, cb) {
 
 var fileSystemConnector = module.exports = {};
 
+/**
+ * "saveContent" saves the content article in the file. The content gets wraps the actual text in
+ * a HTML body and puts the title in the HTML head. If the article is temporary the files get copied from
+ * the temp folder to the active folder.
+ *
+ * @param {string| Object} articleId - MongoDB _id
+ * @param {string} content - text of the article as html
+ * @param {boolean} isTemporary - Is true if the article is still temporary
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ */
 fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 
     var pathContainer = new PathContainer(articleId);
 
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-            pathContainer.loadArticleContentFilePaths.bind(pathContainer),
             function (cb) {
                 fs.exists(pathContainer.fullNameOfOldArticleContentFile, function (exists) {
                     if (exists) {
@@ -95,7 +152,7 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
                 if (!isTemporary) {
                     return cb();
                 }
-                fs.remove(pathContainer.permFolderPath, function (err) {
+                fs.remove(pathContainer.permFolderPath, function () {
                     fs.move(pathContainer.tempFolderPath, pathContainer.permFolderPath, cb);
                 });
             },
@@ -112,9 +169,17 @@ fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
     });
 };
 
+/**
+ * "saveDocument" saves the the uploaded file to the .
+ *
+ * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
+ * @param {string| Object} articleId - MongoDB _id
+ * @param {boolean} isTemp - Is true if the article is still temporary
+ * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ */
 fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     articleId += '';
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         var fileLinkPrefix;
         var saveDocumentHandler = function (err, targetDirectory) {
             if (err) {
@@ -155,9 +220,10 @@ fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
 
 fileSystemConnector.readArticleContent = function (articleId) {
     articleId += '';
-    return new Promise(function (resolve, reject) {
-        getPermFolderForArticle(articleId, function (err, permFolder) {
-            var contentFilePath = path.join(permFolder, config.articleContentFileName);
+    var pathContainer = new PathContainer(articleId);
+    return new PromiseLib(function (resolve, reject) {
+        pathContainer.loadPaths(function (err, permFolder) {
+            var contentFilePath = pathContainer.fullNameOfCurrentArticleContentFile;
             fs.readFile(contentFilePath, function (err, contentBuffer) {
                 if (err) {
                     return reject(err);
@@ -170,7 +236,7 @@ fileSystemConnector.readArticleContent = function (articleId) {
 
 fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         getOldFolderForArticle(articleId, function (err, oldFolder) {
             var contentFilePath = path.join(oldFolder, config.articleContentFileName);
             fs.readFile(contentFilePath, function (err, contentBuffer) {
@@ -192,11 +258,13 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 fileSystemConnector.extractHTMLTitleContent = function (content) {
     var reg = /(<\s*title\s*>)((.|\n)*)(<\/\s*title\s*>)/;
 
+    var regCleanUp = /<(\/)?\s*[^>]+\s*>/g;
+
     content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
-    return content;
+    return content.replace(regCleanUp, '');
 };
 
 
@@ -206,12 +274,13 @@ fileSystemConnector.wrapContentInHTMLBody = function (content, title) {
 
 fileSystemConnector.extractHTMLBodyContent = function (content) {
     var reg = /(<\s*body\s*>)((.|\n)*)(<\/\s*body\s*>)/;
+    var regCleanUp = /<(\/)?\s*body\s*>/g;
 
     content.replace(reg, function (match, bodyStartTag, bodyContent) {
         content = bodyContent;
     });
 
-    return content;
+    return content.replace(regCleanUp, '');
 };
 
 fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
@@ -222,11 +291,11 @@ fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {
         filePath = getPermFolderForArticle(article._id);
     }
 
-    return path.join(filePath, document.name + '.' + document.filetype)
+    return path.join(filePath, document.name + '.' + document.filetype);
 };
 
 fileSystemConnector.deleteDocument = function (filePath) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         fs.remove(filePath, function (err) {
             if (err) {
                 return reject(err);
@@ -240,9 +309,8 @@ fileSystemConnector.deleteDocument = function (filePath) {
 fileSystemConnector.deleteArticle = function (articleId) {
     var pathContainer = new PathContainer(articleId);
 
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-                pathContainer.loadArticleContentFilePaths.bind(pathContainer),
                 pathContainer.removeOldFolder.bind(pathContainer),
                 pathContainer.removePermFolder.bind(pathContainer),
                 pathContainer.removeTempFolder.bind(pathContainer)],
@@ -260,9 +328,8 @@ fileSystemConnector.deleteArticle = function (articleId) {
 fileSystemConnector.isArticleFileExists = function (articleId) {
     var pathContainer = new PathContainer(articleId);
     var isExists;
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         asyncLib.series([pathContainer.loadPaths.bind(pathContainer),
-                pathContainer.loadArticleContentFilePaths.bind(pathContainer),
                 function(cb){
                     fs.exists(pathContainer.fullNameOfCurrentArticleContentFile, function(exists) {
                         isExists = exists;
@@ -303,7 +370,7 @@ function getFilenameLike(pathToFile, cb) {
                 callback();
             });
         },
-        function (err, n) {
+        function () {
             cb(currentFilename);
         }
     );
@@ -327,9 +394,9 @@ function getFolderForArticle(articleId, uploadDir, cb) {
     var targetFilePath = path.join(uploadPath, articleId);
     fs.mkdirs(targetFilePath, function (err) {
         if (cb) {
-            cb(null, targetFilePath); //TODO: fixme first param should be error
+            cb(err, targetFilePath);
         }
     });
 
-    return targetFilePath
+    return targetFilePath;
 }

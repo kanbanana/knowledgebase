@@ -1,5 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?><renderer name="default-file" request="search" searchButtonLabel="Search" noResultFoundText="No result found" oneResultFoundText="1 result found" resultsFoundText="results found" facetWidth="200px" logEnabled="false" filenameField="url" defaultJsp="Bootstrap">
-<css>.osscmnrdr { font-family: arial,sans-serif;
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- License Agreement for OpenSearchServer -->
+<!-- -->
+<!-- Copyright (C) 2012-2014 Emmanuel Keller / Jaeksoft -->
+<!-- -->
+<!-- This file is part of OpenSearchServer. -->
+<!-- http://www.open-search-server.com -->
+<!-- -->
+<!-- OpenSearchServer is free software: you can -->
+<!-- redistribute it and/or modify it under the terms of -->
+<!-- the GNU General Public License as published by the -->
+<!-- Free Software Foundation, either version 3 of the -->
+<!-- License, or (at your option) any later version. -->
+<!-- -->
+<!-- OpenSearchServer is distributed in the -->
+<!-- hope that it will be useful, but WITHOUT ANY -->
+<!-- WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. -->
+<!-- -->
+<renderer name="default-file" request="search"
+	searchButtonLabel="Search" noResultFoundText="No result found"
+	oneResultFoundText="1 result found" resultsFoundText="results found"
+	filenameField="url">
+	<css>.osscmnrdr { font-family: arial,sans-serif;
 		font-size: 14px;
 		}
 		.ossinputrdr { font-size:inherit;
@@ -44,16 +66,24 @@
 		font-size:120%;
 		}
 		.ossfieldrdr3 { color: #0E774A;
-		}</css>
-<field fieldName="title" replacePrevious="false" fieldType="SNIPPET" urlFieldName="url" urlDecode="false" widgetName="TEXT"/>
-<field fieldName="fileName" replacePrevious="true" fieldType="SNIPPET" urlFieldName="url" urlDecode="false" widgetName="TEXT"/>
-<field fieldName="fileSystemDate" replacePrevious="false" fieldType="FIELD" urlFieldName="" urlDecode="false" cssClass="small text-muted" widgetName="DATETIME">inputformat=yyyyMMddHHmmssSSS
+		}
+	</css>
+	<field fieldName="title" fieldType="SNIPPET" urlFieldName="url"
+		widgetName="TEXT" />
+	<field fieldName="fileName" fieldType="SNIPPET" urlFieldName="url"
+		widgetName="TEXT" replacePrevious="true" />
+	<field fieldName="fileSystemDate" replacePrevious="false"
+		fieldType="FIELD" urlFieldName="" urlDecode="false" cssClass="small text-muted"
+		widgetName="DATETIME">inputformat=yyyyMMddHHmmssSSS
 outputformat=MMM d, YYYY
 	</field>
-<field fieldName="url" replacePrevious="false" fieldType="FIELD" urlFieldName="" urlDecode="true" cssClass="text-success" widgetName="URLWRAP"/>
-<field fieldName="content" replacePrevious="false" fieldType="SNIPPET" urlDecode="false" widgetName="TEXT"/>
-<field fieldName="url" replacePrevious="false" fieldType="FIELD" urlFieldName="url" urlDecode="false" widgetName="TOOLS"/>
-<filter publicName="Filter by date" fieldName="fileSystemDate" filterType="DATE" replace="false">1.label=Any time
+	<field fieldName="url" replacePrevious="false" fieldType="FIELD"
+		urlFieldName="" urlDecode="true" cssClass="text-success" widgetName="URLWRAP" />
+	<field fieldName="content" fieldType="SNIPPET" widgetName="TEXT" />
+	<field fieldName="url" fieldType="FIELD" urlFieldName="url"
+		widgetName="TOOLS" />
+	<filter publicName="Filter by date" fieldName="fileSystemDate"
+		filterType="DATE" replace="false">1.label=Any time
 1.range=anytime
 2.label=Past 24 hours
 2.range=pastday
@@ -65,7 +95,8 @@ outputformat=MMM d, YYYY
 5.range=pastyear
 dateformat=yyyyMMddHHmmssSSS
 	</filter>
-<filter publicName="File type" fieldName="fileExtension" filterType="FACET_MERGE" replace="false">casesensitive=true
+	<filter publicName="File type" fieldName="fileExtension"
+		filterType="FACET_MERGE" replace="false">casesensitive=true
 regexp.1.find=ppt(.*)
 regexp.1.replace=Powerpoint
 1.label=Word
@@ -75,5 +106,4 @@ regexp.1.replace=Powerpoint
 2.value1=pdf
 2.value2=PDF
 	</filter>
-<auth/>
 </renderer>

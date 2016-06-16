@@ -1,9 +1,13 @@
+
+'use strict';
+
 var asyncLib = require('async');
 var fileSystemConnector = require('../data_connection/file_system_connector');
 var databaseConnector = require('../data_connection/database_connector');
 var searchEngineConnector = require('../data_connection/search_engine_connector');
 var config = require('../config/config');
 var path = require('path');
+var PromiseLib = require("promise");
 
 var articleService = module.exports = {};
 
@@ -12,7 +16,7 @@ articleService.createArticle = function () {
 };
 
 articleService.saveArticle = function (article, title, content, author) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         var authorName = '';
         var authorMail = '';
         if (author) {
@@ -34,7 +38,7 @@ articleService.findArticleById = function (id) {
 };
 
 articleService.saveDocument = function (article, document) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         fileSystemConnector.saveDocument(document, article._id, article.isTemporary).then(function (storageInfo) {
             databaseConnector.addDocumentToArticle(article, storageInfo).then(resolve, reject);
             searchEngineConnector.updateIndex();
@@ -44,7 +48,7 @@ articleService.saveDocument = function (article, document) {
 
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         asyncLib.eachSeries(documents, function (item, cb) {
             articleService.saveDocument(article, item).then(function (storageInfo) {
                 storageInfoList.push(storageInfo);
@@ -60,7 +64,7 @@ articleService.saveDocuments = function (article, documents) {
 };
 
 articleService.getArticleContent = function (articleId) {
-    return new Promise(function(resolve) {
+    return new PromiseLib(function(resolve) {
         fileSystemConnector.readArticleContent(articleId).then(function(content) {
             resolve(content);
         }, function() {
@@ -70,7 +74,7 @@ articleService.getArticleContent = function (articleId) {
 };
 
 articleService.getOldArticleContentAndTitle = function(articleId) {
-    return new Promise(function(resolve) {
+    return new PromiseLib(function(resolve) {
         fileSystemConnector.readOldArticleContentAndTitle(articleId).then(function(contentAndTitle) {
             resolve(contentAndTitle);
         }, function() {
@@ -85,7 +89,7 @@ articleService.deleteArticle = function(articleId){
         databaseConnector.deleteArticles(articleId)
     ];
 
-    return Promise.all(promiseList).then(function () {
+    return PromiseLib.all(promiseList).then(function () {
         searchEngineConnector.updateIndex();
     });
 };
@@ -93,7 +97,7 @@ articleService.deleteArticle = function(articleId){
 articleService.deleteDocument = function(article, filename){
     var document = removeFileFromArticle(article, filename);
     if (!document) {
-        return Promise.reject(new Error('Document not found'));
+        return PromiseLib.reject(new Error('Document not found'));
     }
     var docPath = fileSystemConnector.getPathToDocumentUnsafe(article, document);
 
@@ -102,7 +106,7 @@ articleService.deleteDocument = function(article, filename){
         databaseConnector.saveArticle(article)
     ];
 
-    return Promise.all(promiseList).then(function () {
+    return PromiseLib.all(promiseList).then(function () {
         searchEngineConnector.updateIndex();
     });
 };
@@ -136,7 +140,7 @@ function removeFileFromArticle(article, filename) {
     var hasFound = false;
     article.documents.forEach(function(document, idx) {
         var tempFilename = document.name + "." + document.filetype;
-        if(filename == tempFilename) {
+        if(filename === tempFilename) {
             hasFound = document;
             var tempDocument = article.documents.pop();
             if(idx !== article.documents.length) {
@@ -155,18 +159,24 @@ function removeFileFromArticle(article, filename) {
 }
 
 articleService.searchArticles = function (q) {
-    // captures author:foobar and author:'foo bar'
-    var author = q.match(/author:(['"].+?['"]|[^\s]+)/i);
-    var onlyAuthor = q.match(/^author:(?:['"].+?['"]|[^\s]+)$/i);
-    // remove author from search terms
-    var search = q.replace(/(author:(?:['"].+?['"]|[^\s]+))/ig, '');
+    return new PromiseLib(function (resolve, reject) {
+        // captures author:foobar and author:'foo bar'
+        var author = q.match(/author:('.+?'|".+?"|[^\s'"]+)/i);
+        var onlyAuthor = q.trim().match(/^author:(?:'.+?'|".+?"|[^\s'"]+)$/i);
+        // remove author from search terms
+        var search = q.replace(/(author:(?:'.*?'|".*?"|[^\s'"]+))/ig, '').trim();
 
-    if (author) {
-        author = author[1].replace(/["']/g, '');
-    }
+        if (author) {
+            author = author[1].replace(/["']/g, '').trim();
+            if (author === '' || author.length > config.postBodyValidationValues.maxArticleAuthorNameLength) {
+                return reject(new Error('Invalid author length'));
+            }
+        }
 
-    return new Promise(function (resolve, reject) {
         if (!onlyAuthor) {
+            if (search === '') {
+                return reject(new Error('Search query may not be empty'));
+            }
             searchEngineConnector.searchArticles(search).then(function (searchResults) {
                 if (searchResults.length === 0) {
                     return resolve(searchResults);
@@ -187,15 +197,12 @@ articleService.searchArticles = function (q) {
 
                     // filter articles by author
                     if (author) {
-                        var spliceIndexes = [];
-                        articles.forEach(function (author, id) {
-                            if (article.author !== author) {
-                                spliceIndexes.push(id);
+                        var authorRegExp = new RegExp('.*' + author + '.*', 'i');
+                        articles.forEach(function (article, id) {
+                            if (!article.author.name.match(authorRegExp) && !article.lastChangedBy.name.match(authorRegExp)) {
+                                articles.splice(id, 1);
                             }
                         });
-                        for (var i = spliceIndexes.length - 1; i >= 0; i--) {
-                            articles = articles.splice(spliceIndexes[i], 1);
-                        }
                     }
 
                     var promiseList = [];
@@ -227,7 +234,7 @@ articleService.searchArticles = function (q) {
                     });
 
                     if (promiseList.length > 0) {
-                        Promise.all(promiseList).then(function (result) {
+                        PromiseLib.all(promiseList).then(function (result) {
                             resolve(articles);
                         });
                     } else {
@@ -246,7 +253,7 @@ articleService.searchArticles = function (q) {
                 });
 
                 if (promiseList.length > 0) {
-                    Promise.all(promiseList).then(function (result) {
+                    PromiseLib.all(promiseList).then(function (result) {
                         resolve(articles);
                     });
                 } else {
@@ -258,7 +265,7 @@ articleService.searchArticles = function (q) {
 };
 
 articleService.getArticlesByIds = function (ids) {
-    return new Promise(function (resolve, reject) {
+    return new PromiseLib(function (resolve, reject) {
         databaseConnector.findArticlesByIds(ids).then(function (articles) {
             var promiseList = [];
 
@@ -269,7 +276,7 @@ articleService.getArticlesByIds = function (ids) {
             });
 
             if (promiseList.length > 0) {
-                Promise.all(promiseList).then(function (result) {
+                PromiseLib.all(promiseList).then(function (result) {
                     resolve(articles);
                 });
             } else {
@@ -294,7 +301,7 @@ articleService.deleteEmptyArticles = function(){
 
 
 articleService.deleteTemporaryArticles = function() {
-    databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
+    return databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
         articles.forEach(function (article) {
             fileSystemConnector.deleteArticle(article._id).then(function () {
                 },

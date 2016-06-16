@@ -1,19 +1,34 @@
 'use strict';
-
+/**
+ * @module directives/articleListItem.directive.js
+ * @description Wrapper directive for article list items
+ * @param sanatizeTags boolean which is used to decide whether the article list item text should be sanatized
+ * @param index passes the index of the item into the controller -> used for selenium tests
+ */
 angular.module('core').directive('articleListItemDirective', [function () {
 
     return {
         scope:  {
             item: "=item",
-            sanatizeTags: "@"
+            sanatizeTags: "@",
+            index: "@"
         },
         restrict: 'E', // A: Attribute, E: Element
         templateUrl: 'modules/core/views/articleListItem.template.html',
         controller: ['$scope', '$sce', function ($scope, $sce) {
+
+            /**
+             * @function htmlToPlaintext
+             * @description strips html text of all tags except b-tags
+             * @param text text to be transformed
+             * @returns {string} stripped html
+             */
             function htmlToPlaintext(text) {
                 return text ? String(text).replace(/<(?!\/?b\s*\/?)[^>]+>/gm, '') : '';
             }
+
             $scope.date = (new Date($scope.item.lastChanged)).toISOString().slice(0,10) + ", " + (new Date($scope.item.lastChanged)).toISOString().slice(11,19);
+
             if ($scope.sanatizeTags == "true") {
                 $scope.sanatizedArticleText = $sce.trustAsHtml(htmlToPlaintext($scope.item.text));
             } else {
