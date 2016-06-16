@@ -2,6 +2,7 @@ var should = require('should');
 var request = require('supertest');
 var mongoose = require('mongoose');
 var assert = require('assert');
+var validate = require('jsonschema').validate;
 
 var config = require('./lib/config/config');
 var databaseConnector = require('./lib/data_connection/database_connector');
@@ -16,6 +17,17 @@ var ArticlesSchema = require('./raml/schemas/article.json');
 // Data
 var ArticleExample = require('./raml/examples/getArticle.json');
 var ArticlesExample = require('./raml/examples/getArticles.json');
+
+function ValidateSchema(schema, done) {
+    return function(err, res) {
+        if(err) return done(err);
+
+        var validationResult = validate(res.body, schema);
+
+        if(validationResult.errors.length > 0) return done(validationResult.errors);
+        done();
+    };
+}
 
 describe('', function () {
     before(function () {
@@ -89,7 +101,8 @@ describe('', function () {
                     request(application.app)
                         .get('/api/articles?q=important')
                         .expect('Content-Type', /json/)
-                        .expect(200, done);
+                        .expect(200)
+                        .end(ValidateSchema(ArticleSchema, done));
                 });
 
                 it('search in title', function (done) {
