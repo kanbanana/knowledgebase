@@ -13,7 +13,7 @@ angular.module('core', [])
         if (url.indexOf('/#/') > -1) {
             var cutUrl = url.substring(0, url.indexOf('/#/'));
         } else {
-            var cutUrl = url.substring(0, (url.length - 1);
+            var cutUrl = url.substring(0, (url.length - 1));
         }
 
         //var cutUrl = url.substring(0, url.indexOf('/#/'));
