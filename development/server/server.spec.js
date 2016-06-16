@@ -27,8 +27,6 @@ describe('', function () {
 
     after(function () {
         application.close();
-        //TODO: Remove as soon as the application is able to do this on its own
-        mongoose.disconnect();
     });
 
     describe('GET', function () {
