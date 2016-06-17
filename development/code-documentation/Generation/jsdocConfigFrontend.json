@@ -12,9 +12,9 @@
   "templates": {
     "cleverLinks": false,
     "monospaceLinks": true,
-    "systemName": "Knownana",
+    "systemName": "Metis",
     "footer": "",
-    "copyright": "Knownana Frontend (Version 1.0) - 2016 - Created by Kanbanana Frontend Team",
+    "copyright": "Metis Frontend (Version 1.0) - 2016 - Created by Kanbanana Frontend Team",
     "navType": "vertical",
     "theme": "spacelab",
     "linenums": true
