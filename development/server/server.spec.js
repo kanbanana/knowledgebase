@@ -135,7 +135,7 @@ describe('', function () {
                     it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
                     it('request with unknown q', GetValidData('/api/articles?q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', SearchQResponseSchema));
                     it('search in article', GetValidData('/api/articles?q=important', SearchQResponseSchema));
-                    it('search in title', GetValidData('/api/articles?q=Knowledge', SearchQResponseSchema));
+                    it('search in title', GetValidData('/api/articles?q=base', SearchQResponseSchema));
                     it('search author', GetValidData('/api/articles?q=author:Max', SearchQResponseSchema));
                     it('search author maxlength', function (done) {
                         var authorName = 'name';
