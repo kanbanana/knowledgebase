@@ -66,9 +66,9 @@ function PutValidData(url, data, schema) {
 
 describe('', function () {
     before(function (done) {
-        this.timeout(10000);
+        this.timeout(31000);
         application.listen(function () {
-            setTimeout(done, 5000);
+            setTimeout(done, 30000);
         });
     });
 
@@ -125,8 +125,8 @@ describe('', function () {
             describe('', function () {
 
                 before(function (done) {
-                    this.timeout(21000);
-                    setTimeout(done, 20000);
+                    this.timeout(31000);
+                    setTimeout(done, 30000);
                 });
 
                 describe('/api/articles?q=', function () {
