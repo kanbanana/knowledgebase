@@ -1,0 +1,1 @@
+docker-compose -p metis -f provision/docker-compose.yml -f provision/docker-compose.prod.yml up -d --build
