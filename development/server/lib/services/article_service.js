@@ -364,7 +364,9 @@ articleService.deleteEmptyArticles = function(cb){
                 }
             });
         });
-        cb();
+        if(cb) {
+            return cb();
+        }
     });
 };
 
