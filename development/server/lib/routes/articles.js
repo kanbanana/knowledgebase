@@ -98,6 +98,9 @@ router.onArticleGetHandler = function (req, res) {
             res.status(500).contentType('application/json').send();
         });
     }
+    if(req.article.isTemporary) {
+        res.status(404).contentType('application/json').send();
+    }
     articleService.getArticleContent(req.article._id).then(function (articleContent) {
         var responseArticle = models.articleSchemaToResponseArticle(req.article);
         responseArticle.text = articleContent;
