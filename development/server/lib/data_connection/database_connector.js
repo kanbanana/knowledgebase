@@ -1,8 +1,10 @@
 /**
  * database_connector is a MongoDB facade that grants access to the data from the database
  *
- * @module lib/data_connector/database_connector
- * @author  Martin Satrman, Vladislav Chumak
+ * @module lib/data_connection/database_connector
+ * @author  Martin Starman
+ * @author Jochen Schwandner
+ * @author Timo Notheisen
  */
 
 'use strict';
@@ -20,7 +22,7 @@ var databaseConnector = {};
  * @function createArticle
  * @static
  *
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty Article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} empty Article
  */
 databaseConnector.createArticle = function () {
     return new PromiseLib(function (resolve, reject) {
@@ -37,14 +39,14 @@ databaseConnector.createArticle = function () {
 };
 
 /**
- * Receives storage info of a document, pushs it to the list of documents of the passed article and saves the changes to the database.
+ * Receives storage info of a document, pushes it to the list of documents of the passed article and saves the changes to the database.
  *
  * @function addDocumentToArticle
  * @static
  *
- * @param {module:lib/search_engine_connector~ArticleSchema} article
- * @param {module:lib/search_engine_connector~uploadDocument} storageInfo
- * @returns {Promise<module:lib/search_engine_connector~uploadDocument|Error>} upload Document
+ * @param {module:lib/data_connection/models~ArticleSchema} article
+ * @param {module:lib/data_connection/models~uploadDocument} storageInfo
+ * @returns {Promise<module:lib/data_connection/models~uploadDocument|Error>} upload Document
  */
 databaseConnector.addDocumentToArticle = function (article, storageInfo) {
     return new PromiseLib(function (resolve, reject) {
@@ -65,8 +67,8 @@ databaseConnector.addDocumentToArticle = function (article, storageInfo) {
  * @function saveArticle
  * @static
  *
- * @param {module:lib/search_engine_connector~ArticleSchema} article
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} upload Document
+ * @param {module:lib/data_connection/models~ArticleSchema} article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} upload Document
  */
 databaseConnector.saveArticle = function (article) {
     return new PromiseLib(function (resolve, reject) {
@@ -87,7 +89,7 @@ databaseConnector.saveArticle = function (article) {
  * @static
  *
  * @param {string} id -  mongoDB _id
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} found article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} found article
  */
 databaseConnector.findArticleById = function (id) {
     return new PromiseLib(function (resolve) {
@@ -108,7 +110,7 @@ databaseConnector.findArticleById = function (id) {
  * @static
  *
  * @param {string[]} ids -  mongoDB _id list
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} found articles
  */
 databaseConnector.findArticlesByIds = function (ids) {
     return new PromiseLib(function (resolve, reject) {
@@ -137,7 +139,7 @@ databaseConnector.findArticlesByIds = function (ids) {
  * @static
  *
  * @param {string} author -  author name
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} found articles
  */
 databaseConnector.findArticlesByAuthor = function (author) {
     return new PromiseLib(function (resolve, reject) {
@@ -189,7 +191,7 @@ databaseConnector.findAllPermArticleIds = function () {
  * @static
  *
  * @param {Number} ageInHours - min age of articles
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} deleted articles ids
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} deleted articles ids
  */
 databaseConnector.deleteTemporaryArticlesOlderThan = function (ageInHours) {
     if (ageInHours <= 0) {

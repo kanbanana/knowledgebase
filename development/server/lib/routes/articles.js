@@ -1,8 +1,9 @@
 /**
  * This module handles the routing of the article services
  *
- * @module lib/router/article
- * @author Martin Starman, Vladislav Chumak
+ * @module lib/routes/article
+ * @author Martin Starman
+ * @author Timo Notheisen
  */
 
 'use strict';

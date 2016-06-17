@@ -1,8 +1,9 @@
 /**
  * File system connector is a fs facade
  *
- * @module lib/data_connector/file_system_connector
- * @author  Martin Satrman, Vladislav Chumak
+ * @module lib/data_connection/file_system_connector
+ * @author Martin Starman
+ * @author Timo Notheisen
  */
 
 /**
@@ -43,7 +44,7 @@ var fileSystemConnector = {};
  * @param {string| Object} articleId
  * @param {string} content - text of the article as html
  * @param {boolean} isTemporary - Is true if the article is still temporary
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 fileSystemConnector.saveContent = function (articleId, content, isTemporary) {
 
@@ -122,7 +123,7 @@ fileSystemConnector.readArticleContent = function (articleId) {
  * @static
  *
  * @param {string} articleId
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>}
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
@@ -148,10 +149,10 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
 /**
  * Saves the the uploaded file to the article.
  *
- * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
+ * @param {module:lib/data_connection/models~uploadDocument} document - text of the article as html
  * @param {string| Object} articleId
  * @param {boolean} isTemp - Is true if the article is still temporary
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 fileSystemConnector.saveDocument = function (document, articleId, isTemp) {
     articleId += '';
@@ -304,8 +305,8 @@ fileSystemConnector.extractHTMLBodyContent = function (content) {
  * @function getPathToDocumentUnsafe
  * @static
  *
- * @param {module:lib/search_engine_connector~ArticleSchema} article
- * @param {module:lib/search_engine_connector~uploadDocument} document
+ * @param {module:lib/data_connection/models~ArticleSchema} article
+ * @param {module:lib/data_connection/models~uploadDocument} document
  * @returns {string} Returns absolute path to an article document
  */
 fileSystemConnector.getPathToDocumentUnsafe = function (article, document) {

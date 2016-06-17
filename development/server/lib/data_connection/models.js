@@ -1,8 +1,9 @@
 /**
  * Mongo-DB schema container.
  *
- * @module lib/data_connector/models
- * @author  Martin Satrman, Vladislav Chumak
+ * @module lib/data_connection/models
+ * @author Martin Starman
+ * @author Timo Notheisen
  */
 
 'use strict';

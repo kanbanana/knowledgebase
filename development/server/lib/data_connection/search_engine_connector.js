@@ -1,7 +1,7 @@
 /**
  * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine API directly.
  *
- * @module lib/search_engine_connector
+ * @module lib/data_connection/search_engine_connector
  * @author Vladislav Chumak
  */
 
@@ -49,7 +49,7 @@ searchEngineConnector.updateIndex = function () {
  * @function searchArticles
  * @static
  * @param {string} q - The search query which contains the key words.
- * @returns {Promise<module:lib/search_engine_connector~SearchResultEntry|Error>} Search results
+ * @returns {Promise<module:lib/data_connection/search_engine_connector~SearchResultEntry|Error>} Search results
  */
 searchEngineConnector.searchArticles = function (q) {
     return new PromiseLib(function (resolve, reject) {
@@ -115,6 +115,12 @@ searchEngineConnector.searchArticles = function (q) {
     });
 };
 
+/**
+ * Extracts the article id from the given file path.
+ *
+ * @param {string} filepath - The path of the file which corresponds to an article.
+ * @returns {string} The extracted article id.
+ */
 function filterArticleIdFromFilePath(filepath) {
     var documentDir = path.dirname(filepath);
     var lastIndexOfSlash = documentDir.lastIndexOf('/');

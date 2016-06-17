@@ -1,8 +1,10 @@
 /**
- * This module is the main article services. It distributes all actions to the database_connector and the file_system_connector.
+ * This module is the main article service. It distributes all actions to the database_connector and the file_system_connector.
  *
- * @module lib/router/article
- * @author Martin Starman, Vladislav Chumak
+ * @module lib/services/article_service
+ * @author Martin Starman
+ * @author Jochen Schwandner
+ * @author Timo Notheisen
  */
 
 'use strict';
@@ -23,7 +25,7 @@ var articleService = {};
  * @function createArticle
  * @static
  *
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} empty article object
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} empty article object
  */
 articleService.createArticle = function () {
     return databaseConnector.createArticle();
@@ -32,11 +34,11 @@ articleService.createArticle = function () {
 /**
  * Saves the content of the article in the file and its metadata to the database.
  *
- * @param {module:lib/data_connector/models~ArticleSchema} article - the article to save
+ * @param {module:lib/data_connection/models~ArticleSchema} article - the article to save
  * @param {string} content - text of the article
  * @param {string} title - article title
  * @param {object} author - last changed author
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 articleService.saveArticle = function (article, title, content, author) {
     return new PromiseLib(function (resolve, reject) {
@@ -63,7 +65,7 @@ articleService.saveArticle = function (article, title, content, author) {
  * @static
  *
  * @param {string} id
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} found article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} found article
  */
 articleService.findArticleById = function (id) {
     return databaseConnector.findArticleById(id);
@@ -75,9 +77,9 @@ articleService.findArticleById = function (id) {
  * @function saveDocument
  * @static
  *
- * @param {module:lib/data_connector/models~uploadDocument} document - text of the article as html
- * @param {module:lib/data_connector/models~ArticleSchema} article
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ * @param {module:lib/data_connection/models~uploadDocument} document - text of the article as html
+ * @param {module:lib/data_connection/models~ArticleSchema} article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 articleService.saveDocument = function (article, document) {
     return new PromiseLib(function (resolve, reject) {
@@ -94,9 +96,9 @@ articleService.saveDocument = function (article, document) {
  * @function saveDocuments
  * @static
  *
- * @param {module:lib/data_connector/models~uploadDocument[]} documents - text of the article as html
- * @param {module:lib/data_connector/models~ArticleSchema} article
- * @returns {Promise<module:lib/data_connector/models~ArticleSchema|Error>}
+ * @param {module:lib/data_connection/models~uploadDocument[]} documents - text of the article as html
+ * @param {module:lib/data_connection/models~ArticleSchema} article
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>}
  */
 articleService.saveDocuments = function (article, documents) {
     var storageInfoList = [];
@@ -141,7 +143,7 @@ articleService.getArticleContent = function (articleId) {
  * @static
  *
  * @param {string} articleId
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema|Error>} Returns an error or null
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema|Error>} Returns an error or null
  */
 articleService.getOldArticleContentAndTitle = function(articleId) {
     return new PromiseLib(function(resolve) {
@@ -179,7 +181,7 @@ articleService.deleteArticle = function(articleId){
  * @function deleteDocument
  * @static
  *
- * @param {module:lib/search_engine_connector~ArticleSchema} article
+ * @param {module:lib/data_connection/models~ArticleSchema} article
  * @param {string} filename
  * @returns {Promise<Boolean|Error>} Returns an error or true
  */
@@ -207,7 +209,7 @@ articleService.deleteDocument = function(article, filename){
  * @static
  *
  * @param {string} q - search query
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
  */
 articleService.searchArticles = function (q) {
     return new PromiseLib(function (resolve, reject) {
@@ -322,7 +324,7 @@ articleService.searchArticles = function (q) {
  * @static
  *
  * @param {string[]} ids
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} found articles
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} found articles
  */
 articleService.getArticlesByIds = function (ids) {
     return new PromiseLib(function (resolve, reject) {
@@ -353,7 +355,7 @@ articleService.getArticlesByIds = function (ids) {
  * @function "deleteEmptyArticles"
  * @static
  *
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the findAllPermArticleIds Promise
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} pass the findAllPermArticleIds Promise
  */
 articleService.deleteEmptyArticles = function(cb){
     databaseConnector.findAllPermArticleIds().then(function (articleIds) {
@@ -376,7 +378,7 @@ articleService.deleteEmptyArticles = function(cb){
  * @function "deleteTemporaryArticles"
  * @static
  *
- * @returns {Promise<module:lib/search_engine_connector~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
+ * @returns {Promise<module:lib/data_connection/models~ArticleSchema[]|Error>} pass the deleteTemporaryArticlesOlderThan Promise
  */
 articleService.deleteTemporaryArticles = function() {
     return databaseConnector.deleteTemporaryArticlesOlderThan(config.oldTemporaryArticlesDeleteJobOptions.maxAgeInHours).then(function (articles) {
