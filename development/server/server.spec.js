@@ -185,19 +185,9 @@ describe('', function () {
                 describe('/api/articles/:ArticleId?old=', function () {
                     it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old=', ArticleSchema));
                 });
-
-                describe('acticle saved', function () {
-                    it('request the article just after creation', function (done) {
-                        request(application.app)
-                            .get('/api/articles/' + ArticleIds[0] + '?old=')
-                            .expect('Content-Type', /json/)
-                            .expect(404, done);
-                    });
-                });
             });
         });
     });
-
 
     describe('POST', function () {
         describe('/api/articles/', function () {
