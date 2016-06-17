@@ -13,6 +13,7 @@ var application = require('./server.js');
 
 // Schemas
 var ArticleSchema = require('./raml/schemas/article.json');
+var ArticleOldSchema = require('./raml/schemas/article_old.json');
 var SearchQResponseSchema = require('./raml/schemas/search_q_response.json');
 var SearchIdsResponseSchema = require('./raml/schemas/search_ids_response.json');
 var PostArticleResponseSchema = require('./raml/schemas/post_article_response.json');
@@ -21,6 +22,8 @@ var PostDocumentResponseSchema = require('./raml/schemas/post_document_response.
 // Data
 var ArticleExample = require('./raml/examples/getArticle.json');
 var ApacheExample = require('./raml/examples/apache.json');
+
+var ArticleIds = [];
 
 function ValidateSchema(schema, done) {
     return function (err, res) {
@@ -85,7 +88,6 @@ describe('', function () {
         it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
 
         describe('With Article:', function () {
-            var ArticleIds = [];
 
             before(function (done) {
                 this.timeout(10000);
@@ -158,11 +160,17 @@ describe('', function () {
                 });
 
                 describe('/api/articles?ids=', function () {
-                    it('request with ids=ArticleIds[0]', GetValidData('/api/articles?ids=' + ArticleIds[0], SearchIdsResponseSchema));
-                    it('request with ids=[ArticleIds]', GetValidData('/api/articles?ids=' + ArticleIds.join(','), SearchIdsResponseSchema));
+                    it('request with ids=ArticleIds[0]', function (done) {
+                        GetValidData('/api/articles?ids=' + ArticleIds[0], SearchIdsResponseSchema)(done);
+                    });
+                    it('request with ids=[ArticleIds]', function (done) {
+                        GetValidData('/api/articles?ids=' + ArticleIds.join(','), SearchIdsResponseSchema)(done);
+                    });
                     it('request with ids=', GetValidData('/api/articles?ids=', SearchIdsResponseSchema));
                     it('request with ids=1,2,3', GetValidData('/api/articles?ids=1,2,3', SearchIdsResponseSchema));
-                    it('request with valid invalid ids mixed', GetValidData('/api/articles?ids=1,2,3' + ArticleIds.join(','), SearchIdsResponseSchema));
+                    it('request with valid invalid ids mixed', function (done) {
+                        GetValidData('/api/articles?ids=1,2,3' + ArticleIds.join(','), SearchIdsResponseSchema)(done);
+                    });
                 });
 
                 describe('/api/articles/:ArticleId', function () {
@@ -185,7 +193,9 @@ describe('', function () {
                 });
 
                 describe('/api/articles/:ArticleId?old', function () {
-                    it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old', ArticleSchema));
+                    it('request the article old after save', function (done) {
+                        GetValidData('/api/articles/' + ArticleIds[0] + '?old', ArticleOldSchema)(done);
+                    });
                 });
             });
         });
