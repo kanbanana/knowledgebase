@@ -245,3 +245,6 @@ $RECYCLE.BIN/
 development/server/uploads/
 development/server/uploads_temp/
 provision/roles/staging/volume/opensearchserver/
+
+## ignore office temp files
+~*.docx
