@@ -88,6 +88,7 @@ describe('', function () {
             var ArticleIds = [];
 
             before(function (done) {
+                this.timeout(10000);
                 var numberOfArticlesToCreate = 10;
                 var counter = 0;
                 var counterArticleSwap = 0;
