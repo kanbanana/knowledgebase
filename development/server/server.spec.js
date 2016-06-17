@@ -106,6 +106,7 @@ describe('', function () {
                                 .send(data)
                                 .end(function () {
                                     data.text += 'version 2';
+                                    data.title += ' 2';
                                     request(application.app) // save it again to get the old value
                                         .put('/api/articles/' + data.id)
                                         .send(data)
@@ -183,8 +184,8 @@ describe('', function () {
                     });
                 });
 
-                describe('/api/articles/:ArticleId?old=', function () {
-                    it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old=', ArticleSchema));
+                describe('/api/articles/:ArticleId?old', function () {
+                    it('request the article old after save', GetValidData('/api/articles/' + ArticleIds[0] + '?old', ArticleSchema));
                 });
             });
         });
