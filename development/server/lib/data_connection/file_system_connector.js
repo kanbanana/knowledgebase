@@ -128,7 +128,7 @@ fileSystemConnector.readOldArticleContentAndTitle = function (articleId) {
     articleId += '';
     return new PromiseLib(function (resolve, reject) {
         getOldFolderForArticle(articleId, function (err, oldFolder) {
-            var contentFilePath = path.join(oldFolder, config.articleContentFileName);
+            var contentFilePath = path.join(oldFolder, articleId + config.articleContentFileName);
             fs.readFile(contentFilePath, function (err, contentBuffer) {
                 var returnValue = {};
                 if (err) {
