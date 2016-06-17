@@ -77,8 +77,11 @@ describe('', function () {
     });
 
     describe('GET', function () {
-
-        it('request with q=test', GetValidData('/api/articles?q=test', SearchQResponseSchema));
+        it('request with q=test', function (done) {
+            this.timeout(10000);
+            GetValidData('/api/articles?q=test', SearchQResponseSchema)(done);
+        });
+        it('request with q=asdfg', GetValidData('/api/articles?q=asdfg', SearchQResponseSchema));
         it('request with q=', GetValidData('/api/articles?q=', SearchQResponseSchema));
 
         describe('With Article:', function () {
