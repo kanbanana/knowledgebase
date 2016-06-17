@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @description Container directive which manages and orients all toasts
+ * Container directive which manages and orients all toasts.
  *
  * @class toastContainerDirective
  */

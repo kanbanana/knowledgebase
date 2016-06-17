@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @description A simple modal with either a confirm or cancel (no action)
+ * A simple modal with either a confirm or cancel (no action).
  *
  * @class confirmationModalDirective
  */

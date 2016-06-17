@@ -1,7 +1,8 @@
 'use strict';
 
 /**
- * @description The navbar controller. Relays toasts and changes the routes to search, new article and the start page
+ * The navbar controller. Relays toasts and changes the routes to search, new article and the start page.
+ 
  * @class NavCtrl
  * @param {Dependency} $location - Service used to change the url location
  * @param {Dependency} ArticleService - The ArticleService provides the rest calls to retrieve article information

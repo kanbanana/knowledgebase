@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @description This directive attaches to the article detail view and automaticly saves the articleId into the cookie
+ * This directive attaches to the article detail view and automaticly saves the articleId into the cookie.
  *
  * @class lastSeenArticleDirective
  * @description This directive attaches to the article detail view and automaticly saves the articleId into the cookie

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description The core controller is used on the index page. Displays and manages the last seen articles
+ * The core controller is used on the index page. Displays and manages the last seen articles.
  *
  * @class CoreCtrl
  * @param {Dependency} $cookies - Service for managing the cookies

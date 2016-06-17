@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @description Directive used to display toast notifications
+ * Directive used to display toast notifications.
  *
  * @class toastDirective
  * @param toast transfers the toast

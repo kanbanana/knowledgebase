@@ -1,7 +1,8 @@
 'use strict';
 /**
+ * Wrapper directive for article list items.
+ 
  * @class articleListItemDirective
- * @description Wrapper directive for article list items
  * @param sanatizeTags boolean which is used to decide whether the article list item text should be sanatized
  * @param index passes the index of the item into the controller -> used for selenium tests
  */

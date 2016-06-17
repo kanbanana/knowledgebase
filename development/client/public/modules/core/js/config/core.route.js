@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description Manages all routes used by the frontend as well as binding controllers to the views.
+ * Manages all routes used by the frontend as well as binding controllers to the views.
  *
  * @class route
  * @param {Dependency} $stateProvider - Angular UI service which manages all states

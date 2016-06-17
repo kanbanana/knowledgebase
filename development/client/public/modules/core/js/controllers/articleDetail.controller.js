@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description This controller manages all data expressed in the articleDetail view.
+ * This controller manages all data expressed in the articleDetail view.
  *
  * @class ArticleDetailCtrl
  * @param {Dependency} $stateParams - Service that reads out the URL and helps deciding if the user is in editing/viewing mode by reading from the 'e' option in the URL.

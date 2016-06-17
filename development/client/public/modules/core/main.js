@@ -1,6 +1,6 @@
 "use strict";
 /**
- * @description A startup function which runs when the angular front-end is loaded. Used for managing the baseUrl which the REST Api sits upon.
+ * A startup function which runs when the angular front-end is loaded. Used for managing the baseUrl which the REST Api sits upon.
  *
  * @class startup
  */

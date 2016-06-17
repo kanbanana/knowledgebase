@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description The core controller is used on the index page. Displays and manages the last seen articles
+ * The core controller is used on the index page. Displays and manages the last seen articles.
  *
  * @class SearchCtrl
  * @param {Dependency} $stateParams - Service that reads out the URL and helps getting the query parameters used for the search

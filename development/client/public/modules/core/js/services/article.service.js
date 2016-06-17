@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description Contains all REST calls needed to GET,POST,PUT,DELETE articles and their files
+ * Contains all REST calls needed to GET,POST,PUT,DELETE articles and their files.
  *
  * @class ArticleService
  */

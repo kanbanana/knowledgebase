@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @description Directive to display the previous version of an article inside a modal
+ * Directive to display the previous version of an article inside a modal.
  *
  * @class previousVersionModalDirective
  * @param articleId id used to retrieve the previous version of an article
