@@ -1,8 +1,9 @@
 'use strict';
 
 /**
- * @module controllers/core.controller.js
  * @description The core controller is used on the index page. Displays and manages the last seen articles
+ *
+ * @class CoreCtrl
  * @param {Dependency} $cookies - Service for managing the cookies
  * @param {Dependency} ArticleService - The ArticleService provides the rest calls to retrieve article information
  */

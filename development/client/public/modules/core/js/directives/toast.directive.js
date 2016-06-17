@@ -1,7 +1,8 @@
 'use strict';
 /**
- * @module directives/toast.directive.js
  * @description Directive used to display toast notifications
+ *
+ * @class toastDirective
  * @param toast transfers the toast
  * @param index saves the index of the toast message
  */

@@ -1,8 +1,9 @@
 'use strict';
 
 /**
- * @module config/core.route.js
- * @description Manages all routes used by the frontend as well as binding controllers to the views
+ * @description Manages all routes used by the frontend as well as binding controllers to the views.
+ *
+ * @class route
  * @param {Dependency} $stateProvider - Angular UI service which manages all states
  * @oaram {Dependency} $urlRouterProvider - Angular UI service which redirects any URL not matching those declared by the stateProvider
  *

@@ -1,7 +1,8 @@
 'use strict';
 /**
- * @module directives/previousVersion.directive.js
  * @description Directive to display the previous version of an article inside a modal
+ *
+ * @class previousVersionModalDirective
  * @param articleId id used to retrieve the previous version of an article
  */
 angular.module('core').directive('previousVersionModalDirective', [function () {

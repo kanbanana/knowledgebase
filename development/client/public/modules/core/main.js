@@ -1,7 +1,8 @@
 "use strict";
 /**
- * @module startup
  * @description A startup function which runs when the angular front-end is loaded. Used for managing the baseUrl which the REST Api sits upon.
+ *
+ * @class startup
  */
 angular.module('core', [])
     .run(['$rootScope','$location', function($rootScope, $location) {

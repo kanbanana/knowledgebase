@@ -1,8 +1,9 @@
 'use strict';
 
 /**
- * @module controllers/core.controller.js
  * @description The core controller is used on the index page. Displays and manages the last seen articles
+ *
+ * @class SearchCtrl
  * @param {Dependency} $stateParams - Service that reads out the URL and helps getting the query parameters used for the search
  * @param {Dependency} ArticleService - The ArticleService provides the rest calls to retrieve article information
  */

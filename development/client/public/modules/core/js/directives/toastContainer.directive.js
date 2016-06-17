@@ -1,7 +1,8 @@
 'use strict';
 /**
- * @module directives/toastContainer.directive.js
  * @description Container directive which manages and orients all toasts
+ *
+ * @class toastContainerDirective
  */
 angular.module('core').directive('toastContainerDirective', [function () {
     return {

@@ -1,7 +1,8 @@
 'use strict';
 /**
- * @module directives/confirmationModal.directive.js
  * @description A simple modal with either a confirm or cancel (no action)
+ *
+ * @class confirmationModalDirective
  */
 angular.module('core').directive('confirmationModalDirective', [function () {
 
@@ -12,8 +13,9 @@ angular.module('core').directive('confirmationModalDirective', [function () {
         templateUrl: 'modules/core/views/confirmationModal.template.html',
         controller: ['$scope', function ($scope) {
             /**
-             * @function callModal
              * @description the modal gets called with a modal text, title and function to be called on confirmation
+             * @memberof confirmationModalDirective
+             * @function callModal
              * @param {Object} Contains 3 strings the text, title and a string of the function to be called on confirmation
              */
             $scope.$on("callModal", function(e, content) {
