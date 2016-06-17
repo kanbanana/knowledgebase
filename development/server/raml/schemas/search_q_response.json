@@ -34,8 +34,7 @@
           "required": [
             "filetype",
             "path",
-            "name",
-            "containsSearchText"
+            "name"
           ]
         }
       },
