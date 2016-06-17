@@ -3,6 +3,7 @@ MAINTAINER robert.kettler@outlook.com
 MAINTAINER me@danielweidle.de
 RUN apt-get update
 RUN apt-get install -y curl
+RUN apt-get install -y git
 RUN /usr/bin/curl -sL https://deb.nodesource.com/setup_4.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y build-essential
