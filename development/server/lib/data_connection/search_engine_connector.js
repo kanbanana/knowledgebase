@@ -1,16 +1,18 @@
 /**
- * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine api directly.
+ * Search engine wrapper that is used in order to communicate with the search engine. This is the only module which may access the search engine API directly.
  *
- * @module lib/search_engine_connector
+ * @module lib/data_connection/search_engine_connector
  * @author Vladislav Chumak
  */
-var config = require(__dirname + '/../config/config');
+
+'use strict';
+
+var config = require('../config/config');
 var request = require('request');
 var path = require('path');
+var PromiseLib = require("promise");
 
-var uri = config.oss.protocol + '://' + config.oss.hostname + ':' + config.oss.port;
-
-var searchEngineConnector = module.exports = {};
+var searchEngineConnector = {};
 
 /**
  * Instructs the search engine to update its search index.
@@ -19,7 +21,7 @@ var searchEngineConnector = module.exports = {};
  * @static
  */
 searchEngineConnector.updateIndex = function () {
-    var apiUrl = uri + '/services/rest/crawler/file/run/once/' + config.oss.indexName + '/json';
+    var apiUrl = config.oss.uri + '/services/rest/crawler/file/run/once/' + config.oss.indexName + '/json';
     request(apiUrl, function (error, response, body) {
         if (!error) {
             var crawlerResponse = JSON.parse(body);
@@ -47,11 +49,11 @@ searchEngineConnector.updateIndex = function () {
  * @function searchArticles
  * @static
  * @param {string} q - The search query which contains the key words.
- * @returns {Promise<module:lib/search_engine_connector~SearchResultEntry|Error>} Search results
+ * @returns {Promise<module:lib/data_connection/search_engine_connector~SearchResultEntry|Error>} Search results
  */
 searchEngineConnector.searchArticles = function (q) {
-    return new Promise(function (resolve, reject) {
-        var apiUrl = uri + '/services/rest/index/' + config.oss.indexName + '/search/field/' + config.oss.queryName;
+    return new PromiseLib(function (resolve, reject) {
+        var apiUrl = config.oss.uri + '/services/rest/index/' + config.oss.indexName + '/search/field/' + config.oss.queryName;
         var requestData = {
             "query": q
         };
@@ -113,6 +115,12 @@ searchEngineConnector.searchArticles = function (q) {
     });
 };
 
+/**
+ * Extracts the article id from the given file path.
+ *
+ * @param {string} filepath - The path of the file which corresponds to an article.
+ * @returns {string} The extracted article id.
+ */
 function filterArticleIdFromFilePath(filepath) {
     var documentDir = path.dirname(filepath);
     var lastIndexOfSlash = documentDir.lastIndexOf('/');
@@ -120,3 +128,5 @@ function filterArticleIdFromFilePath(filepath) {
     var articleIdStartIndex = Math.max(lastIndexOfSlash, lastIndexOfBackslash) + 1;
     return documentDir.substr(articleIdStartIndex);
 }
+
+module.exports = searchEngineConnector;

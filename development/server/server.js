@@ -1,14 +1,13 @@
+'use strict';
+
 var express = require('express');
 var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('server');
 var config = require('./lib/config/config');
 var path = require('path');
-
-var upload = require('multer')({dest:  path.join(__dirname, config.temporaryUploadDir)});
-
 var articles = require('./lib/routes/articles');
+var upload = require('multer')({dest:  path.join(__dirname, config.temporaryUploadDir)});
 
 var app = module.exports.app = express();
 var router = express.Router();
@@ -16,10 +15,9 @@ var router = express.Router();
 app.set('port', config.port);
 
 // Define Middleware
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-// app.use(cookieParser());
 
 // Define Routes
 router.all('/:articleId*',articles.middlewareRetrieveArticle);
@@ -34,15 +32,18 @@ router.delete('/:articleId/documents/:filename', articles.onDocumentDeleteHandle
 app.use('/api/articles', router);
 
 var mongoConnection = null;
-
 module.exports.server = null;
 
-
-module.exports.listen = function () {
-    module.exports.server = app.listen(app.get('port'), function(){
-        mongoConnection = require('mongoose').connect(config.dbConnectionString);
-        console.log('server listening on port ' + app.get('port') + '!');
+module.exports.listen = function (cb) {
+    mongoConnection = require('mongoose').connect(config.dbConnectionString, function(){
+        module.exports.server = app.listen(app.get('port'), function(){
+            console.log('server listening on port ' + app.get('port') + '!');
+            if(cb) {
+                cb();
+            }
+        });
     });
+
 };
 
 module.exports.close = function (callback) {

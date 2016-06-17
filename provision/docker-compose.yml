@@ -17,11 +17,15 @@ services:
   mongo:
     image: mongo
     restart: always
+    volumes: 
+     - datavolume:/data
   nginx:
     build:
-     context: nginx/
+     context: ../
+     dockerfile: provision/nginx/Dockerfile
     links:
       - node
+      - oss
     volumes:
       - datavolume:/usr/share/nginx/files
     restart: always
