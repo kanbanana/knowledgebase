@@ -264,7 +264,7 @@ articleService.searchArticles = function (q) {
                     articles.forEach(function (article) {
                         searchResults.forEach(function (searchResult) {
                             if (article._id + '' === searchResult.id) {
-                                if (searchResult.filename === config.articleContentFileName) {
+                                if (searchResult.filename === article._id + config.articleContentFileName) {
                                     if (searchResult.text) {
                                         article.text = searchResult.text;
                                     } else {
