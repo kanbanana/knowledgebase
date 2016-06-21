@@ -7,20 +7,12 @@
                 <!-- buttons for mobile version -->
                 <div class="row visible-xs">
                     <div class="col-xs-6">
-                        <div class="dropdown">
-                            <button ng-disabled="(article.lastChangedBy.email === '' && article.author.email === '')" class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-bell-o" aria-hidden="true"></i> Alert
+                        <div ng-hide="isEditing" class="dropdown">
+                            <button  ng-disabled="(article.lastChangedBy.email === '' && article.author.email === '')" class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-bell-o" aria-hidden="true"></i> Alert
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <li ng-hide="article.lastChangedBy.email === ''"><a href="mailto:{{article.lastChangedBy.email}}?subject={{article.title}}">Last Editor</a></li>
                                 <li ng-hide="article.author.email === ''"><a href="mailto:{{article.author.email}}?subject={{article.title}}">Original Author</a></li>
-                            </ul>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-bell-o" aria-hidden="true"></i> Alert
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="mailto:{{article.author.email}}?subject={{article.title}}"></a></li>
-                                <li><a href="mailto:{{article.author.email}}?subject={{article.title}}">CSS</a></li>
                             </ul>
                         </div>
                         <button type="button" ng-show="isEditing" class="btn btn-default btn-block"
@@ -119,7 +111,7 @@
             <div class="article-detail-sidebar-wrapper col-lg-3 col-md-4 col-xs-12">
                 <div class="row article-detail-buttons-wrapper hidden-xs">
                     <div class="col-lg-6">
-                        <div class="dropdown">
+                        <div class="dropdown" ng-hide="isEditing">
                             <button ng-disabled="(article.lastChangedBy.email === '' && article.author.email === '')" class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown" id="openAlertDropdown"><i class="fa fa-bell-o" aria-hidden="true"></i> Alert
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
