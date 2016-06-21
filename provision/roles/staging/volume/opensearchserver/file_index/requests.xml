@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><requests>
-<request name="search" type="SearchFieldRequest" phraseSlop="2" defaultOperator="AND" start="0" rows="10" lang="en" collapseMode="off" collapseType="optimized" collapseMax="0" emptyReturnsAll="yes">
+<request name="search" type="SearchFieldRequest" phraseSlop="2" defaultOperator="AND" start="0" rows="1000" lang="en" collapseMode="off" collapseType="optimized" collapseMax="0" emptyReturnsAll="yes">
 <geoParameters coordUnit="DEGREES" latitude="0.0" longitude="0.0" distanceReturn="NO_DISTANCE"/>
 <query>
 <searchField field="title" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
-<searchField field="titleExact" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
-<searchField field="titlePhonetic" mode="TERM_AND_PHRASE" boost="10.0" phraseBoost="10.0"/>
 <searchField field="content" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
-<searchField field="contentExact" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
-<searchField field="contentPhonetic" mode="TERM_AND_PHRASE" boost="1.0" phraseBoost="1.0"/>
+<searchField field="fileName" mode="TERM_AND_PHRASE" boost="5.0" phraseBoost="5.0"/>
 </query>
 <returnFields>
 <field name="url"/>
