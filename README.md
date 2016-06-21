@@ -1,5 +1,11 @@
 # knowledgebase
 
+# Important documents
+- Installation manual: docs/documentation/deployment/installation_manual.docx
+- Architecture documentation: docs/documentation/architecture/Architecture Documentation.pdf
+- Test report:  knowledgebase/docs/documentation/test/testreport.docx
+- User Story documentation: docs/documentation/REQ/User_Stories_finalV2.docx
+
 # Folder Structure
 - development : Source Code
 - docs : Documentation
