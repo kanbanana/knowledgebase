@@ -16,8 +16,8 @@ app.set('port', config.port);
 
 // Define Middleware
 //app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb', extended: true}));
 
 // Define Routes
 router.all('/:articleId*',articles.middlewareRetrieveArticle);
